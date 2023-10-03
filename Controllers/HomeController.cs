@@ -4,8 +4,11 @@ using System.Diagnostics;
 
 namespace MyPhamCheilinus.Controllers
 {
+    
+    
     public class HomeController : Controller
     {
+       _2023MyPhamContext db= new _2023MyPhamContext();
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger)
@@ -15,7 +18,9 @@ namespace MyPhamCheilinus.Controllers
 
         public IActionResult Index()
         {
-            return View();
+
+            var listDanhMucSanPham= db.DanhMucSanPhams.ToList();
+            return View(listDanhMucSanPham);
         }
 
         public IActionResult Privacy()
