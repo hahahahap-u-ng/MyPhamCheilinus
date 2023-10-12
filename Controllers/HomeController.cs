@@ -64,7 +64,7 @@ namespace MyPhamCheilinus.Controllers
             return View(pagedList);
         }
 
-        [HttpGet]
+       
         [HttpGet]
         public IActionResult Filter(string mahang, List<string> selectedPrices, List<string> selectedCtLoais)
         {
