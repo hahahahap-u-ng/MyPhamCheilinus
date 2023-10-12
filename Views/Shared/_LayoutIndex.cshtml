@@ -21,7 +21,8 @@
 
     <!-- Plugin CSS -->
     <link rel="stylesheet" href="/css/plugins/swiper-bundle.min.css">
-    <link rel="stylesheet" href="/css/plugins/animate.min.css">
+    <link rel="stylesheet" href="/css/plugins/animate.min.css>
+
     <link rel="stylesheet" href="/css/plugins/nice-select.css">
     <link rel="stylesheet" href="/css/plugins/venobox.min.css">
     <link rel="stylesheet" href="/css/plugins/jquery.lineProgressbar.css">
@@ -31,10 +32,10 @@
     <link rel="stylesheet" href="/css/style.css">
 
     <!-- Use the minified version files listed below for better performance and remove the files listed above -->
-    <!-- <link rel="stylesheet" href="/css/vendor/vendor.min.css">
-    <!-- <link rel="stylesheet" href="/css/vendor/vendor.min.css">
+     <link rel="stylesheet" href="/css/vendor/vendor.min.css">
+    <link rel="stylesheet" href="/css/vendor/vendor.min.css">
     <link rel="stylesheet" href="/css/plugins/plugins.min.css">
-    <link rel="stylesheet" href="/css/style.min.css"> -->
+    <link rel="stylesheet" href="/css/style.min.css"> 
 
 </head>
 
@@ -84,7 +85,7 @@
                                 <nav>
                                     <ul>
                                         <li class="has-dropdown">
-                                            <a class="active main-menu-link" href="#">
+                                            <a class="active main-menu-link" href="HomeController/Index">
                                                 Trang chủ
                                                 <i class="fa fa-angle-down"></i>
                                             </a>
@@ -123,22 +124,22 @@
                                                     <!-- Mega Menu Sub Link -->
                                                     <li class="mega-menu-item">
                                                         <a href="#" class="mega-menu-item-title">Trang điểm mắt</a>
-                                                        @await Component.InvokeAsync("CTLoaiMenu", new { maLoai = "L2" })
+                                                        @await Component.InvokeAsync("CTLoaiMenu", new { maLoai = "L2", viewName = "Default" } )
                                                     </li>
                                                     <!-- Mega Menu Sub Link -->
                                                     <li class="mega-menu-item">
                                                         <a href="#" class="mega-menu-item-title">Trang điểm môi</a>
-                                                        @await Component.InvokeAsync("CTLoaiMenu", new { maLoai = "L3" })
+                                                        @await Component.InvokeAsync("CTLoaiMenu", new { maLoai = "L3", viewName = "Default" })
                                                     </li>
                                                     <!-- Mega Menu Sub Link -->
                                                     <li class="mega-menu-item">
                                                         <a href="#" class="mega-menu-item-title">Trang điểm mặt</a>
-                                                        @await Component.InvokeAsync("CTLoaiMenu", new { maLoai = "L1" })
+                                                        @await Component.InvokeAsync("CTLoaiMenu", new { maLoai = "L1", viewName = "Default" })
                                                     </li>
                                                     <!-- Mega Menu Sub Link -->
                                                     <li class="mega-menu-item">
                                                         <a href="#" class="mega-menu-item-title">Khác</a>
-                                                        @await Component.InvokeAsync("CTLoaiMenu", new { maLoai = "L4" })
+                                                        @await Component.InvokeAsync("CTLoaiMenu", new { maLoai = "L4", viewName = "Default" })
                                                     </li>
                                                 </ul>
                                                 <div class="menu-banner">
@@ -152,15 +153,7 @@
 
 
 
-                                        <li class="has-dropdown">
-                                            <a href="#">Pages <i class="fa fa-angle-down"></i></a>
-                                            <!-- Sub Menu -->
-                                            <ul class="sub-menu">
-                                                <li><a href="faq.html">Frequently Questions</a></li>
-                                                <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                                                <li><a href="404.html">404 Page</a></li>
-                                            </ul>
-                                        </li>
+                                        
                                         <li>
                                             <a href="about-us.html">About Us</a>
                                         </li>
@@ -975,8 +968,8 @@
     <script src="/js/plugins/ajax-mail.js"></script>
 
     <!-- Use the minified version files listed below for better performance and remove the files listed above -->
-    <!-- <script src="/js/vendor/vendor.min.js"></script>
-    <script src="/js/plugins/plugins.min.js"></script> -->
+     <script src="/js/vendor/vendor.min.js"></script>
+    <script src="/js/plugins/plugins.min.js"></script> 
     <!-- Main JS -->
     <script src="/js/main.js"></script>
 </body>

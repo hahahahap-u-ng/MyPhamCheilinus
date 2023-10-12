@@ -40,10 +40,10 @@ namespace MyPhamCheilinus.ViewComponents
             _ctLoaiRepository = ctLoaiRepository;
         }
 
-        public IViewComponentResult Invoke(string maLoai)
+        public IViewComponentResult Invoke(string viewName, string maLoai)
         {
             var ctloais = _ctLoaiRepository.GetCtLoaiByLoai(maLoai).OrderBy(ct => ct.TenCtloai);
-            return View(ctloais);
+            return View(viewName, ctloais);
         }
     }
 
