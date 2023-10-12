@@ -19186,7 +19186,9 @@ Pages - Contact
     font-weight: 700;
     display: block;
     margin-bottom: 13px;
+    margin-top: 13px;
     color: #24262b;
+    border-top: 20px;
 }
 
 .mega-menu-sub > li {
