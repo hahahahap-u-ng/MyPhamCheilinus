@@ -25,6 +25,12 @@ public partial class SanPham
 
     public string? MaDanhMuc { get; set; }
 
+    public bool? TrangThai { get; set; }
+
+    public bool? HomeFlag { get; set; }
+
+    public bool? BestSellers { get; set; }
+
     public virtual ICollection<ChiTietDonHang> ChiTietDonHangs { get; set; } = new List<ChiTietDonHang>();
 
     public virtual ICollection<ChiTietLoHang> ChiTietLoHangs { get; set; } = new List<ChiTietLoHang>();

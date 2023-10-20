@@ -1,0 +1,32 @@
+﻿@model MyPhamCheilinus.Models.Role
+@{
+    ViewData["Title"] = "Thông tin quyền truy cập";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="card-body">
+    <h4>Thông tin quyền truy cập:</h4>
+    <div class="card">
+        <div class="table">
+            <table class="">
+                <tbody>
+                    <tr>
+                        <td>Tên người dùng:</td>
+                        <td class="text-dark font-weight-semibold">@Model.RoleName</td>
+                    </tr>
+                    <tr>
+                        <td>Mô tả:</td>
+                        <td>@Model.Description</td>
+
+                    </tr>
+                    <tr>
+                        <td>           
+                            <a asp-action="Edit" class="btn btn-success" asp-route-id="@Model.RoleId">Sửa thông tin</a> |
+                            <a asp-action="Index">Trở lại</a>
+                        </td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

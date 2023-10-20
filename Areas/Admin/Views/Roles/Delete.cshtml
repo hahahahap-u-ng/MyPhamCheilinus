@@ -1,0 +1,39 @@
+﻿@model MyPhamCheilinus.Models.Role
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h3>Bạn có chắc chắn là muốn xóa người dùng này?</h3>
+<div class="card-body">
+    <h4>Thông tin người dùng:</h4>
+    <div class="card">
+        <div class="table-bordered">
+            <table class="">
+                <tbody>
+                    <tr>
+                        <td>Tên người dùng:</td>
+                        <td class="text-dark font-weight-semibold">@Model.RoleName</td>
+                    </tr>
+                    <tr>
+                        <td>Mô tả:</td>
+                        <td>@Model.Description</td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            <form asp-action="Delete">
+                                <input type="hidden" asp-for="RoleId" />
+                                <input type="submit" value="Xóa" class="btn btn-danger" /> |
+                                <a asp-action="Index">Trở lại</a>
+                            </form>
+                        </td>
+                        <td></td>
+
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,154 @@
+﻿@using PagedList.Core.Mvc
+@model PagedList.Core.IPagedList<MyPhamCheilinus.Models.SanPham>
+
+@{
+    int CurrentPage = ViewBag.CurrentPage;
+    ViewData["Title"] = "Danh sách sản phẩm" + CurrentPage;
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Danh sách sản phẩm</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="~/Home">Trang chủ</a></li>
+                    <li class="breadcrumb-item active">Danh sách sản phẩm: page @CurrentPage</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="col-lg-12">
+                            <div class="d-md-flex">
+                                <div class="m-b-10 m-r-15">
+                                    <select class="custom-select" id="txtMaDM" name="txtMaDM" style="min-width: 200px" asp-items="ViewBag.DanhMuc">
+                                        <option selected>Chọn danh mục</option>
+                                        <option value="0">Chọn tất cả</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-8 text-right">
+                                    <a class="btn btn-primary" asp-controller="SanPhams" asp-action="Create"><i class="anticon anticon-plus-circle m-r-5"></i> <span>Thêm sản phẩm</span></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    @*<th>Tên sản phẩm</th>*@
+                                    <th>Danh mục</th>
+                                    <th>Giá</th>
+                                    <th>Tồn kho</th>
+                                    <th>Trạng thái</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null)
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.MaSanPham</td>
+                                            @*<td>
+                                                <div class="d-flex align-items-center">
+                                                    <img class="img-fluid rounded" src =
+                                                    <h6 class="m-b-0 m-l-10">@item.TenSanPham</h6>
+                                                </div>
+                                            </td>*@
+                                            <td>@item.MaDanhMucNavigation.TenDanhMuc</td>
+                                            <td>@item.Gia.Value.ToString("#,##0") VNĐ</td>
+                                            <td>@item.Slkho</td>
+                                                <td>
+                                                    @if (item.Slkho.Value > 0)
+                                                    {
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="badge badge-success badge-dot m-r-10">
+                                                                <div>In stock</div>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="badge badge-success badge-dot m-r-10">
+                                                                <div>Out stock</div>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </td>
+                                            <td>
+                                                <a class="btn btn-primary btn-tone m-r-5" asp-action="Details" asp-route-id="@item.MaSanPham">Chi tiết</a>
+                                                <a class="btn btn-success btn-tone m-r-5" asp-action="Edit" asp-route-id="@item.MaSanPham">Sửa</a>
+                                                <a class="btn btn-danger btn-tone m-r-5" asp-action="Delete" asp-route-id="@item.MaSanPham">Xóa</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                        <div aria-label="Page navigation example">
+                            <ul class="pagination">
+                                <pager class="pager-container" list="@Model" asp-area="Admin" asp-controller="SanPhams" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-action="Index" />
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+
+@section Scripts{
+
+    <script>
+        $(document).ready(function () {
+            jQuery("#txtMaDM").change(function () {
+                var maDM = jQuery(this).children(":selected").attr("value");
+                // Không cần chuyển đổi kiểu dữ liệu
+
+                $('#txtMaDM option').removeAttr('selected');
+                $("#txtMaDM > [value='" + maDM + "']").attr("selected", "true"); // Lưu ý việc sử dụng dấu nháy đơn ('') cho chuỗi
+
+                $.ajax({
+                    url: '/Admin/SanPhams/Filtter',
+                    datatype: "json",
+                    type: "GET",
+                    data: {
+                        MaDM: maDM
+                    },
+                    async: true,
+                    success: function (results) {
+                        if (results.status == "success") {
+                            window.location.href = results.redirectUrl;
+                        }
+                    },
+                    error: function (xhr) {
+                        alert('error');
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+
