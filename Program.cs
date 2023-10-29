@@ -12,6 +12,11 @@ builder.Services.AddDbContext<_2023MyPhamContext>(x => x.UseSqlServer(connection
 builder.Services.AddScoped<ILoaiRepository, LoaiRepository>();
 builder.Services.AddScoped<IHangRepository, HangRepository>();
 builder.Services.AddScoped<ICTLoaiRepository, CTLoaiRepository>();
+
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -21,6 +26,8 @@ if (!app.Environment.IsDevelopment())
 }
 app.UseStaticFiles();
 
+app.UseSession();
+
 app.UseRouting();
 
 app.UseAuthorization();
@@ -29,6 +36,17 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+app.MapControllerRoute(
+    name: "sanphamtheodanhmuc",
+    pattern: "sanpham/sanphamtheodanhmuc/{maDanhMuc}",
+    defaults: new { controller = "SanPham", action = "SanPhamTheoDanhMuc" });
+
+app.MapControllerRoute(
+    name: "filter",
+    pattern: "home/filter",
+    defaults: new { controller = "Home", action = "Filter" });
+
 app.Run();
+
 
 

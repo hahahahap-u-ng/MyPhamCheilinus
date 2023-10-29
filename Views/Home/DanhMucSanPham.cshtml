@@ -2,55 +2,38 @@
 @model X.PagedList.IPagedList<DanhMucSanPham>
 
 @{
-    ViewData["Title"] = "San Pham Theo Hang";
+    ViewData["Title"] = "Tat Ca San Pham";
     Layout = "~/Views/Shared/_LayoutIndex.cshtml";
 }
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
-        $(document).ready(function () {
-            // Sử dụng sự kiện change cho các checkbox price và ctloai
-            $("input[name='price'], input[name='ctloai']").change(function () {
-                applyFilters();
+        $('input[type="checkbox"]').on('change', function () {
+            var selectedPrices = $('input[name="selectedPrices"]:checked').map(function () {
+                return this.value;
+            }).get();
+
+            var selectedCtLoais = $('input[name="selectedCtLoais"]:checked').map(function () {
+                return this.value;
+            }).get();
+
+            $.ajax({
+                type: 'GET',
+                url: '/Home/Filter',
+                data: {
+                    selectedPrices: selectedPrices,
+                    selectedCtLoais: selectedCtLoais
+                },
+                success: function (data) {
+                    $('#productGrid').html(data);
+                }
             });
         });
-
     });
-
-
-    function applyFilters() {
-        var selectedPrices = [];
-        var selectedCtLoais = [];
-        var mahang = $("#Mahang").val(); // Lấy mã hàng từ một input có id="Mahang"
-
-        // Thu thập giá trị các checkbox Giá đã chọn
-        $("input[name='price']:checked").each(function () {
-            selectedPrices.push($(this).val());
-        });
-
-        // Thu thập giá trị các checkbox Chi tiết loại đã chọn
-        $("input[name='ctloai']:checked").each(function () {
-            selectedCtLoais.push($(this).val());
-        });
-
-        // Gửi AJAX request đến server với các giá trị filter đã chọn và mã hàng
-        $.ajax({
-            url: "/Home/Filter",
-            type: "GET",
-            data: { mahang: mahang, selectedPrices: selectedPrices, selectedCtLoais: selectedCtLoais },
-            success: function (data) {
-                // Cập nhật nội dung của div có id "filtered-hangs" bằng dữ liệu PartialView
-                $("#filtered-hangs").html(data);
-            },
-            error: function (error) {
-                console.log(error);
-            }
-        });
-    }
-
-
 </script>
+
+
 
 
 
@@ -60,13 +43,13 @@
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <h3 class="breadcrumb-title">Shop - @ViewBag.TenHang</h3>
+                    <h3 class="breadcrumb-title">Shop - All</h3>
                     <div class="breadcrumb-nav breadcrumb-nav-color--black breadcrumb-nav-hover-color--golden">
                         <nav aria-label="breadcrumb">
                             <ul>
                                 <li><a href="index.html">Home</a></li>
                                 <li><a href="shop-grid-sidebar-left.html">Shop</a></li>
-                                <li class="active" aria-current="page">@ViewBag.TenHang</li>
+                                <li class="active" aria-current="page">Tất cả sản phẩm</li>
                             </ul>
                         </nav>
                     </div>
@@ -85,46 +68,46 @@
                 <!-- Start Sidebar Area -->
                 <div class="siderbar-section" data-aos="fade-up" data-aos-delay="0">
 
+                    
                     <!-- Start Single Sidebar Widget -->
-                    <!-- Start Single Sidebar Widget -->
-                    <div class="sidebar-single-widget">
+                    <div class="sidebar-single-widget" for="price-filter">
                         <h6 class="sidebar-title">GIÁ</h6>
                         <div class="sidebar-content">
                             <form class="filter-type-select" id="price-filter-hang">
                                 <ul>
                                     <li>
                                         <label class="checkbox-default">
-                                            <input type="checkbox" name="price" value="all">
+                                            <input type="checkbox" name="selectedPrices" value="all">
                                             <span>Tất cả</span>
                                         </label>
                                     </li>
                                     <li>
                                         <label class="checkbox-default">
-                                            <input type="checkbox" name="price" value="0-100000" id="price-1">
+                                            <input type="checkbox" name="selectedPrices" value="0-100000" id="price-1">
                                             <span>$0 - $100000</span>
                                         </label>
                                     </li>
                                     <li>
                                         <label class="checkbox-default">
-                                            <input type="checkbox" name="price" value="100000-200000" id="price-2">
+                                            <input type="checkbox" name="selectedPrices" value="100000-200000" id="price-2">
                                             <span>$100000 - $200000</span>
                                         </label>
                                     </li>
                                     <li>
                                         <label class="checkbox-default">
-                                            <input type="checkbox" name="price" value="200000-300000" id="price-3">
+                                            <input type="checkbox" name="selectedPrices" value="200000-300000" id="price-3">
                                             <span>$200000 - $300000</span>
                                         </label>
                                     </li>
                                     <li>
                                         <label class="checkbox-default">
-                                            <input type="checkbox" name="price" value="300000-400000" id="price-4">
+                                            <input type="checkbox" name="selectedPrices" value="300000-400000" id="price-4">
                                             <span>$300000 - $400000</span>
                                         </label>
                                     </li>
                                     <li>
                                         <label class="checkbox-default">
-                                            <input type="checkbox" name="price" value="400000-500000" id="price-5">
+                                            <input type="checkbox" name="selectedPrices" value="400000-500000" id="price-5">
                                             <span>$400000-$500000</span>
                                         </label>
                                     </li>
@@ -135,12 +118,12 @@
 
 
                     <!-- Start Single Sidebar Widget -->
-                    <div class="sidebar-single-widget">
+                    <div class="sidebar-single-widget" for="ctloai-filter">
                         <h6 class="sidebar-title">TRANG ĐIỂM</h6>
                         <div class="sidebar-content">
                             <form class="filter-type-select" id="ctloai-filter-hang">
                                 <label class="checkbox-default">
-                                    <input type="checkbox" value="all" checked-id="ctloai-all">
+                                    <input type="checkbox" name="selectedCtLoais" value="all">
                                     <span>Tất cả</span>
                                 </label>
                                 <a href="#" class="mega-menu-item-title">Trang điểm mặt</a>
@@ -154,7 +137,7 @@
                             </form>
                         </div>
                     </div> <!-- End Single Sidebar Widget -->
-                   
+
                 </div> <!-- End Sidebar Area -->
 
 
@@ -187,7 +170,7 @@
                             </div>
 
                             <!-- Start Product Grid View -->
-                            <div class="col-md-12" id="filtered-hangs">
+                            <div class="col-md-12" id="filtered">
                                 <div class="product-grid-view row" id="productGrid">
                                     @foreach (var product in Model)
                                     {
@@ -234,25 +217,27 @@
                                 </div>
                             </div>
                             <!-- End Product Grid View -->
-                        </div>
-                        <div class="page-pagination text-center aos-init aos-animate" data-aos="fade-up" data-aos-delay="0">
-                            <ul>
-                                @if (Model.HasPreviousPage)
-                                {
-                                    <li><a href="@Url.Action("SanPhamTheoHang", new { mahang = ViewBag.Mahang, page = Model.PageNumber - 1 })"><i class="ion-ios-skipback"></i></a></li>
-                                }
 
-                                @for (int i = 1; i <= Model.PageCount; i++)
-                                {
-                                    <li><a class="@(i == Model.PageNumber ? "active" : "")" href="@Url.Action("SanPhamTheoHang", new { mahang = ViewBag.Mahang, page = i })">@i</a></li>
-                                }
+                            <div class="page-pagination text-center aos-init aos-animate" data-aos="fade-up" data-aos-delay="0">
+                                <ul>
+                                    @if (Model.HasPreviousPage)
+                                    {
+                                        <li><a href="@Url.Action("DanhMucSanPham", new { mahang = ViewBag.Mahang, page = Model.PageNumber - 1 })"><i class="ion-ios-skipback"></i></a></li>
+                                    }
 
-                                @if (Model.HasNextPage)
-                                {
-                                    <li><a href="@Url.Action("SanPhamTheoHang", new { mahang = ViewBag.Mahang, page = Model.PageNumber + 1 })"><i class="ion-ios-skipforward"></i></a></li>
-                                }
-                            </ul>
+                                    @for (int i = 1; i <= Model.PageCount; i++)
+                                    {
+                                        <li><a class="@(i == Model.PageNumber ? "active" : "")" href="@Url.Action("DanhMucSanPham", new { mahang = ViewBag.Mahang, page = i })">@i</a></li>
+                                    }
+
+                                    @if (Model.HasNextPage)
+                                    {
+                                        <li><a href="@Url.Action("DanhMucSanPham", new { mahang = ViewBag.Mahang, page = Model.PageNumber + 1 })"><i class="ion-ios-skipforward"></i></a></li>
+                                    }
+                                </ul>
+                            </div>
                         </div>
+                        
 
                     </div>
                 </div>
@@ -260,7 +245,7 @@
             </div>
 
 
-            
+
         </div>
     </div>
 </div> <!-- ...:::: End Shop Section:::... -->
