@@ -21,6 +21,10 @@ public partial class DanhMucSanPham
 
     public double? Gia { get; set; }
 
+    public string? CachDung { get; set; }
+
+    public string? ChiTiet { get; set; }
+
     public virtual Ctloai? MaCtloaiNavigation { get; set; }
 
     public virtual Hang? MaHangNavigation { get; set; }

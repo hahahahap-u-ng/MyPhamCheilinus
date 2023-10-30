@@ -1,37 +1,49 @@
 ﻿@model MyPhamCheilinus.Models.SanPham
 
 @{
-    ViewData["Title"] = "Create";
+    int CurrentPage = ViewBag.CurrentPage;
+    ViewData["Title"] = "Thêm mới sản phẩm";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
-<form asp-controller="SanPhams" asp-action="Create" method="post" enctype="multipart/form-data">
+
+@section Styles{
+    <link href="~/Adminassets/summernote/summernote-bs4.css" rel="stylesheet" />
+    <link href="~/Adminassets/summernote/summernote.css" rel="stylesheet" />
+}
+<form asp-controller="SanPhams" asp-action="Create" asp-route-page="@ViewBag.CurrentPage" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <input type="hidden" asp-for="Anh" />
+    <section>
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="~/Home">Trang chủ</a></li>
+                        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="SanPhams" asp-action="Index" asp-route-page="@ViewBag.CurrentPage">Danh sách sản phẩm</a></li>
+                        <li class="breadcrumb-item active">Tạo mới sản phẩm</li>
+                    </ol>
+                </div>
+                <div class="col-md-6 text-right">
+                    <div class="m-b-15">
+                        <button class="btn btn-primary">
+                            <i class="anticon anticon-save"></i>
+                            <span>Lưu</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
     <div class="page-header no-gutters has-tab">
-        <div class="d-md-flex m-b-15 align-items-center justify-content-between">
-            <div class="media align-items-center m-b-15">
-                <div class="avatar avatar-image rounded" style="height: 70px; width: 70px">
-                    <img src="assets/images/others/thumb-16.jpg" alt="">
-                </div>
-                <div class="m-l-15">
-                    <h4 class="m-b-0">Skinny Men Blazer</h4>
-                    <p class="text-muted m-b-0">Code: #5325</p>
-                </div>
-            </div>
-            <div class="m-b-15">
-                <button class="btn btn-primary">
-                    <i class="anticon anticon-save"></i>
-                    <span>Save</span>
-                </button>
-            </div>
-        </div>
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link active" data-toggle="tab" href="#product-edit-basic">Basic Info</a>
+                <a class="nav-link active" data-toggle="tab" href="#product-edit-basic">Thông tin cơ bản</a>
             </li>
+@*            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#product-edit-option">Thông tin tùy chọn</a>
+            </li>*@
             <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#product-edit-option">Option Info</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#product-edit-description">Description</a>
+                <a class="nav-link" data-toggle="tab" href="#product-edit-description">Mô tả</a>
             </li>
         </ul>
     </div>
@@ -40,88 +52,101 @@
             <div class="card">
                 <div class="card-body">
                     <div class="form-group">
+                        <label class="font-weight-semibold" for="productName">Mã sản phẩm</label>
+                        <input type="text" class="form-control" asp-for="MaSanPham" id="maSanPhamInput" />
+                    </div>
+
+
+                    <div class="form-group">
                         <label class="font-weight-semibold" for="productName">Tên sản phẩm</label>
                         <input type="text" class="form-control" asp-for="TenSanPham" />
                     </div>
                     <div class="form-group">
-                        <label class="font-weight-semibold" for="productPrice">Giá bán</label>
-                        <input type="text" class="form-control" asp-for="Gia">
+                        <label class="font-weight-semibold" for="productName">Mô tả ngắn</label>
+                        <input type="text" class="form-control" asp-for="MoTa" />
                     </div>
-                    <div class="form-group">
-                        <label class="font-weight-semibold" for="productCategory">Danh mục sản phẩm</label>
-                        <select class="custom-select" asp-for="MaDanhMuc" style="min-width: 200px" asp-items="ViewBag.DanhMuc">
-                            <option value="" disabled selected>Chọn danh mục</option>
-                        </select>
-                        
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="font-weight-semibold" for="productPrice">Giá bán</label>
+                            <input type="text" class="form-control" asp-for="Gia">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="font-weight-semibold" for="productPrice">Giảm giá</label>
+                            <input type="text" class="form-control" asp-for="KhuyenMai">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="font-weight-semibold" for="productBrand">Brand</label>
-                        <input type="text" class="form-control" id="productBrand" placeholder="Brand" value="H&M">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="font-weight-semibold" for="productCategory">Danh mục sản phẩm</label>
+                            <select class="custom-select" asp-for="MaDanhMuc" style="min-width: 200px" asp-items="ViewBag.DanhMuc">
+                                <option value="" disabled selected>Chọn danh mục</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="font-weight-semibold" for="productName">Số lượng tồn kho</label>
+                            <input type="text" class="form-control" asp-for="Slkho" />
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="font-weight-semibold" for="productStatus">Status</label>
-                        <select class="custom-select" id="productStatus">
-                            <option value="inStock" selected>In Stock</option>
-                            <option value="outOfStock">Out of Stock</option>
-                            <option value="pending">Pending</option>
-                        </select>
+                    
+                    <div class="form-group col-md-6">
+                        <label class="font-weight-semibold" for="productAnh">Ảnh đại diện</label>
+                        <input type="file" name="fAnh" class="form-control-file" asp-for="Anh">
+                        <span asp-validation-for="Anh" class="text-danger"></span>            
                     </div>
+                    @*<div class="row">
+                        <div class="m-t-25">
+                            <div class="form-group d-flex align-items-center">
+                                <div class="switch m-r-10">
+                                    <input type="checkbox" asp-for="Active" checked="">
+                                    <label for="Active"></label>
+                                </div>
+                                <label>Trạng thái</label>
+                            </div>
+                            <div class="form-group d-flex align-items-center">
+                                <div class="switch m-r-10">
+                                    <input type="checkbox" asp-for="HomeFlag">
+                                    <label for="HomeFlag"></label>
+                                </div>
+                                <label>HomeFlag</label>
+                            </div>
+                            <div class="form-group d-flex align-items-center">
+                                <div class="switch m-r-10">
+                                    <input type="checkbox" asp-for="BestSellers" disabled="">
+                                    <label for="BestSellers"></label>
+                                </div>
+                                <label>Yêu thích</label>
+                            </div>
+                        </div>
+                    </div>*@
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade" id="product-edit-option">
+        @*<div class="tab-pane fade" id="product-edit-option">
             <div class="card">
                 <div class="card-body">
                     <div class="form-group">
                         <label class="font-weight-semibold" for="productSize">Size</label>
-                        <select class="select2" id="productSize" multiple="multiple">
-                            <option value="40" selected>40</option>
-                            <option value="42" selected>42</option>
-                            <option value="44">44</option>
-                            <option value="46">46</option>
-                            <option value="48">48</option>
-                            <option value="50">50</option>
-                        </select>
+                        <input type="text" class="form-control" asp-for="Slkho" />
                     </div>
                     <div class="form-group">
                         <label class="font-weight-semibold" for="productColors">Colors</label>
                         <select class="select2" id="productColors" multiple="multiple">
-                            <option value="db" selected>Dark Blue</option>
-                            <option value="g" selected>Gray</option>
-                            <option value="gb" selected>Gray Blue</option>
+                            @foreach (var color in ViewBag.Colors)
+                            {
+                                <option value="@color.Value">@color.Text</option>
+                            }
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label class="font-weight-semibold" for="productFit">Fit</label>
-                        <select class="custom-select" id="productFit">
-                            <option value="skinny" selected>Skinny</option>
-                            <option value="slim">Slim</option>
-                            <option value="regular">Regular</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="font-weight-semibold" for="productMaterial">Material</label>
-                        <select class="select2" id="productMaterial" multiple="multiple">
-                            <option value="polyester" selected>Polyester</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="font-weight-semibold" for="productShip">Ship From</label>
-                        <select class="custom-select" id="productShip">
-                            <option value="columbia" selected>Columbia</option>
-                            <option value="brazil">Brazil</option>
-                            <option value="chile">Chile</option>
-                            <option value="argentina">Argentina</option>
-                        </select>
-                    </div>
+
                 </div>
             </div>
-        </div>
+        </div>*@
         <div class="tab-pane fade" id="product-edit-description">
             <div class="card">
                 <div class="card-body">
-                    <div id="productDescription">
-                        <p>Special cloth alert. The key to more success is to have a lot of pillows. Surround yourself with angels, positive energy, beautiful people, beautiful souls, clean heart, angel. They will try to close the door on you, just open it. A major key, never panic. Don’t panic, when it gets crazy and rough, don’t panic, stay calm. They key is to have every key, the key to open every door.The other day the grass was brown, now it’s green because I ain’t give up. Never surrender. Lion! I’m up to something. Always remember in the jungle there’s a lot of they in there, after you overcome they, you will make it to paradise.</p>
+                    <div class="form-group">
+                        <label for="inputDescription"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Mô tả sản phẩm</font></font></label>
+                        <textarea id="inputDescription" class="form-control" rows="4" style="height: 119px;"></textarea>
                     </div>
                 </div>
             </div>
@@ -130,71 +155,24 @@
 </form>
 
 
-<h1>Create</h1>
+@section Scripts {
+    <script>
+        // Đảm bảo rằng trang đã tải hoàn toàn trước khi thực thi mã JavaScript
+        $(document).ready(function () {
+            // Gán giá trị mặc định cho cột Mã sản phẩm
+            $("#maSanPhamInput").val("SP00");
 
-<h4>SanPham</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="MaSanPham" class="control-label"></label>
-                <input asp-for="MaSanPham" class="form-control" />
-                <span asp-validation-for="MaSanPham" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TenSanPham" class="control-label"></label>
-                <input asp-for="TenSanPham" class="form-control" />
-                <span asp-validation-for="TenSanPham" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Mau" class="control-label"></label>
-                <input asp-for="Mau" class="form-control" />
-                <span asp-validation-for="Mau" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Anh" class="control-label"></label>
-                <input asp-for="Anh" class="form-control" />
-                <span asp-validation-for="Anh" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Gia" class="control-label"></label>
-                <input asp-for="Gia" class="form-control" />
-                <span asp-validation-for="Gia" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="KhuyenMai" class="control-label"></label>
-                <input asp-for="KhuyenMai" class="form-control" />
-                <span asp-validation-for="KhuyenMai" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Slkho" class="control-label"></label>
-                <input asp-for="Slkho" class="form-control" />
-                <span asp-validation-for="Slkho" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NgaySx" class="control-label"></label>
-                <input asp-for="NgaySx" class="form-control" />
-                <span asp-validation-for="NgaySx" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LuotMua" class="control-label"></label>
-                <input asp-for="LuotMua" class="form-control" />
-                <span asp-validation-for="LuotMua" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MaDanhMuc" class="control-label"></label>
-                <select asp-for="MaDanhMuc" class ="form-control" asp-items="ViewBag.MaDanhMuc"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
+            // Sử dụng sự kiện 'input' để theo dõi thay đổi trong cột Mã sản phẩm
+            $("#maSanPhamInput").on('input', function () {
+                var inputValue = $(this).val();
+                // Kiểm tra nếu độ dài của giá trị nhập vào là 0 (trống) hoặc lớn hơn 6 ký tự, thì không thay đổi giá trị
+                if (inputValue.length === 0) {
+                    $(this).val("SP00");
+                } else if (inputValue.length > 6) {
+                    // Giới hạn độ dài tối đa là 6 ký tự
+                    $(this).val(inputValue.slice(0, 6));
+                }
+            });
+        });
+    </script>
+}

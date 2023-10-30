@@ -1,4 +1,4 @@
-using AspNetCoreHero.ToastNotification.Notyf.Models;
+﻿using AspNetCoreHero.ToastNotification.Notyf.Models;
 using AspNetCoreHero.ToastNotification;
 using Microsoft.EntityFrameworkCore;
 using MyPhamCheilinus.Models;
@@ -20,6 +20,12 @@ builder.Services.AddNotyf(config => { config.DurationInSeconds = 3; config.IsDis
 builder.Services.AddDbContext<MyPhamContext>(x => x.UseSqlServer(connectionString));
 builder.Services.AddScoped<ILoaiRepository, LoaiRepository>();
 builder.Services.AddScoped<IHangRepository, HangRepository>();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Đặt thời gian tối đa để Session tồn tại
+    options.Cookie.Name = ".MyPhamCheilinus.Session"; // Tên của Cookie Session
+    options.Cookie.IsEssential = true; // Đảm bảo rằng Cookie này cần thiết
+});
 builder.Services.AddScoped<ICTLoaiRepository, CTLoaiRepository>();
 var app = builder.Build();
 
@@ -31,7 +37,7 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseSession();
 app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {

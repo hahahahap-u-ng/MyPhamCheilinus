@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin Cheilinus</title>
+    <title>@ViewData["Title"]</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="~/adminassets/dist/css/adminlte.min.css">
+    @await RenderSectionAsync("Styles", required: false)
+
 </head>
 <!--
 `body` tag options:
@@ -173,6 +175,7 @@
     <script src="~/adminassets/dist/js/demo.js"></script>
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="~/adminassets/dist/js/pages/dashboard3.js"></script>
+
     @await Component.InvokeAsync("Notyf")
     @await RenderSectionAsync("Scripts", required:false)
 </body>

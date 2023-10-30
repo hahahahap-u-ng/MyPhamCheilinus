@@ -14,7 +14,7 @@ namespace DiChoSaiGon.Helpper
         {
             try
             {
-                if(!string.IsNullOrEmpty(input))
+                if (!string.IsNullOrEmpty(input))
                 {
                     return Regex.Replace(input, "<.*?>", String.Empty);
                 }
@@ -29,7 +29,7 @@ namespace DiChoSaiGon.Helpper
         {
             if (email.Trim().EndsWith("."))
             {
-                return false; 
+                return false;
             }
             try
             {
