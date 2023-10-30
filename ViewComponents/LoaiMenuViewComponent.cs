@@ -1,6 +1,7 @@
 ﻿using MyPhamCheilinus.Models;
 using Microsoft.AspNetCore.Mvc;
 using MyPhamCheilinus.Repository;
+using MyPhamCheilinus.Infrastructure;
 
 namespace MyPhamCheilinus.ViewComponents
 {
@@ -44,6 +45,14 @@ namespace MyPhamCheilinus.ViewComponents
         {
             var ctloais = _ctLoaiRepository.GetCtLoaiByLoai(maLoai).OrderBy(ct => ct.TenCtloai);
             return View(viewName, ctloais);
+        }
+    }
+
+    public class GioHangWidget : ViewComponent
+    {
+        public IViewComponentResult Invoke()
+        {
+            return View(HttpContext.Session.GetJson<GioHang>("giohang"));
         }
     }
 

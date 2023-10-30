@@ -27,6 +27,17 @@ namespace MyPhamCpuheilinus.Controllers
             }
             return View("GioHang", GioHang);
         }
+        public IActionResult Remove_1_FromGioHang(string maSanPham)
+        {
+            SanPham? sanpham = db.SanPhams.FirstOrDefault(p => p.MaSanPham == maSanPham);
+            if (sanpham != null)
+            {
+                GioHang = HttpContext.Session.GetJson<GioHang>("giohang") ?? new GioHang();
+                GioHang.AddItem(sanpham, -1);
+                HttpContext.Session.SetJson("giohang", GioHang);
+            }
+            return View("GioHang", GioHang);
+        }
 
         public IActionResult RemoveFromGioHang(string maSanPham)
         {
