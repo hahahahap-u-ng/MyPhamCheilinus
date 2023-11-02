@@ -18,7 +18,12 @@ public partial class DanhMucSanPham
     public string? HinhAnh { get; set; }
 
     public double? DanhGia { get; set; }
+
     public double? Gia { get; set; }
+
+    public string? CachDung { get; set; }
+
+    public string? ChiTiet { get; set; }
 
     public virtual Ctloai? MaCtloaiNavigation { get; set; }
 

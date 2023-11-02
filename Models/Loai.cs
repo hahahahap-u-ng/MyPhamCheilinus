@@ -10,5 +10,4 @@ public partial class Loai
     public string? TenLoai { get; set; }
 
     public virtual ICollection<Ctloai> Ctloais { get; set; } = new List<Ctloai>();
-    
 }
