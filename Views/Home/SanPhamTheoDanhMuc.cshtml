@@ -147,7 +147,7 @@
                                 }
                             </div>
                             <script>
-                                
+                                // Lắng nghe sự kiện khi chọn màu
                                 // Lắng nghe sự kiện khi chọn màu
                                 var colorSelects = document.querySelectorAll('.color-select');
                                 colorSelects.forEach(function (colorSelect) {
@@ -155,7 +155,7 @@
                                         var selectedProductName = event.target.getAttribute('data-product-name');
                                         var selectedKho = event.target.getAttribute('data-product-kho');
                                         var selectedPrice = parseFloat(event.target.getAttribute('data-product-price')); // Lấy giá sản phẩm
-                                        
+
                                         var selectedKhuyenMai = parseFloat(event.target.getAttribute('data-product-khuyenmai')); // Lấy mức khuyến mãi
 
                                         // Cập nhật tên sản phẩm
@@ -174,20 +174,20 @@
                                         priceElement.textContent = selectedPrice;
                                         discountPriceElement.textContent = discountPrice;
 
-                                        
+
                                     });
                                 });
-                                colorSelects.forEach(function (colorSelect) {
-                                    colorSelect.addEventListener('change', function (event) {
-                                        var selectedColor = event.target;
-                                        var masanpham = selectedColor.getAttribute('data-product-masanpham');
-
-                                        // Cập nhật giá trị của "asp-route-id" trong thẻ <a>
-                                        addToCartButton.setAttribute('asp-route-id', masanpham);
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    var addToCartButton = document.querySelector('#addToCartButton');
+                                    addToCartButton.addEventListener('click', function (event) {
+                                        event.preventDefault();
+                                        var selectedColor = document.querySelector('.color-select:checked');
+                                        if (selectedColor) {
+                                            var masanpham = selectedColor.getAttribute('data-product-masanpham');
+                                            window.location.href = '/GioHang/AddGioHang/?MaSanPham=' + masanpham;
+                                        }
                                     });
                                 });
-
-
 
                             </script>
 
@@ -197,14 +197,14 @@
                                 var colorSelects = document.querySelectorAll('.color-select');
                                 colorSelects.forEach(function (colorSelect) {
                                     colorSelect.addEventListener('change', function (event) {
-                                        var selectedColor = event.target;
-                                        var masanpham = selectedColor.getAttribute('data-product-masanpham');
-
-                                        // Cập nhật giá trị của "asp-route-id" trong thẻ <a>
-                                        addToCartButton.setAttribute('asp-route-id', masanpham);
+                                        // Bỏ chọn tất cả các ô màu khác
+                                        colorSelects.forEach(function (otherColorSelect) {
+                                            if (otherColorSelect !== event.target) {
+                                                otherColorSelect.checked = false;
+                                            }
+                                        });
                                     });
                                 });
-
                             </script>
 
                         </div>
