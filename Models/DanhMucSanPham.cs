@@ -30,6 +30,4 @@ public partial class DanhMucSanPham
     public virtual Hang? MaHangNavigation { get; set; }
 
     public virtual ICollection<SanPham> SanPhams { get; set; } = new List<SanPham>();
-    public string? ChiTiet { get; set; }
-    public string? CachDung { get; set; }
 }

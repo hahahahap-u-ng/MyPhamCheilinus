@@ -15,10 +15,10 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
     [Area("Admin")]
     public class SanPhamsController : Controller
     {
-        private readonly MyPhamContext _context;
+        private readonly _2023MyPhamContext _context;
         public INotyfService _notifyService { get; }
 
-        public SanPhamsController(MyPhamContext context, INotyfService notifyService)
+        public SanPhamsController(_2023MyPhamContext context, INotyfService notifyService)
         {
             _context = context;
             _notifyService = notifyService;
@@ -135,7 +135,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         {
             if (_context.SanPhams == null)
             {
-                return Problem("Entity set 'MyPhamContext.SanPhams' is null.");
+                return Problem("Entity set '_2023MyPhamContext.SanPhams' is null.");
             }
             // Sau khi xóa thành công, bạn có thể chuyển hướng trở lại trang chứa sản phẩm vừa xóa bằng cách truyền tham số `page`.
             // Nếu `page` không có giá trị, bạn có thể mặc định nó về một trang cụ thể (ví dụ: 1).
@@ -333,7 +333,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         {
             if (_context.SanPhams == null)
             {
-                return Problem("Entity set 'MyPhamContext.SanPhams' is null.");
+                return Problem("Entity set '_2023MyPhamContext.SanPhams' is null.");
             }
 
             var sanPham = await _context.SanPhams.FindAsync(id);

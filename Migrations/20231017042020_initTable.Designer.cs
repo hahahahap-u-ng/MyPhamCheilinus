@@ -11,7 +11,7 @@ using MyPhamCheilinus.Models;
 
 namespace MyPhamCheilinus.Migrations
 {
-    [DbContext(typeof(MyPhamContext))]
+    [DbContext(typeof(_2023MyPhamContext))]
     [Migration("20231017042020_initTable")]
     partial class initTable
     {

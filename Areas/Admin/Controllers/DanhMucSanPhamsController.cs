@@ -14,11 +14,11 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
     [Area("Admin")]
     public class DanhMucSanPhamsController : Controller
     {
-        private readonly MyPhamContext _context;
+        private readonly _2023MyPhamContext _context;
 
         public INotyfService _notifyService { get; }
 
-        public DanhMucSanPhamsController(MyPhamContext context, INotyfService notifyService)
+        public DanhMucSanPhamsController(_2023MyPhamContext context, INotyfService notifyService)
         {
             _context = context;
             _notifyService = notifyService;
@@ -167,7 +167,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         {
             if (_context.DanhMucSanPhams == null)
             {
-                return Problem("Entity set 'MyPhamContext.DanhMucSanPhams'  is null.");
+                return Problem("Entity set '_2023MyPhamContext.DanhMucSanPhams'  is null.");
             }
             var danhMucSanPham = await _context.DanhMucSanPhams.FindAsync(id);
             if (danhMucSanPham != null)

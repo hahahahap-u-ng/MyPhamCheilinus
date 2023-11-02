@@ -8,8 +8,8 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
     [Area("Admin")]
     public class SearchController : Controller
     {
-        private readonly MyPhamContext _context;
-        public SearchController(MyPhamContext context)
+        private readonly _2023MyPhamContext _context;
+        public SearchController(_2023MyPhamContext context)
         {
             _context = context;
         }

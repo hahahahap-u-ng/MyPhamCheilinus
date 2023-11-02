@@ -12,9 +12,9 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
     [Area("Admin")]
     public class AccountsController : Controller
     {
-        private readonly MyPhamContext _context;
+        private readonly _2023MyPhamContext _context;
 
-        public AccountsController(MyPhamContext context)
+        public AccountsController(_2023MyPhamContext context)
         {   
             _context = context;
         }
@@ -31,8 +31,8 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             ViewData["lsTrangThai"] = lsTrangThai;
 
 
-            var myPhamContext = _context.Accounts.Include(a => a.Role);
-            return View(await myPhamContext.ToListAsync());
+            var _2023MyPhamContext = _context.Accounts.Include(a => a.Role);
+            return View(await _2023MyPhamContext.ToListAsync());
         }
 
         // GET: Admin/Accounts/Details/5
@@ -157,7 +157,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         {
             if (_context.Accounts == null)
             {
-                return Problem("Entity set 'MyPhamContext.Accounts'  is null.");
+                return Problem("Entity set '_2023MyPhamContext.Accounts'  is null.");
             }
             var account = await _context.Accounts.FindAsync(id);
             if (account != null)
