@@ -33,6 +33,8 @@ public partial class SanPham
 
     public bool Active { get; set; }
 
+    public DateTime? NgaySua { get; set; }
+
     public virtual ICollection<ChiTietDonHang> ChiTietDonHangs { get; set; } = new List<ChiTietDonHang>();
 
     public virtual ICollection<ChiTietLoHang> ChiTietLoHangs { get; set; } = new List<ChiTietLoHang>();

@@ -57,7 +57,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         // GET: Admin/Accounts/Create
         public IActionResult Create()
         {
-            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleId");
+            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "Description");
             return View();
         }
 
@@ -74,7 +74,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleId", account.RoleId);
+            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "Description", account.RoleId);
             return View(account);
         }
 

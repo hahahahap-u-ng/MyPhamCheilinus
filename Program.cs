@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 
-var connectionString = builder.Configuration.GetConnectionString("_2023MyPhamContext");
+var connectionString = builder.Configuration.GetConnectionString("MyPhamContext");
 builder.Services.AddDbContext<MyPhamContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.All }));
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();

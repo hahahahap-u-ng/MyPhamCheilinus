@@ -12,12 +12,13 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Danh sách sản phẩm</h1>
+                <h1>DANH SÁCH SẢN PHẨM</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="~/Home">Trang chủ</a></li>
-                    <li class="breadcrumb-item active" asp-area="Admin" asp-controller="SanPhams" asp-action="Index">Danh sách sản phẩm : page @CurrentPage</li>
+                    <a class="breadcrumb-item" asp-area="Admin" asp-controller="SanPhams" asp-action="Index">Danh sách sản phẩm </a>
+                    <li class="breadcrumb-item active"> Trang: @CurrentPage</li>
                 </ol>
             </div>
         </div>
@@ -51,7 +52,7 @@
                                 </div>
                                 <div class="col-lg-1">
                                     <div class="input-group">
-                                        <input type number" class="form-control" placeholder="Đến giá" id="maxPriceInput" value="@ViewBag.CurrentMaxPrice" />
+                                        <input type="number" class="form-control" placeholder="Đến giá" id="maxPriceInput" value="@ViewBag.CurrentMaxPrice" />
                                     </div>
                                 </div>
                                 <div class="col-lg-1">
@@ -60,7 +61,7 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-5 text-right">
-                                    <a class="btn btn-primary" asp-controller="SanPhams" asp-action="Create" asp-route-page="@ViewBag.CurrentPage"><i class="anticon anticon-plus-circle m-r-5"></i> <span>Thêm sản phẩm</span></a>
+                                    <a class="btn btn-primary" asp-controller="SanPhams" asp-action="Create" asp-route-page="@ViewBag.CurrentPage" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice"><i class="anticon anticon-plus-circle m-r-5"></i> <span>Thêm sản phẩm</span></a>
                                 </div>
                             </div>
                         </div>
@@ -70,7 +71,7 @@
                     <div class="card-body">
                         <table id="example2" class="table table-bordered table-hover">
                             <thead>
-                                <tr>
+                                <tr class="text-center">
                                     <th>ID</th>
                                     <th>Tên sản phẩm</th>
                                     <th>Ảnh</th>
@@ -86,7 +87,7 @@
                                     foreach (var item in Model)
                                     {
                                         <tr>
-                                            <td>@item.MaSanPham</td>
+                                            <td class="text-center">@item.MaSanPham</td>
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <h6 class="m-b-0 m-l-10">@item.TenSanPham</h6>
@@ -95,8 +96,8 @@
                                             <td>
                                                 <a href="javascript:void(0);" class="image-link" data-image-url="@Url.Content("~/images/sanPhams/" + item.Anh)">@item.Anh</a>
                                             </td>
-                                            <td>@item.Gia.Value.ToString("#,##0") VNĐ</td>
-                                            <td>@item.Slkho</td>
+                                            <td class="text-center">@item.Gia.Value.ToString("#,##0") VNĐ</td>
+                                            <td class="text-center">@item.Slkho</td>
                                             <td>
                                                 @if (item.Slkho.Value > 0)
                                                 {
@@ -106,7 +107,15 @@
                                                         </div>
                                                     </div>
                                                 }
-                                                else
+                                                else if (item.Slkho.Value == null)
+                                                {
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="badge badge-success badge-dot m-r-10">
+                                                            <div>Chưa có hàng</div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else 
                                                 {
                                                     <div class="d-flex align-items-center">
                                                         <div class="badge badge-success badge-dot m-r-10">
@@ -115,10 +124,10 @@
                                                     </div>
                                                 }
                                             </td>
-                                            <td>
-                                                <a class="btn btn-primary btn-tone m-r-5" asp-action="Details" asp-route-id="@item.MaSanPham" asp-route-page="@ViewBag.CurrentPage" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MaDM="@item.MaDanhMuc" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">Chi tiết</a>
-                                                <a class="btn btn-success btn-tone m-r-5" asp-action="Edit" asp-route-id="@item.MaSanPham" asp-route-page="@ViewBag.CurrentPage" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MaDM="@item.MaDanhMuc" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">Sửa</a>
-                                                <a class="btn btn-danger btn-tone m-r-5" asp-action="Delete" asp-route-id="@item.MaSanPham" asp-route-page="@ViewBag.CurrentPage" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MaDM="@item.MaDanhMuc" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">Xóa</a>
+                                            <td class="text-right">
+                                                <a class="btn btn-primary btn-tone m-r-5" asp-action="Details" asp-route-id="@item.MaSanPham" asp-route-page="@ViewBag.CurrentPage" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">Chi tiết</a>
+                                                <a class="btn btn-success btn-tone m-r-5" asp-action="Edit" asp-route-id="@item.MaSanPham" asp-route-page="@ViewBag.CurrentPage" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">Sửa</a>
+                                                <a class="btn btn-danger btn-tone m-r-5" asp-action="Delete" asp-route-id="@item.MaSanPham" asp-route-page="@ViewBag.CurrentPage" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">Xóa</a>
                                             </td>
                                         </tr>
                                     }
@@ -133,7 +142,7 @@
                                 <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
                                     <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageNumber - 1)" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">Trước</a>
                                 </li>
-                                @if (Model.PageCount <= 5)
+                                @if (Model.PageCount <= 3)
                                 {
                                     for (int page = 1; page <= Model.PageCount; page++)
                                     {
@@ -144,11 +153,17 @@
                                 }
                                 else
                                 {
-                                    var startPage = Math.Max(1, Model.PageNumber - 2);
-                                    var endPage = Math.Min(Model.PageCount, startPage + 4);
+                                    var startPage = Math.Max(1, Model.PageNumber - 1);
+                                    var endPage = Math.Min(Model.PageCount, startPage + 2);
 
-                                    if (startPage > 1)
+                                    if (startPage == 2)
                                     {
+                                        <li class="page-item">
+                                            <a class="page-link" asp-action="Index" asp-route-page="1" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">1</a>
+                                        </li>
+                                    }
+                                    else if(startPage > 2)
+                                     {
                                         <li class="page-item">
                                             <a class="page-link" asp-action="Index" asp-route-page="1" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">1</a>
                                         </li>
@@ -164,7 +179,14 @@
                                         </li>
                                     }
 
-                                    if (endPage < Model.PageCount)
+                                    if (endPage == Model.PageCount-1)
+                                    {
+                            
+                                        <li class="page-item">
+                                            <a class="page-link" asp-action="Index" asp-route-page="@Model.PageCount" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">@Model.PageCount</a>
+                                        </li>
+                                    }
+                                    else if (endPage < Model.PageCount - 1)
                                     {
                                         <li class="page-item disabled">
                                             <span class="page-link">...</span>
@@ -207,10 +229,10 @@
         z-index: 999;
     }
 
-        .image-modal img {
-            max-width: 90%;
-            max-height: 90%;
-        }
+    .image-modal img {
+        max-width: 90%;
+        max-height: 90%;
+    }
 </style>
 
 @section Scripts{
@@ -244,6 +266,7 @@
                     }
                 });
             });
+
             // Hiển thị ảnh
             $('.image-link').click(function () {
                 var imageUrl = $(this).data('image-url');
@@ -259,6 +282,7 @@
                     });
                 }
             });
+            // Nhập số tiền
         });
     </script>
 }

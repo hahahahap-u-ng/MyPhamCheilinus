@@ -305,8 +305,9 @@ public partial class MyPhamContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.Mau).HasMaxLength(50);
+            entity.Property(e => e.NgaySua).HasColumnType("datetime");
             entity.Property(e => e.NgaySx)
-                .HasColumnType("date")
+                .HasColumnType("datetime")
                 .HasColumnName("NgaySX");
             entity.Property(e => e.Slkho).HasColumnName("SLKho");
             entity.Property(e => e.TenSanPham).HasMaxLength(250);

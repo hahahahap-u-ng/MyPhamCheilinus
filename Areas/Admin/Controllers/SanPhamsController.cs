@@ -28,7 +28,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         public IActionResult Index(int? page, string MaDM = "", string search = "", double? minPrice = null, double? maxPrice = null)
         {
             var pageNumber = page == null || page <= 0 ? 1 : page.Value;
-            var pageSize = 2;
+            var pageSize = 10;
 
             IQueryable<SanPham> query = _context.SanPhams
                 .AsNoTracking()
@@ -144,10 +144,14 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         }
 
         // GET: Admin/SanPhams/Create
-        public IActionResult Create(int? page)
+        public IActionResult Create(int? page, string? search, string? MaDM, double? minPrice, double? maxPrice)
         {
             ViewData["DanhMuc"] = new SelectList(_context.DanhMucSanPhams, "MaDanhMuc", "TenDanhMuc");
             ViewBag.CurrentPage = page;
+            ViewBag.CurrentSearch = search;
+            ViewBag.CurrentMaDM = MaDM;
+            ViewBag.CurrentMinPrice = minPrice;
+            ViewBag.CurrentMaxPrice = maxPrice;
             return View();
         }
 
@@ -159,8 +163,42 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         public async Task<IActionResult> Create(int? page, [Bind("MaSanPham,TenSanPham,Mau,Anh,Gia,KhuyenMai,Slkho,NgaySx,LuotMua,MaDanhMuc,HomeFlag,BestSellers,MoTa,Active")] SanPham sanPham, IFormFile? fAnh)
 
         {
+            if (string.IsNullOrEmpty(sanPham.MaSanPham))
+            {
+                ModelState.AddModelError("MaSanPham", "Mã sản phẩm là trường bắt buộc.");
+            }
+
+            if (string.IsNullOrEmpty(sanPham.TenSanPham))
+            {
+                ModelState.AddModelError("TenSanPham", "Xin hãy nhập tên của sản phẩm.");
+            }
+
+            if (sanPham.Gia == null)
+            {
+                ModelState.AddModelError("Gia", "Xin hãy nhập giá bán của sản phẩm.");
+            }
+
+            if (sanPham.Slkho == null)
+            {
+                ModelState.AddModelError("Slkho", "Xin hãy nhập số lượng tồn kho.");
+            }
+            if (sanPham.MaDanhMuc == null)
+            {
+                ModelState.AddModelError("MaDanhMuc", "Xin hãy chọn danh mục sản phẩm.");
+            }
+            if (sanPham.MoTa == null)
+            {
+                ModelState.AddModelError("MoTa", "Xin hãy điền mô tả sản phẩm.");
+            }
             if (ModelState.IsValid)
             {
+                if (_context.SanPhams.Any(x => x.MaSanPham == sanPham.MaSanPham))
+                {
+                    ModelState.AddModelError("MaSanPham", "Mã sản phẩm đã tồn tại. Vui lòng chọn mã khác.");
+                    ViewData["DanhMuc"] = new SelectList(_context.DanhMucSanPhams, "MaDanhMuc", "TenDanhMuc", sanPham.MaDanhMuc);
+                    return View(sanPham);
+                }
+
                 sanPham.TenSanPham = Utilities.ToTitleCase(sanPham.TenSanPham);
                 if (fAnh != null)
                 {
@@ -171,6 +209,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                 //if (string.IsNullOrEmpty(sanPham.Anh)) sanPham.Anh = "default.jpg";
 
                 //sanPham.NgaySx = DateTime.Now;
+                sanPham.NgaySx = DateTime.Now;
                 _context.Add(sanPham);
                 await _context.SaveChangesAsync();
                 _notifyService.Success("Tạo mới sản phẩm thành công");
@@ -235,7 +274,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                         // Nếu không có hình ảnh mới, giữ nguyên hình ảnh hiện tại
                         sanPham.Anh = "default.jpg";
                     }
-
+                    sanPham.NgaySua = DateTime.Now;
                     _context.Update(sanPham);
                     await _context.SaveChangesAsync();
                     _notifyService.Success("Cập nhật sản phẩm thành công");
