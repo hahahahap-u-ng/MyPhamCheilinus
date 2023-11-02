@@ -147,7 +147,7 @@
                                 }
                             </div>
                             <script>
-                                // Lắng nghe sự kiện khi chọn màu
+                                
                                 // Lắng nghe sự kiện khi chọn màu
                                 var colorSelects = document.querySelectorAll('.color-select');
                                 colorSelects.forEach(function (colorSelect) {
@@ -177,17 +177,17 @@
                                         
                                     });
                                 });
-                                document.addEventListener('DOMContentLoaded', function () {
-                                    var addToCartButton = document.querySelector('#addToCartButton');
-                                    addToCartButton.addEventListener('click', function (event) {
-                                        event.preventDefault();
-                                        var selectedColor = document.querySelector('.color-select:checked');
-                                        if (selectedColor) {
-                                            var masanpham = selectedColor.getAttribute('data-product-masanpham');
-                                            window.location.href = '/GioHang/AddGioHang/?MaSanPham=' + masanpham;
-                                        }
+                                colorSelects.forEach(function (colorSelect) {
+                                    colorSelect.addEventListener('change', function (event) {
+                                        var selectedColor = event.target;
+                                        var masanpham = selectedColor.getAttribute('data-product-masanpham');
+
+                                        // Cập nhật giá trị của "asp-route-id" trong thẻ <a>
+                                        addToCartButton.setAttribute('asp-route-id', masanpham);
                                     });
                                 });
+
+
 
                             </script>
 
@@ -197,14 +197,14 @@
                                 var colorSelects = document.querySelectorAll('.color-select');
                                 colorSelects.forEach(function (colorSelect) {
                                     colorSelect.addEventListener('change', function (event) {
-                                        // Bỏ chọn tất cả các ô màu khác
-                                        colorSelects.forEach(function (otherColorSelect) {
-                                            if (otherColorSelect !== event.target) {
-                                                otherColorSelect.checked = false;
-                                            }
-                                        });
+                                        var selectedColor = event.target;
+                                        var masanpham = selectedColor.getAttribute('data-product-masanpham');
+
+                                        // Cập nhật giá trị của "asp-route-id" trong thẻ <a>
+                                        addToCartButton.setAttribute('asp-route-id', masanpham);
                                     });
                                 });
+
                             </script>
 
                         </div>
@@ -219,11 +219,12 @@
                                 </div>
                             </div>
 
-                            <div class="product-add-to-cart-btn">
+                            @* <div class="product-add-to-cart-btn">
                                 <a href="/GioHang/AddGioHang/?MaSanPham=SP0001" data-bs-toggle="modal" data-bs-target="#modalAddcart">+ THÊM VÀO GIỎ HÀNG</a>
-                            </div>
+                            </div> *@
                             <div class="product-add-to-cart-btn">
-                                <a href="#" id="addToCartButton">GIỎ HÀNG</a>
+                                <a id="addToCartButton" asp-controller="GioHang" asp-action="Add" asp-route-id="MaSanPham">GIỎ HÀNG</a>
+
                             </div>
 
                         </div>

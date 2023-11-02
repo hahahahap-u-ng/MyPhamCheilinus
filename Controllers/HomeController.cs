@@ -40,7 +40,7 @@ namespace MyPhamCheilinus.Controllers
         public async Task<IActionResult> DanhMucSanPham( int? page)
         {
             // Số sản phẩm trên mỗi trang
-            int pageSize = 9;
+            int pageSize = 6;
  
             var danhMucSanPhams = db.DanhMucSanPhams.ToList();
 
@@ -50,41 +50,35 @@ namespace MyPhamCheilinus.Controllers
             return View(pagedList);
         }
 
-        
-
-
         [HttpGet]
-        public IActionResult Filter(List<string> selectedPrices, List<string> selectedCtLoais)
+        public IActionResult FilterByPriceAndTag(double minPrice, double maxPrice, string tag)
         {
-            // Khởi tạo một truy vấn ban đầu với tất cả dữ liệu
-            var query = db.DanhMucSanPhams.AsQueryable();
+            // Bắt đầu với tất cả sản phẩm
+            IQueryable<DanhMucSanPham> filteredSanPhams = db.DanhMucSanPhams;
 
-            // Áp dụng bộ lọc cho giá
-            if (selectedPrices != null && selectedPrices.Count > 0 && !selectedPrices.Contains("all"))
+            // Lọc sản phẩm dựa trên khoảng giá
+            filteredSanPhams = filteredSanPhams.Where(p => p.Gia >= minPrice && p.Gia <= maxPrice);
+
+            // Lọc sản phẩm dựa trên thẻ (tag)
+            if (!string.IsNullOrEmpty(tag))
             {
-                foreach (var priceRange in selectedPrices)
-                {
-                    // Chia chuỗi giá thành giá tối thiểu và tối đa
-                    var priceBounds = priceRange.Split('-');
-                    if (priceBounds.Length == 2 && double.TryParse(priceBounds[0], out double minPrice) && double.TryParse(priceBounds[1], out double maxPrice))
-                    {
-                        query = query.Where(d => d.Gia >= minPrice && d.Gia <= maxPrice);
-                    }
-                }
+                filteredSanPhams = filteredSanPhams.Where(p => p.TenDanhMuc.Contains(tag));
             }
 
-            // Áp dụng bộ lọc cho Chi tiết loại (MaCtLoai)
-            if (selectedCtLoais != null && selectedCtLoais.Count > 0 && !selectedCtLoais.Contains("all"))
-            {
-                query = query.Where(d => selectedCtLoais.Contains(d.MaCtloai));
-            }
+            // Lấy danh sách sản phẩm đã lọc
+            var filteredProducts = filteredSanPhams.ToList();
 
-            // Thực hiện truy vấn và lấy kết quả
-            var filteredData = query.ToList();
-
-            // Trả về kết quả dưới dạng PartialView
-            return PartialView("_ReturnHangs", filteredData);
+            // Trả về kết quả dưới dạng partial view
+            return PartialView("_ReturnHangs", filteredProducts);
         }
+
+
+
+
+
+
+
+
 
         public async Task<IActionResult> SanPhamTheoHang(string mahang, int? page, string sortOrder)
         {

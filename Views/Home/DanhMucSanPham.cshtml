@@ -5,33 +5,78 @@
     ViewData["Title"] = "Tat Ca San Pham";
     Layout = "~/Views/Shared/_LayoutIndex.cshtml";
 }
+<style>
+    .so-trang {
+        margin-bottom: 20px;
+        margin-top: 20px;
+    }
 
+        .so-trang > span {
+            display: block;
+            margin-bottom: 5px;
+            margin-top: 5px;
+            font-weight: 600;
+            text-transform: capitalize;
+            color: #24262b;
+        }
+</style>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 <script>
     $(document).ready(function () {
-        $('input[type="checkbox"]').on('change', function () {
-            var selectedPrices = $('input[name="selectedPrices"]:checked').map(function () {
-                return this.value;
-            }).get();
+        var minPrice = 0;
+        var maxPrice = 400000;
+        var selectedTag = null;
 
-            var selectedCtLoais = $('input[name="selectedCtLoais"]:checked').map(function () {
-                return this.value;
-            }).get();
+        // Cập nhật thanh trượt và ô nhập giá
+        $("#slider-range").slider({
+            range: true,
+            min: 0,
+            max: 400000,
+            values: [minPrice, maxPrice],
+            slide: function (event, ui) {
+                $("#amount").val(ui.values[0] + " - " + ui.values[1]);
+            }
+        });
+        $("#amount").val(minPrice + " - " + maxPrice);
 
+        // Xử lý sự kiện khi thanh trượt thay đổi
+        $("#slider-range").on("slidechange", function (event, ui) {
+            minPrice = ui.values[0];
+            maxPrice = ui.values[1];
+            filterProducts();
+        });
+
+        // Xử lý sự kiện khi người dùng bấm vào thẻ
+        $(".tag-filter").on("click", function (e) {
+            e.preventDefault();
+            selectedTag = $(this).data("tag");
+            filterProducts();
+        });
+
+        function filterProducts() {
             $.ajax({
+                url: '@Url.Action("FilterByPriceAndTag", "Home")',
                 type: 'GET',
-                url: '/Home/Filter',
                 data: {
-                    selectedPrices: selectedPrices,
-                    selectedCtLoais: selectedCtLoais
+                    minPrice: minPrice,
+                    maxPrice: maxPrice,
+                    tag: selectedTag
                 },
                 success: function (data) {
-                    $('#productGrid').html(data);
+                    $('#product-list').html(data);
+                },
+                error: function () {
+                    alert('Có lỗi xảy ra khi tải dữ liệu sản phẩm.');
                 }
             });
-        });
+        }
     });
+
 </script>
+
 
 
 
@@ -68,56 +113,41 @@
                 <!-- Start Sidebar Area -->
                 <div class="siderbar-section" data-aos="fade-up" data-aos-delay="0">
 
-                    
-                    <!-- Start Single Sidebar Widget -->
-                    <div class="sidebar-single-widget" for="price-filter">
-                        <h6 class="sidebar-title">GIÁ</h6>
+
+                    <div class="sidebar-single-widget">
+                        <h6 class="sidebar-title">LỌC THEO GIÁ</h6>
                         <div class="sidebar-content">
-                            <form class="filter-type-select" id="price-filter-hang">
-                                <ul>
-                                    <li>
-                                        <label class="checkbox-default">
-                                            <input type="checkbox" name="selectedPrices" value="all">
-                                            <span>Tất cả</span>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label class="checkbox-default">
-                                            <input type="checkbox" name="selectedPrices" value="0-100000" id="price-1">
-                                            <span>$0 - $100000</span>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label class="checkbox-default">
-                                            <input type="checkbox" name="selectedPrices" value="100000-200000" id="price-2">
-                                            <span>$100000 - $200000</span>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label class="checkbox-default">
-                                            <input type="checkbox" name="selectedPrices" value="200000-300000" id="price-3">
-                                            <span>$200000 - $300000</span>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label class="checkbox-default">
-                                            <input type="checkbox" name="selectedPrices" value="300000-400000" id="price-4">
-                                            <span>$300000 - $400000</span>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label class="checkbox-default">
-                                            <input type="checkbox" name="selectedPrices" value="400000-500000" id="price-5">
-                                            <span>$400000-$500000</span>
-                                        </label>
-                                    </li>
-                                </ul>
-                            </form>
+                            <div id="slider-range" class="ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content">
+                                <div class="ui-slider-range ui-corner-all ui-widget-header"></div>
+                                <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"></span>
+                                <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"></span>
+                            </div>
+                            <div class="filter-type-price">
+                                <label for="amount">Khoảng:</label>
+                                <input type="text" id="amount" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-single-widget">
+                        <h6 class="sidebar-title">Thẻ tên</h6>
+                        <div class="sidebar-content">
+                            <div class="tag-link">
+                                <a href="#" data-tag="CUSHION" class="tag-filter">CUSHION</a>
+                                <a href="#" data-tag="ROMAND" class="tag-filter">ROMAND</a>
+                                <a href="#" data-tag="EYE" class="tag-filter">EYE</a>
+                                <a href="#" data-tag="VELVET" class="tag-filter">VELVET</a>
+                                <a href="#" data-tag="TINT" class="tag-filter">TINT</a>
+                                <a href="#" data-tag="MERZY" class="tag-filter">MERZY</a>
+                                <a href="#" data-tag="LEMONADE" class="tag-filter">LEMONADE</a>
+                                
+                            </div>
                         </div>
                     </div>
 
 
-                    <!-- Start Single Sidebar Widget -->
+
+                    @* <!-- Start Single Sidebar Widget -->
                     <div class="sidebar-single-widget" for="ctloai-filter">
                         <h6 class="sidebar-title">TRANG ĐIỂM</h6>
                         <div class="sidebar-content">
@@ -136,7 +166,7 @@
                                 @await Component.InvokeAsync("CTLoaiMenu", new { maLoai = "L4", viewName = "CheckBoxCTLoai"  })
                             </form>
                         </div>
-                    </div> <!-- End Single Sidebar Widget -->
+                    </div> <!-- End Single Sidebar Widget --> *@
 
                 </div> <!-- End Sidebar Area -->
 
@@ -170,7 +200,7 @@
                             </div>
 
                             <!-- Start Product Grid View -->
-                            <div class="col-md-12" id="filtered">
+                            <div class="col-md-12" id="product-list">
                                 <div class="product-grid-view row" id="productGrid">
                                     @foreach (var product in Model)
                                     {
@@ -235,9 +265,15 @@
                                         <li><a href="@Url.Action("DanhMucSanPham", new { mahang = ViewBag.Mahang, page = Model.PageNumber + 1 })"><i class="ion-ios-skipforward"></i></a></li>
                                     }
                                 </ul>
+
+                                <div class="so-trang">
+                                
+                                    <span>Sản phẩm: @Model.FirstItemOnPage - @Model.LastItemOnPage / @Model.TotalItemCount</span>
+                                    
+                                </div>
                             </div>
                         </div>
-                        
+
 
                     </div>
                 </div>

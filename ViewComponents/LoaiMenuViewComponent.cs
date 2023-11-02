@@ -48,13 +48,7 @@ namespace MyPhamCheilinus.ViewComponents
         }
     }
 
-    public class GioHangWidget : ViewComponent
-    {
-        public IViewComponentResult Invoke()
-        {
-            return View(HttpContext.Session.GetJson<GioHang>("giohang"));
-        }
-    }
+    
 
 
 }

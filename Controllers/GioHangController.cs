@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MyPhamCheilinus.Controllers;
 using MyPhamCheilinus.Infrastructure;
 using MyPhamCheilinus.Models;
+using MyPhamCheilinus.Models.ViewModels;
 
-namespace MyPhamCpuheilinus.Controllers
+namespace MyPhamCheilinus.Controllers
 {
+
     public class GioHangController : Controller
     {
-        
-        public GioHang? GioHang { get; set; }
         _2023MyPhamContext db = new _2023MyPhamContext();
         private readonly ILogger<GioHangController> _logger;
 
@@ -16,39 +15,39 @@ namespace MyPhamCpuheilinus.Controllers
         {
             _logger = logger;
         }
-        public IActionResult AddGioHang(string maSanPham)
+        public IActionResult Index()
         {
-            SanPham? sanpham = db.SanPhams.FirstOrDefault(p => p.MaSanPham == maSanPham);
-            if (sanpham != null)
+            List<SanPhamGioHang> giohang = HttpContext.Session.GetJson<List<SanPhamGioHang>>("GioHang")?? new List<SanPhamGioHang>();
+
+            GioHangViewModel giohangVM = new()
             {
-                GioHang = HttpContext.Session.GetJson<GioHang>("giohang")?? new GioHang();
-                GioHang.AddItem(sanpham, 1);
-                HttpContext.Session.SetJson("giohang", GioHang);
-            }
-            return View("GioHang", GioHang);
-        }
-        public IActionResult Remove_1_FromGioHang(string maSanPham)
-        {
-            SanPham? sanpham = db.SanPhams.FirstOrDefault(p => p.MaSanPham == maSanPham);
-            if (sanpham != null)
-            {
-                GioHang = HttpContext.Session.GetJson<GioHang>("giohang") ?? new GioHang();
-                GioHang.AddItem(sanpham, -1);
-                HttpContext.Session.SetJson("giohang", GioHang);
-            }
-            return View("GioHang", GioHang);
+                SanPhamGioHangs = giohang,
+                TongTienGioHang = giohang.Sum(x => x.SoLuong * x.Gia)
+            };
+            
+            
+            return View(giohangVM);
         }
 
-        public IActionResult RemoveFromGioHang(string maSanPham)
+        public async Task <IActionResult> Add(string maSanPham)
         {
-            SanPham? sanpham = db.SanPhams.FirstOrDefault(p => p.MaSanPham == maSanPham);
-            if (sanpham != null)
+            SanPham sanpham= await db.SanPhams.FindAsync(maSanPham);
+            List<SanPhamGioHang> giohang = HttpContext.Session.GetJson<List<SanPhamGioHang>>("GioHang") ?? new List<SanPhamGioHang>();
+            SanPhamGioHang sanPhamGioHang= giohang.Where(c => c.MaSanPham==maSanPham).FirstOrDefault();
+            
+            if (sanPhamGioHang==null)
             {
-                GioHang = HttpContext.Session.GetJson<GioHang>("giohang");
-                GioHang.RemoveLine(sanpham);
-                HttpContext.Session.SetJson("giohang", GioHang);
+                giohang.Add(new SanPhamGioHang(sanpham));
             }
-            return View("GioHang", GioHang);
+            else
+            {
+                sanPhamGioHang.SoLuong += 1;
+            }
+
+            HttpContext.Session.SetJson("GioHang", giohang);
+            TempData["Success"] = "Sản phẩm đã được thêm vào";
+
+            return Redirect(Request.Headers["Referer"].ToString());
         }
 
     }
