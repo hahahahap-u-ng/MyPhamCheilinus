@@ -1,6 +1,7 @@
 ﻿using MyPhamCheilinus.Models;
 using Microsoft.AspNetCore.Mvc;
 using MyPhamCheilinus.Repository;
+using MyPhamCheilinus.Infrastructure;
 
 namespace MyPhamCheilinus.ViewComponents
 {
@@ -46,6 +47,8 @@ namespace MyPhamCheilinus.ViewComponents
             return View(viewName, ctloais);
         }
     }
+
+    
 
 
 }

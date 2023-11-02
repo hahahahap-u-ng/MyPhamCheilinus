@@ -37,6 +37,47 @@ namespace MyPhamCheilinus.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        public async Task<IActionResult> DanhMucSanPham( int? page)
+        {
+            // Số sản phẩm trên mỗi trang
+            int pageSize = 6;
+ 
+            var danhMucSanPhams = db.DanhMucSanPhams.ToList();
+
+            // Sử dụng thư viện PagedList để phân trang
+            IPagedList<DanhMucSanPham> pagedList = await danhMucSanPhams.ToPagedListAsync(page ?? 1, pageSize);
+
+            return View(pagedList);
+        }
+
+        [HttpGet]
+        public IActionResult FilterByPriceAndTag(double minPrice, double maxPrice, string tag)
+        {
+            // Bắt đầu với tất cả sản phẩm
+            IQueryable<DanhMucSanPham> filteredSanPhams = db.DanhMucSanPhams;
+
+            // Lọc sản phẩm dựa trên khoảng giá
+            filteredSanPhams = filteredSanPhams.Where(p => p.Gia >= minPrice && p.Gia <= maxPrice);
+
+            // Lọc sản phẩm dựa trên thẻ (tag)
+            if (!string.IsNullOrEmpty(tag))
+            {
+                filteredSanPhams = filteredSanPhams.Where(p => p.TenDanhMuc.Contains(tag));
+            }
+
+            // Lấy danh sách sản phẩm đã lọc
+            var filteredProducts = filteredSanPhams.ToList();
+
+            // Trả về kết quả dưới dạng partial view
+            return PartialView("_ReturnHangs", filteredProducts);
+        }
+
+
+
+
+
+
+
 
 
         public async Task<IActionResult> SanPhamTheoHang(string mahang, int? page, string sortOrder)
@@ -64,48 +105,32 @@ namespace MyPhamCheilinus.Controllers
             return View(pagedList);
         }
 
-       
-        [HttpGet]
-        public IActionResult Filter(string mahang, List<string> selectedPrices, List<string> selectedCtLoais)
+
+        public IActionResult SanPhamTheoDanhMuc(string maDanhMuc)
         {
-            // Khởi tạo một truy vấn ban đầu với tất cả dữ liệu
-            var query = db.DanhMucSanPhams.AsQueryable();
+            var danhMuc = db.DanhMucSanPhams.FirstOrDefault(d => d.MaDanhMuc == maDanhMuc);
+            var danhMucList = db.DanhMucSanPhams.Where(d => d.MaCtloai == danhMuc.MaCtloai).ToList();
 
-            // Áp dụng bộ lọc cho sản phẩm theo mã hàng
-            query = query.Where(d => d.MaHang == mahang);
-
-            // Áp dụng bộ lọc cho giá
-            if (selectedPrices != null && selectedPrices.Count > 0)
+            if (danhMuc == null)
             {
-                foreach (var priceRange in selectedPrices)
-                {
-                    if (priceRange == "all")
-                    {
-                        // Không áp dụng bộ lọc giá nếu chọn "Tất cả"
-                        continue;
-                    }
-
-                    // Chia chuỗi giá thành giá tối thiểu và tối đa
-                    var priceBounds = priceRange.Split('-');
-                    if (priceBounds.Length == 2 && double.TryParse(priceBounds[0], out double minPrice) && double.TryParse(priceBounds[1], out double maxPrice))
-                    {
-                        query = query.Where(d => d.Gia >= minPrice && d.Gia <= maxPrice);
-                    }
-                }
+                return NotFound(); // Xử lý trường hợp danh mục không tồn tại
             }
 
-            // Áp dụng bộ lọc cho Chi tiết loại (MaCtLoai)
-            if (selectedCtLoais != null && selectedCtLoais.Count > 0)
-            {
-                query = query.Where(d => selectedCtLoais.Contains(d.MaCtloai));
-            }
+            var sanPhamList = db.SanPhams.Where(s => s.MaDanhMuc == maDanhMuc).ToList();
 
-            // Thực hiện truy vấn và lấy kết quả
-            var filteredData = query.ToList();
+            // Lấy danh sách màu sắc duy nhất từ danh sách sản phẩm
+            var mauSanPhamList = sanPhamList.Select(s => s.Mau).Distinct().ToList();
 
-            // Trả về kết quả dưới dạng PartialView
-            return PartialView("_ReturnHangs", filteredData);
+            ViewData["DanhMuc"] = danhMuc;
+            ViewData["DanhMucList"] = danhMucList;
+            ViewData["MauSanPhamList"] = mauSanPhamList; // Truyền danh sách màu vào view
+            return View(sanPhamList);
         }
 
+
+        
+
     }
+
+
 }

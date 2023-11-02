@@ -27,6 +27,14 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true; // Đảm bảo rằng Cookie này cần thiết
 });
 builder.Services.AddScoped<ICTLoaiRepository, CTLoaiRepository>();
+
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.IsEssential = true;
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -35,6 +43,8 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
 }
 app.UseStaticFiles();
+
+app.UseSession();
 
 app.UseRouting();
 app.UseSession();
@@ -51,6 +61,17 @@ app.UseEndpoints(endpoints =>
 });
 
 
+app.MapControllerRoute(
+    name: "sanphamtheodanhmuc",
+    pattern: "sanpham/sanphamtheodanhmuc/{maDanhMuc}",
+    defaults: new { controller = "SanPham", action = "SanPhamTheoDanhMuc" });
+
+app.MapControllerRoute(
+    name: "filter",
+    pattern: "home/filter",
+    defaults: new { controller = "Home", action = "Filter" });
+
 app.Run();
+
 
 
