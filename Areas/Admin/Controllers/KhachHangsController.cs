@@ -13,9 +13,9 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
     [Area("Admin")]
     public class KhachHangsController : Controller
     {
-        private readonly MyPhamContext _context;
+        private readonly _2023MyPhamContext _context;
 
-        public KhachHangsController(MyPhamContext context)
+        public KhachHangsController(_2023MyPhamContext context)
         {
             _context = context;
         }
@@ -149,7 +149,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         {
             if (_context.KhachHangs == null)
             {
-                return Problem("Entity set 'MyPhamContext.KhachHangs'  is null.");
+                return Problem("Entity set '_2023MyPhamContext.KhachHangs'  is null.");
             }
             var khachHang = await _context.KhachHangs.FindAsync(id);
             if (khachHang != null)

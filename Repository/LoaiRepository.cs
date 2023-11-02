@@ -5,8 +5,8 @@ namespace MyPhamCheilinus.Repository
 {
     public class LoaiRepository : ILoaiRepository
     {
-        private readonly MyPhamContext _context;
-        public LoaiRepository(MyPhamContext context)
+        private readonly _2023MyPhamContext _context;
+        public LoaiRepository(_2023MyPhamContext context)
         {
             _context = context;
         }
@@ -45,8 +45,8 @@ namespace MyPhamCheilinus.Repository
 
     public class HangRepository : IHangRepository
     {
-        private readonly MyPhamContext _context;
-        public HangRepository(MyPhamContext context)
+        private readonly _2023MyPhamContext _context;
+        public HangRepository(_2023MyPhamContext context)
         {
             _context = context;
         }
@@ -83,9 +83,9 @@ namespace MyPhamCheilinus.Repository
 
     public class CTLoaiRepository : ICTLoaiRepository
     {
-        private readonly MyPhamContext _context;
+        private readonly _2023MyPhamContext _context;
 
-        public CTLoaiRepository(MyPhamContext context)
+        public CTLoaiRepository(_2023MyPhamContext context)
         {
             _context = context;
         }

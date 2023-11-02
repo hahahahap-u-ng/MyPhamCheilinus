@@ -11,7 +11,7 @@ namespace MyPhamCheilinus.Controllers
 
     public class HomeController : Controller
     {
-        MyPhamContext db = new MyPhamContext();
+        _2023MyPhamContext db = new _2023MyPhamContext();
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger)

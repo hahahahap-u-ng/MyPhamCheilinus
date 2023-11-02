@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MyPhamCheilinus.Models;
 
-public partial class MyPhamContext : DbContext
+public partial class _2023MyPhamContext : DbContext
 {
-    public MyPhamContext()
+    public _2023MyPhamContext()
     {
     }
 
-    public MyPhamContext(DbContextOptions<MyPhamContext> options)
+    public _2023MyPhamContext(DbContextOptions<_2023MyPhamContext> options)
         : base(options)
     {
     }

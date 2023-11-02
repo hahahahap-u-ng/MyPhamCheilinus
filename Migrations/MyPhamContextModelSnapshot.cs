@@ -10,8 +10,8 @@ using MyPhamCheilinus.Models;
 
 namespace MyPhamCheilinus.Migrations
 {
-    [DbContext(typeof(MyPhamContext))]
-    partial class MyPhamContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(_2023MyPhamContext))]
+    partial class _2023MyPhamContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

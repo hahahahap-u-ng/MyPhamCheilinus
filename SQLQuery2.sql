@@ -1,6 +1,6 @@
-﻿Create database [My_Pham]
+﻿Create database [2023_My_Pham]
 Go
-USE [My_Pham]
+USE [2023_My_Pham]
 GO
 /****** Object:  Table [dbo].[__EFMigrationsHistory]    Script Date: 10/6/2023 3:13:36 PM ******/
 SET ANSI_NULLS ON

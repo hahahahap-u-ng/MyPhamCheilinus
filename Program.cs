@@ -12,12 +12,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 
-var connectionString = builder.Configuration.GetConnectionString("MyPhamContext");
-builder.Services.AddDbContext<MyPhamContext>(options => options.UseSqlServer(connectionString));
+var connectionString = builder.Configuration.GetConnectionString("_2023MyPhamContext");
+builder.Services.AddDbContext<_2023MyPhamContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.All }));
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 builder.Services.AddNotyf(config => { config.DurationInSeconds = 3; config.IsDismissable = true; config.Position = NotyfPosition.TopRight; });
-builder.Services.AddDbContext<MyPhamContext>(x => x.UseSqlServer(connectionString));
+builder.Services.AddDbContext<_2023MyPhamContext>(x => x.UseSqlServer(connectionString));
 builder.Services.AddScoped<ILoaiRepository, LoaiRepository>();
 builder.Services.AddScoped<IHangRepository, HangRepository>();
 builder.Services.AddSession(options =>
