@@ -174,10 +174,10 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#offcanvas-add-cart" class="offcanvas-toggle">
-                                        <i class="icon-bag"></i>
-                                        <span class="item-count">3</span>
+                                    <a href="/GioHang/ViewGioHang" class="offcanvas-toggle">
+                                        @await Component.InvokeAsync("GioHangWidget")
                                     </a>
+                                    
                                 </li>
                                 
 
@@ -230,10 +230,7 @@
                             </li>
                             <li>
                             
-                                <a href="#offcanvas-add-cart" class="offcanvas-toggle">
-                                    <i class="icon-bag"></i>
-                                    <span class="item-count">3</span>
-                                </a>
+                                @await Component.InvokeAsync("GioHangWidget")
                             </li>
                                
                             

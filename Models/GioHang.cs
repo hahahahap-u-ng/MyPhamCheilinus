@@ -23,8 +23,8 @@
         public void RemoveLine(SanPham sanpham) =>
             Lines.RemoveAll(l => l.SanPham.MaSanPham == sanpham.MaSanPham);
 
-        public decimal ComputeTotalValues() =>
-            (decimal)Lines.Sum(e => e.SanPham?.Gia * e.SoLuong);
+        public double ComputeTotalValues() =>
+            (double)Lines.Sum(e => e.SanPham?.Gia * e.SoLuong);
         public void Clear() => Lines.Clear();
     }
 

@@ -35,43 +35,44 @@
        
         <!-- Start User Details Checkout Form -->
         <div class="checkout_form aos-init aos-animate" data-aos="fade-up" data-aos-delay="400">
-            <div class="row">
-                <div class="col-lg-6 col-md-6">
-                    <form action="#">
+            <form action="/GioHang/ThanhToan" method="POST">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6">
+
                         <h3>CHI TIẾT THANH TOÁN</h3>
                         <div class="row">
                             <div class="col-12">
                                 <div class="default-form-box">
                                     <label>Họ và tên</label>
-                                    <input type="text">
+                                    <input type="text" name="hoTen">
                                 </div>
                             </div>
-                            
+
                             <div class="col-12">
                                 <div class="default-form-box">
-                                    <label>Email <span>*</span></label>
-                                    <input type="text">
+                                    <label>Địa chỉ <span>*</span></label>
+                                    <input type="text" name="diaChi">
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="default-form-box">
                                     <label>Số điẹn thoại<span>*</span></label>
-                                    <input type="text">
+                                    <input type="text" name="soDienThoai">
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="default-form-box">
                                     <label> Email<span>*</span></label>
-                                    <input type="text">
+                                    <input type="text" name="enmail">
                                 </div>
                             </div>
-                            
-                            
+
+
                         </div>
-                    </form>
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <form action="#">
+
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+
                         <h3>ĐƠN CỦA BẠN</h3>
                         <div class="order_table table-responsive">
                             <table>
@@ -145,10 +146,12 @@
                                 </button>
                             </div>
                         </div>
-                    </form>
 
+
+                    </div>
                 </div>
-            </div>
+                </form>
+            
         </div> <!-- Start User Details Checkout Form -->
     </div>
 </div>

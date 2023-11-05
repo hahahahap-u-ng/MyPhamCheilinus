@@ -53,7 +53,7 @@
                             @foreach (var item in Model)
                             {
                                 <div class="product-image-large-image swiper-slide zoom-image-hover img-responsive">
-                                    <img src="@item.Anh" alt="@item.TenSanPham">
+                                    <img src="/images/sanPhams/@item.Anh" alt="@item.TenSanPham">
                                 </div>
                             }
 
@@ -66,7 +66,7 @@
                             @foreach (var item in Model)
                             {
                                 <div class="product-image-thumb-single swiper-slide">
-                                    <img class="img-fluid" src="@item.Anh" alt="@item.TenSanPham">
+                                    <img class="img-fluid" src="/images/sanPhams/@item.Anh" alt="@item.TenSanPham">
                                 </div>
                             }
 
@@ -136,11 +136,11 @@
                                 @foreach (var item in Model)
                                 {
                                     <label for="product-color-@item.Mau">
-                                        <input name="product-color" id="product-color-@item.Mau" class="color-select" type="checkbox" 
-                                        data-product-name="@item.TenSanPham" 
-                                        data-product-kho="@item.Slkho" 
-                                        data-product-price="@item.Gia" 
-                                        data-product-khuyenmai="@item.KhuyenMai"
+                                        <input name="product-color" id="product-color-@item.Mau" class="color-select" type="checkbox"
+                                               data-product-name="@item.TenSanPham"
+                                               data-product-kho="@item.Slkho"
+                                               data-product-price="@item.Gia"
+                                               data-product-khuyenmai="@item.KhuyenMai"
                                                data-product-masanpham="@item.MaSanPham">
                                         <span style="background-color: #@item.Mau;"></span>
                                     </label>
@@ -222,9 +222,8 @@
                             @* <div class="product-add-to-cart-btn">
                                 <a href="/GioHang/AddGioHang/?MaSanPham=SP0001" data-bs-toggle="modal" data-bs-target="#modalAddcart">+ THÊM VÀO GIỎ HÀNG</a>
                             </div> *@
-                            <div class="product-add-to-cart-btn">
-                                <a id="addToCartButton" asp-controller="GioHang" asp-action="Add" asp-route-id="MaSanPham">GIỎ HÀNG</a>
-
+                            <<div class="product-add-to-cart-btn">
+                                <a href="#" id="addToCartButton">GIỎ HÀNG</a>
                             </div>
 
                         </div>
