@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace DiChoSaiGon.Extension
+namespace MyPhamCheilinus.Extension
 {
     public static class Extension
     {

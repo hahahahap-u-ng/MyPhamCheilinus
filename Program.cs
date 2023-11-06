@@ -5,6 +5,7 @@ using MyPhamCheilinus.Models;
 using MyPhamCheilinus.Repository;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,12 @@ builder.Services.AddNotyf(config => { config.DurationInSeconds = 3; config.IsDis
 builder.Services.AddDbContext<_2023MyPhamContext>(x => x.UseSqlServer(connectionString));
 builder.Services.AddScoped<ILoaiRepository, LoaiRepository>();
 builder.Services.AddScoped<IHangRepository, HangRepository>();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(p =>
+    {
+        p.LoginPath = "/dang-nhap.html";
+        p.AccessDeniedPath = "/";
+    });
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30); // Đặt thời gian tối đa để Session tồn tại
@@ -48,6 +55,7 @@ app.UseSession();
 
 app.UseRouting();
 app.UseSession();
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {

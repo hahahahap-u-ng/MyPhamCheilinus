@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using MyPhamCheilinus.ModelViews;
 
 namespace MyPhamCheilinus.Models;
 
@@ -25,6 +26,8 @@ public partial class _2023MyPhamContext : DbContext
 
     public virtual DbSet<DanhMucSanPham> DanhMucSanPhams { get; set; }
 
+    public virtual DbSet<DiaChi> DiaChis { get; set; }
+
     public virtual DbSet<DonHang> DonHangs { get; set; }
 
     public virtual DbSet<Hang> Hangs { get; set; }
@@ -45,7 +48,7 @@ public partial class _2023MyPhamContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=HAHAHAPHUONG\\MSSQLSERVER01;Initial Catalog=2023_My_Pham;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
+        => optionsBuilder.UseSqlServer("Data Source=CAPTAINM10\\TRUNGHIEU26;Initial Catalog=2023_My_Pham;User ID=hieu;Password=1;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -168,6 +171,20 @@ public partial class _2023MyPhamContext : DbContext
                 .HasConstraintName("FK_DanhMucSanPham_Hang");
         });
 
+        modelBuilder.Entity<DiaChi>(entity =>
+        {
+            entity.HasKey(e => e.LocationId);
+
+            entity.ToTable("DiaChi");
+
+            entity.Property(e => e.LocationId).HasColumnName("LocationID");
+            entity.Property(e => e.Name).HasMaxLength(100);
+            entity.Property(e => e.NameWithType).HasMaxLength(255);
+            entity.Property(e => e.PathWithType).HasMaxLength(255);
+            entity.Property(e => e.Slug).HasMaxLength(100);
+            entity.Property(e => e.Type).HasMaxLength(20);
+        });
+
         modelBuilder.Entity<DonHang>(entity =>
         {
             entity.HasKey(e => e.MaDonHang);
@@ -177,10 +194,7 @@ public partial class _2023MyPhamContext : DbContext
             entity.Property(e => e.MaDonHang)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.MaKhachHang)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.NgayDatHang).HasColumnType("date");
+            entity.Property(e => e.MaKhachHang).HasMaxLength(250);
 
             entity.HasOne(d => d.MaKhachHangNavigation).WithMany(p => p.DonHangs)
                 .HasForeignKey(d => d.MaKhachHang)
@@ -225,9 +239,20 @@ public partial class _2023MyPhamContext : DbContext
 
             entity.ToTable("KhachHang");
 
-            entity.Property(e => e.MaKhachHang)
-                .HasMaxLength(50)
-                .IsUnicode(false);
+            entity.Property(e => e.MaKhachHang).HasMaxLength(250);
+            entity.Property(e => e.Address).HasMaxLength(250);
+            entity.Property(e => e.Avatar).HasMaxLength(250);
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Email)
+                .HasMaxLength(150)
+                .IsFixedLength();
+            entity.Property(e => e.LastLogin).HasColumnType("datetime");
+            entity.Property(e => e.LocationId).HasColumnName("LocationID");
+            entity.Property(e => e.NgaySinh).HasColumnType("datetime");
+            entity.Property(e => e.Password).HasMaxLength(50);
+            entity.Property(e => e.Salt)
+                .HasMaxLength(8)
+                .IsFixedLength();
             entity.Property(e => e.SoDienThoai).HasMaxLength(50);
             entity.Property(e => e.TenKhachHang).HasMaxLength(250);
         });
@@ -321,4 +346,6 @@ public partial class _2023MyPhamContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+    public DbSet<MyPhamCheilinus.ModelViews.RegisterVM>? RegisterVM { get; set; }
 }

@@ -7,8 +7,6 @@ public partial class DonHang
 {
     public string MaDonHang { get; set; } = null!;
 
-    public DateTime? NgayDatHang { get; set; }
-
     public double? TongTien { get; set; }
 
     public int? TrangThaiDonHang { get; set; }
