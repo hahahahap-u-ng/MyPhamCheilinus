@@ -5,6 +5,7 @@ using MyPhamCheilinus.Models;
 using MyPhamCheilinus.Repository;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +28,12 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true; // Đảm bảo rằng Cookie này cần thiết
 });
 builder.Services.AddScoped<ICTLoaiRepository, CTLoaiRepository>();
-
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(p =>
+    {
+        p.LoginPath = "/dang-nhap.html";
+        p.AccessDeniedPath = "/";
+    });
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
@@ -43,7 +49,8 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
 }
 app.UseStaticFiles();
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseSession();
 
 app.UseRouting();
