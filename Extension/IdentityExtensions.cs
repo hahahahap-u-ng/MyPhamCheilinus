@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 
-namespace DiChoSaiGon.Extension
+namespace MyPhamCheilinus.Extension
 {
     public static class IdentityExtensions
     {

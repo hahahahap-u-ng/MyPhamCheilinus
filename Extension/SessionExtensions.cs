@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DiChoSaiGon.Extension
+namespace MyPhamCheilinus.Extension
 {
     public static class SessionExtensions
     {

@@ -97,7 +97,7 @@ namespace MyPhamCpuheilinus.Controllers
             var donHang = new DonHang
             {
                 MaDonHang = GenerateUniqueOrderCode(),
-                NgayDatHang = DateTime.Now,
+            
                 TongTien = gioHang.ComputeTotalValues(),
                 TrangThaiDonHang = 1,
                 MaKhachHang = khachhang.MaKhachHang,

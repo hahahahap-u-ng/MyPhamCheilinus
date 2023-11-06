@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiChoSaiGon.Extension
+namespace MyPhamCheilinus.Extension
 {
     public static class HashMD5
     {
