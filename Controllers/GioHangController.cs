@@ -119,7 +119,15 @@ namespace MyPhamCpuheilinus.Controllers
                 db.ChiTietDonHangs.Add(chiTietDonHang);
                 RemoveFromGioHang(line.SanPham.MaSanPham);
             }
+            
             db.SaveChanges();
+
+            foreach (var line in gioHang.Lines)
+            {
+                ;
+                RemoveFromGioHang(line.SanPham.MaSanPham);
+            }
+            ;
 
             gioHang.Clear();
 

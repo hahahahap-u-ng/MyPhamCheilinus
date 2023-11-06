@@ -4,18 +4,19 @@
     ViewData["Title"] = "Đơn hàng";
     Layout = "~/Views/Shared/_LayoutIndex.cshtml";
 }
+
 <div class="breadcrumb-section breadcrumb-bg-color--golden">
     <div class="breadcrumb-wrapper">
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <h3 class="breadcrumb-title">My Account</h3>
+                    <h3 class="breadcrumb-title">Đơn hàng của tôi </h3>
                     <div class="breadcrumb-nav breadcrumb-nav-color--black breadcrumb-nav-hover-color--golden">
                         <nav aria-label="breadcrumb">
                             <ul>
                                 <li><a href="index.html">Home</a></li>
                                 <li><a href="shop-grid-sidebar-left.html">Shop</a></li>
-                                <li class="active" aria-current="page">My Account</li>
+                                <li class="active" aria-current="page">Đơn hàng</li>
                             </ul>
                         </nav>
                     </div>
@@ -26,216 +27,78 @@
 </div>
 
 
-<div class="account-dashboard">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-12 col-md-3 col-lg-3">
-                <!-- Nav tabs -->
-                <div class="dashboard_tab_button aos-init aos-animate" data-aos="fade-up" data-aos-delay="0">
-                    <ul role="tablist" class="nav flex-column dashboard-list">
+<div class="card-body">
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Mã đơn hàng</th>
+                <th>Ngày đặt hàng</th>
+                <th>Trạng thái đơn hàng</th>
+                <th>Tên sản phẩm</th>
+                <th>Hình ảnh</th>
+                <th>Số lượng x Giá bán</th>
+                <th>Thành tiền</th>
+                <th>Tổng tiền</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody class="records_table">
+            @foreach (var donHang in Model)
+            {
+                var firstChiTiet = donHang.ChiTietDonHangs.FirstOrDefault();
+                <tr>
+                    <td rowspan="@donHang.ChiTietDonHangs.Count">@donHang.MaDonHang</td>
+                    <td rowspan="@donHang.ChiTietDonHangs.Count">@donHang.NgayDatHang?.ToString("dd/MM/yyyy")</td>
 
-                        <li> <a href="#orders" data-bs-toggle="tab" class="nav-link btn btn-block btn-md btn-black-default-hover active">Orders</a></li>
-                        <li><a href="#downloads" data-bs-toggle="tab" class="nav-link btn btn-block btn-md btn-black-default-hover">Downloads</a></li>
-                        <li><a href="#address" data-bs-toggle="tab" class="nav-link btn btn-block btn-md btn-black-default-hover">Addresses</a></li>
-                        <li>
-                            <a href="#account-details" data-bs-toggle="tab" class="nav-link btn btn-block btn-md btn-black-default-hover">Account details</a>
-                        </li>
-                        <li><a href="login.html" class="nav-link btn btn-block btn-md btn-black-default-hover">logout</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-sm-12 col-md-9 col-lg-9">
-                <!-- Tab panes -->
-                <div class="tab-content dashboard_content aos-init aos-animate" data-aos="fade-up" data-aos-delay="200">
-
-                    <div class="tab-pane fade active show" id="orders">
-                        <h4>Orders</h4>
-                        <div class="table_page table-responsive">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Mã đơn hàng</th>
-                                        <th>Ngày đặt hàng</th>
-                                        <th>Trạng thái đơn hàng</th>
-                                        <th>Tên sản phẩm</th>
-                                        <th>Hình ảnh</th>
-                                        <th>Số lượng</th>
-                                        <th>Giá bán</th>
-                                        <th>Thành tiền</th>
-                                        <th>Tổng tiền</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var donHang in Model)
-                                    {
-                                        var firstChiTiet = donHang.ChiTietDonHangs.FirstOrDefault();
-                                        <tr>
-                                            <td rowspan="@donHang.ChiTietDonHangs.Count">@donHang.MaDonHang</td>
-                                            <td rowspan="@donHang.ChiTietDonHangs.Count">@donHang.NgayDatHang</td>
-                                            <td rowspan="@donHang.ChiTietDonHangs.Count">
-                                                @if (donHang.TrangThaiDonHang == 1)
-                                                {
-                                                    <span>Chờ xác nhận</span>
-                                                }
-                                                else if (donHang.TrangThaiDonHang == 2)
-                                                {
-                                                    <span>Đang vận chuyển</span>
-                                                }
-                                                else if (donHang.TrangThaiDonHang == 3)
-                                                {
-                                                    <span>Đã giao hàng</span>
-                                                }
-                                                else if (donHang.TrangThaiDonHang == 4)
-                                                {
-                                                    <span>Đã hủy</span>
-                                                }
-                                            </td>
-                                            <td>@firstChiTiet?.MaSanPhamNavigation.TenSanPham</td>
-                                            <td><img src="@firstChiTiet?.MaSanPhamNavigation.Anh" alt="Product Image" /></td>
-                                            <td>@firstChiTiet?.SoLuong</td>
-                                            <td>@firstChiTiet?.GiaBan</td>
-                                            <td>@(firstChiTiet?.SoLuong * firstChiTiet?.GiaBan)</td>
-                                            <td rowspan="@donHang.ChiTietDonHangs.Count">@donHang.TongTien</td>
-                                            <td rowspan="@donHang.ChiTietDonHangs.Count">
-                                                @if (donHang.TrangThaiDonHang == 1)
-                                                {
-                                                    <button onclick="updateStatus('@donHang.MaDonHang', 4)">Hủy đơn hàng</button>
-                                                }
-                                                else if (donHang.TrangThaiDonHang == 2)
-                                                {
-                                                    <button onclick="updateStatus('@donHang.MaDonHang', 4)">Hủy đơn hàng</button>
-                                                    <button onclick="updateStatus('@donHang.MaDonHang', 3)">Đã nhận được hàng</button>
-                                                }
-                                            </td>
-                                        </tr>
-                                        @foreach (var chiTietDonHang in donHang.ChiTietDonHangs.Skip(1))
-                                        {
-                                            <tr>
-                                                <td>@chiTietDonHang.MaSanPhamNavigation.TenSanPham</td>
-                                                <td><img src="@chiTietDonHang.MaSanPhamNavigation.Anh" alt="Product Image" /></td>
-                                                <td>@chiTietDonHang.SoLuong</td>
-                                                <td>@chiTietDonHang.GiaBan</td>
-                                                <td>@(chiTietDonHang.SoLuong * chiTietDonHang.GiaBan)</td>
-                                                <td></td>
-                                            </tr>
-                                        }
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="downloads">
-                        <h4>Downloads</h4>
-                        <div class="table_page table-responsive">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Product</th>
-                                        <th>Downloads</th>
-                                        <th>Expires</th>
-                                        <th>Download</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Shopnovilla - Free Real Estate PSD Template</td>
-                                        <td>May 10, 2018</td>
-                                        <td><span class="danger">Expired</span></td>
-                                        <td><a href="#" class="view">Click Here To Download Your File</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Organic - ecommerce html template</td>
-                                        <td>Sep 11, 2018</td>
-                                        <td>Never</td>
-                                        <td><a href="#" class="view">Click Here To Download Your File</a></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="tab-pane" id="address">
-                        <p>The following addresses will be used on the checkout page by default.</p>
-                        <h5 class="billing-address">Billing address</h5>
-                        <a href="#" class="view">Edit</a>
-                        <p><strong>Bobby Jackson</strong></p>
-                        <address>
-                            Address: Your address goes here.
-                        </address>
-                    </div>
-                    <div class="tab-pane fade" id="account-details">
-                        <h3>Account details </h3>
-                        <div class="login">
-                            <div class="login_form_container">
-                                <div class="account_login_form">
-                                    <form action="#">
-                                        <p>Already have an account? <a href="#">Log in instead!</a></p>
-                                        <div class="input-radio">
-                                            <span class="custom-radio"><input type="radio" value="1" name="id_gender"> Mr.</span>
-                                            <span class="custom-radio"><input type="radio" value="1" name="id_gender"> Mrs.</span>
-                                        </div> <br>
-                                        <div class="default-form-box mb-20">
-                                            <label>First Name</label>
-                                            <input type="text" name="first-name">
-                                        </div>
-                                        <div class="default-form-box mb-20">
-                                            <label>Last Name</label>
-                                            <input type="text" name="last-name">
-                                        </div>
-                                        <div class="default-form-box mb-20">
-                                            <label>Email</label>
-                                            <input type="text" name="email-name">
-                                        </div>
-                                        <div class="default-form-box mb-20">
-                                            <label>Password</label>
-                                            <input type="password" name="user-password">
-                                        </div>
-                                        <div class="default-form-box mb-20">
-                                            <label>Birthdate</label>
-                                            <input type="date" name="birthday">
-                                        </div>
-                                        <span class="example">
-                                            (E.g.: 05/31/1970)
-                                        </span>
-                                        <br>
-                                        <label class="checkbox-default" for="offer">
-                                            <input type="checkbox" id="offer">
-                                            <span>Receive offers from our partners</span>
-                                        </label>
-                                        <br>
-                                        <label class="checkbox-default checkbox-default-more-text" for="newsletter">
-                                            <input type="checkbox" id="newsletter">
-                                            <span>
-                                                Sign up for our newsletter<br><em>
-                                                    You may unsubscribe at any
-                                                    moment. For that purpose, please find our contact info in the
-                                                    legal notice.
-                                                </em>
-                                            </span>
-                                        </label>
-                                        <div class="save_button mt-3">
-                                            <button class="btn btn-md btn-black-default-hover" type="submit">Save</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                    <td rowspan="@donHang.ChiTietDonHangs.Count">
+                        @if (donHang.TrangThaiDonHang == 1)
+                        {
+                            <span class=" badge bg-success">Chờ xác nhận</span>
+                        }
+                        else if (donHang.TrangThaiDonHang == 2)
+                        {
+                            <span class="badge bg-warning">Đang vận chuyển</span>
+                        }
+                        else if (donHang.TrangThaiDonHang == 3)
+                        {
+                            <span class="badge bg-primary">Đã giao hàng</span>
+                        }
+                        else if (donHang.TrangThaiDonHang == 4)
+                        {
+                            <span class="badge bg-danger" style="background-color: #c82333">Đã hủy</span>
+                        }
+                    </td>
+                    <td>@firstChiTiet?.MaSanPhamNavigation.TenSanPham</td>
+                    <td><img src="@firstChiTiet?.MaSanPhamNavigation.Anh" alt="Product Image" /></td>
+                    <td>@(firstChiTiet?.SoLuong + " x " + firstChiTiet?.GiaBan)</td>
+                    <td>@(firstChiTiet?.SoLuong * firstChiTiet?.GiaBan)</td>
+                    <td rowspan="@donHang.ChiTietDonHangs.Count">@donHang.TongTien</td>
+                    <td class="text-right" rowspan="@donHang.ChiTietDonHangs.Count">
+                        @if (donHang.TrangThaiDonHang == 1)
+                        {
+                            <button class="btn btn-danger btn-tone m-r-5 border-0" style="color: #fff; background-color: #c82333; border-color: #c82333; box-shadow: none;" onclick="updateStatus('@donHang.MaDonHang', 4)">Hủy đơn hàng</button>
+                        }
+                        else if (donHang.TrangThaiDonHang == 2)
+                        {
+                            <button class="btn btn-danger btn-tone m-r-5 border-0" style="color: #fff; background-color: #c82333; border-color: #c82333; box-shadow: none;" onclick="updateStatus('@donHang.MaDonHang', 4)">Hủy đơn hàng</button>
+                            <button class="btn btn-success btn-tone m-r-5 border-0" style="color: #fff; background-color: #007bff; border-color: #007bff; box-shadow: none;" onclick="updateStatus('@donHang.MaDonHang', 3)">Đã nhận được hàng</button>
+                        }
+                    </td>
+                </tr>
+                @foreach (var chiTietDonHang in donHang.ChiTietDonHangs.Skip(1))
+                {
+                    <tr>
+                        <td>@chiTietDonHang.MaSanPhamNavigation.TenSanPham</td>
+                        <td><img src="@chiTietDonHang.MaSanPhamNavigation.Anh" alt="Product Image" /></td>
+                        <td>@(chiTietDonHang.SoLuong + " x " + chiTietDonHang.GiaBan)</td>
+                        <td>@(chiTietDonHang.SoLuong * chiTietDonHang.GiaBan)</td>
+                        <td></td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
 </div>
-
-
-
-
-
-
-
-
-
-
 
 
 
