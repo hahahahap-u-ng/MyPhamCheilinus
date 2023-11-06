@@ -126,13 +126,6 @@ namespace MyPhamCpuheilinus.Controllers
 
             return View("Success");
         }
-        public IActionResult DonHang()
-        {
-            var donHangs = db.DonHangs.Include(dh => dh.ChiTietDonHangs)
-                                             .ThenInclude(ctdh => ctdh.MaSanPhamNavigation)
-                                             .ToList();
-
-            return View(donHangs);
-        }
+        
     }
 }
