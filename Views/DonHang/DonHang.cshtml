@@ -27,78 +27,107 @@
 </div>
 
 
-<div class="card-body">
-    <table class="table table-bordered table-hover">
-        <thead>
-            <tr>
-                <th>Mã đơn hàng</th>
-                <th>Ngày đặt hàng</th>
-                <th>Trạng thái đơn hàng</th>
-                <th>Tên sản phẩm</th>
-                <th>Hình ảnh</th>
-                <th>Số lượng x Giá bán</th>
-                <th>Thành tiền</th>
-                <th>Tổng tiền</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody class="records_table">
-            @foreach (var donHang in Model)
-            {
-                var firstChiTiet = donHang.ChiTietDonHangs.FirstOrDefault();
-                <tr>
-                    <td rowspan="@donHang.ChiTietDonHangs.Count">@donHang.MaDonHang</td>
-                    <td rowspan="@donHang.ChiTietDonHangs.Count">@donHang.NgayDatHang?.ToString("dd/MM/yyyy")</td>
-
-                    <td rowspan="@donHang.ChiTietDonHangs.Count">
-                        @if (donHang.TrangThaiDonHang == 1)
-                        {
-                            <span class=" badge bg-success">Chờ xác nhận</span>
-                        }
-                        else if (donHang.TrangThaiDonHang == 2)
-                        {
-                            <span class="badge bg-warning">Đang vận chuyển</span>
-                        }
-                        else if (donHang.TrangThaiDonHang == 3)
-                        {
-                            <span class="badge bg-primary">Đã giao hàng</span>
-                        }
-                        else if (donHang.TrangThaiDonHang == 4)
-                        {
-                            <span class="badge bg-danger" style="background-color: #c82333">Đã hủy</span>
-                        }
-                    </td>
-                    <td>@firstChiTiet?.MaSanPhamNavigation.TenSanPham</td>
-                    <td><img src="@firstChiTiet?.MaSanPhamNavigation.Anh" alt="Product Image" /></td>
-                    <td>@(firstChiTiet?.SoLuong + " x " + firstChiTiet?.GiaBan)</td>
-                    <td>@(firstChiTiet?.SoLuong * firstChiTiet?.GiaBan)</td>
-                    <td rowspan="@donHang.ChiTietDonHangs.Count">@donHang.TongTien</td>
-                    <td class="text-right" rowspan="@donHang.ChiTietDonHangs.Count">
-                        @if (donHang.TrangThaiDonHang == 1)
-                        {
-                            <button class="btn btn-danger btn-tone m-r-5 border-0" style="color: #fff; background-color: #c82333; border-color: #c82333; box-shadow: none;" onclick="updateStatus('@donHang.MaDonHang', 4)">Hủy đơn hàng</button>
-                        }
-                        else if (donHang.TrangThaiDonHang == 2)
-                        {
-                            <button class="btn btn-danger btn-tone m-r-5 border-0" style="color: #fff; background-color: #c82333; border-color: #c82333; box-shadow: none;" onclick="updateStatus('@donHang.MaDonHang', 4)">Hủy đơn hàng</button>
-                            <button class="btn btn-success btn-tone m-r-5 border-0" style="color: #fff; background-color: #007bff; border-color: #007bff; box-shadow: none;" onclick="updateStatus('@donHang.MaDonHang', 3)">Đã nhận được hàng</button>
-                        }
-                    </td>
-                </tr>
-                @foreach (var chiTietDonHang in donHang.ChiTietDonHangs.Skip(1))
-                {
-                    <tr>
-                        <td>@chiTietDonHang.MaSanPhamNavigation.TenSanPham</td>
-                        <td><img src="@chiTietDonHang.MaSanPhamNavigation.Anh" alt="Product Image" /></td>
-                        <td>@(chiTietDonHang.SoLuong + " x " + chiTietDonHang.GiaBan)</td>
-                        <td>@(chiTietDonHang.SoLuong * chiTietDonHang.GiaBan)</td>
-                        <td></td>
-                    </tr>
-                }
-            }
-        </tbody>
-    </table>
+<div class="cart-section">
+    <!-- Start Cart Table -->
+    <div class="cart-table-wrapper aos-init aos-animate" data-aos="fade-up" data-aos-delay="0">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    
+                </div>
+            </div>
+        </div>
+    </div> <!-- End Cart Table -->
+    <!-- Start Coupon Start -->
+    
 </div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Mã đơn hàng</th>
+                                    <th>Ngày đặt hàng</th>
+                                    <th>Trạng thái đơn hàng</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Hình ảnh</th>
+                                    <th>Số lượng x Giá bán</th>
+                                    <th>Thành tiền</th>
+                                    <th>Tổng tiền</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody class="records_table">
+                                @foreach (var donHang in Model)
+                                {
+                                    var firstChiTiet = donHang.ChiTietDonHangs.FirstOrDefault();
+                                    <tr>
+                                        <td rowspan="@donHang.ChiTietDonHangs.Count">@donHang.MaDonHang</td>
+                                        <td rowspan="@donHang.ChiTietDonHangs.Count">@donHang.NgayDatHang?.ToString("dd/MM/yyyy")</td>
+
+                                        <td rowspan="@donHang.ChiTietDonHangs.Count">
+                                            @if (donHang.TrangThaiDonHang == 1)
+                                            {
+                                                <span class=" badge bg-success">Chờ xác nhận</span>
+                                            }
+                                            else if (donHang.TrangThaiDonHang == 2)
+                                            {
+                                                <span class="badge bg-warning">Đang vận chuyển</span>
+                                            }
+                                            else if (donHang.TrangThaiDonHang == 3)
+                                            {
+                                                <span class="badge bg-primary">Đã giao hàng</span>
+                                            }
+                                            else if (donHang.TrangThaiDonHang == 4)
+                                            {
+                                                <span class="badge bg-danger" style="background-color: #c82333">Đã hủy</span>
+                                            }
+                                        </td>
+                                        <td>@firstChiTiet?.MaSanPhamNavigation.TenSanPham</td>
+                                        <td><img src="@firstChiTiet?.MaSanPhamNavigation.Anh" alt="Product Image" /></td>
+                                        <td>@(firstChiTiet?.SoLuong + " x " + firstChiTiet?.GiaBan)</td>
+                                        <td>@(firstChiTiet?.SoLuong * firstChiTiet?.GiaBan)</td>
+                                        <td rowspan="@donHang.ChiTietDonHangs.Count">@donHang.TongTien</td>
+                                        <td class="text-right" rowspan="@donHang.ChiTietDonHangs.Count">
+                                            @if (donHang.TrangThaiDonHang == 1)
+                                            {
+                                                <button class="btn btn-danger btn-tone m-r-5 border-0" style="color: #fff; background-color: #c82333; border-color: #c82333; box-shadow: none;" onclick="updateStatus('@donHang.MaDonHang', 4)">Hủy đơn hàng</button>
+                                            }
+                                            else if (donHang.TrangThaiDonHang == 2)
+                                            {
+                                                <button class="btn btn-danger btn-tone m-r-5 border-0" style="color: #fff; background-color: #c82333; border-color: #c82333; box-shadow: none;" onclick="updateStatus('@donHang.MaDonHang', 4)">Hủy đơn hàng</button>
+                                                <button class="btn btn-success btn-tone m-r-5 border-0" style="color: #fff; background-color: #007bff; border-color: #007bff; box-shadow: none;" onclick="updateStatus('@donHang.MaDonHang', 3)">Đã nhận được hàng</button>
+                                            }
+                                        </td>
+                                    </tr>
+                                    @foreach (var chiTietDonHang in donHang.ChiTietDonHangs.Skip(1))
+                                    {
+                                        <tr>
+                                            <td>@chiTietDonHang.MaSanPhamNavigation.TenSanPham</td>
+                                            <td><img src="@chiTietDonHang.MaSanPhamNavigation.Anh" alt="Product Image" /></td>
+                                            <td>@(chiTietDonHang.SoLuong + " x " + chiTietDonHang.GiaBan)</td>
+                                            <td>@(chiTietDonHang.SoLuong * chiTietDonHang.GiaBan)</td>
+                                            <td></td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.col -->
+            </div>  
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </div>
+</section>
+
 
 
 

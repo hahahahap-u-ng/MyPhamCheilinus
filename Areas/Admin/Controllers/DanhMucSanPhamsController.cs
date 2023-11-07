@@ -28,7 +28,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         public IActionResult Index(int? page)
         {
             var pageNumber = page == null || page <= 0 ? 1 : page.Value;
-            var pageSize = 20;
+            var pageSize = 3;
             var lsCategorys = _context.DanhMucSanPhams
                 .AsNoTracking()
                 .OrderByDescending(x => x.MaDanhMuc);

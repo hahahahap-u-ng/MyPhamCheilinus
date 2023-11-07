@@ -40,7 +40,7 @@ namespace MyPhamCheilinus.Controllers
         public async Task<IActionResult> DanhMucSanPham( int? page)
         {
             // Số sản phẩm trên mỗi trang
-            int pageSize = 6;
+            int pageSize =9 ;
  
             var danhMucSanPhams = db.DanhMucSanPhams.ToList();
 
@@ -49,9 +49,17 @@ namespace MyPhamCheilinus.Controllers
 
             return View(pagedList);
         }
-
         [HttpGet]
-        public IActionResult FilterByPriceAndTag(double minPrice, double maxPrice, string tag)
+
+        public IActionResult FilterByHangs(string[] selectedHangs)
+        {
+            List<DanhMucSanPham> filteredDanhMucSanPhams = db.DanhMucSanPhams
+                .Where(d => selectedHangs.Contains(d.MaHang))
+                .ToList();
+            return PartialView("_ReturnHangs", filteredDanhMucSanPhams);
+        }
+        [HttpGet]
+        public IActionResult FilterByPriceAndTag(double minPrice, double maxPrice, string tag, string click)
         {
             // Bắt đầu với tất cả sản phẩm
             IQueryable<DanhMucSanPham> filteredSanPhams = db.DanhMucSanPhams;
@@ -63,6 +71,10 @@ namespace MyPhamCheilinus.Controllers
             if (!string.IsNullOrEmpty(tag))
             {
                 filteredSanPhams = filteredSanPhams.Where(p => p.TenDanhMuc.Contains(tag));
+            }
+            if (!string.IsNullOrEmpty(click))
+            {
+                filteredSanPhams = filteredSanPhams.Where(p => p.MaHang.Contains(click));
             }
 
             // Lấy danh sách sản phẩm đã lọc

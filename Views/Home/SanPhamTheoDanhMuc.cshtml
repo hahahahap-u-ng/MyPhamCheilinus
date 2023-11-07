@@ -97,18 +97,18 @@
                             <a href="#" class="customer-review ml-2">đánh giá </a>
                         </div>
                         <del>
-                            
-                                <span>$</span>
-                                <span class="noGiaSP">@(danhMuc.Gia)</span>
-                                <span> VNĐ</span>
-                            
+
+                            <span>$</span>
+                            <span class="noGiaSP">@(danhMuc.Gia)</span>
+                            <span> VNĐ</span>
+
                         </del>
                         <div class="price">
                             <span>$</span>
                             <span class="product-discount-price">@(danhMuc.Gia * 95 / 100)</span>
                             <span> VNĐ</span>
                         </div>
-                        
+
                         <p>
                             @danhMuc.MoTa
                         </p>
@@ -118,7 +118,7 @@
                         <h4 class="title">Thêm vào giỏ hàng</h4>
                         <!-- Product Variable Single Item -->
                         <div class="variable-single-item">
-                            <div class="product-stock">      
+                            <div class="product-stock">
                                 <div>
                                     <span class="product-stock-in">
                                         <i class="ion-checkmark-circled"></i>
@@ -209,7 +209,7 @@
 
                         </div>
 
-                        
+
                         <!-- Product Variable Single Item -->
                         <div class="d-flex align-items-center ">
                             <div class="variable-single-item ">
@@ -220,7 +220,7 @@
                             </div>
 
                             @* <div class="product-add-to-cart-btn">
-                                <a href="/GioHang/AddGioHang/?MaSanPham=SP0001" data-bs-toggle="modal" data-bs-target="#modalAddcart">+ THÊM VÀO GIỎ HÀNG</a>
+                            <a href="/GioHang/AddGioHang/?MaSanPham=SP0001" data-bs-toggle="modal" data-bs-target="#modalAddcart">+ THÊM VÀO GIỎ HÀNG</a>
                             </div> *@
                             <<div class="product-add-to-cart-btn">
                                 <a href="#" id="addToCartButton">GIỎ HÀNG</a>
@@ -231,7 +231,7 @@
                         <div class="product-details-meta mb-20">
                             <a href="wishlist.html" class="icon-space-right">
                                 <i class="icon-heart"></i> Thêm vào danh sách yêu thích
-                                
+
                             </a>
                             <a href="compare.html" class="icon-space-right"><i class="icon-refresh"></i>So sánh</a>
                         </div> <!-- End  Product Details Meta Area-->
@@ -262,10 +262,6 @@
     </div>
 </div>
 <!-- End Product Details Section -->
-
-
-
-
 <!-- Start Product Content Tab Section -->
 <div class="product-details-content-tab-section section-top-gap-100">
     <div class="container">
@@ -305,7 +301,7 @@
                             <!-- Start Product Details Tab Content Singel -->
                             <div class="tab-pane" id="specification">
                                 <div class="single-tab-content-item">
-                                    
+
                                     <p>
                                         @danhMuc.CachDung
                                     </p>
@@ -515,7 +511,8 @@
                     <div class="section-content-gap">
                         <div class="secton-content">
                             <h3 class="section-title">SẢN PHẨM TƯƠNG TỰ</h3>
-                            <p>Duyệt qua những sản phẩm liên quan
+                            <p>
+                                Duyệt qua những sản phẩm liên quan
                             </p>
                         </div>
                     </div>
@@ -533,7 +530,7 @@
                         <div class="swiper-container product-default-slider-4grid-1row">
                             <!-- Additional required wrapper -->
                             <div class="swiper-wrapper">
-                                
+
                                 <!-- Sử dụng vòng lặp để hiển thị danh sách danh mục -->
                                 @foreach (var item in ViewData["DanhMucList"] as List<DanhMucSanPham>)
                                 {
@@ -541,7 +538,7 @@
                                         <div class="image-box">
                                             <a asp-controller="Home" asp-action="SanPhamTheoDanhMuc" asp-route-maDanhMuc="@item.MaDanhMuc" class="image-link">
                                                 <img src="@item.HinhAnh" alt="@item.TenDanhMuc">
-                                                
+
                                             </a>
                                             <div class="action-link">
                                                 <div class="action-link-left">
@@ -580,7 +577,7 @@
                                 }
 
 
-                                
+
                             </div>
                         </div>
                         <!-- If we need navigation buttons -->

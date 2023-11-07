@@ -24,23 +24,27 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
+
 <script>
     $(document).ready(function () {
         var minPrice = 0;
-        var maxPrice = 400000;
+        var maxPrice = 500000;
         var selectedTag = null;
+        var selectedClick = null;
 
         // Cập nhật thanh trượt và ô nhập giá
         $("#slider-range").slider({
             range: true,
             min: 0,
-            max: 400000,
+            max: 500000,
             values: [minPrice, maxPrice],
             slide: function (event, ui) {
                 $("#amount").val(ui.values[0] + " - " + ui.values[1]);
             }
         });
+
         $("#amount").val(minPrice + " - " + maxPrice);
+
 
         // Xử lý sự kiện khi thanh trượt thay đổi
         $("#slider-range").on("slidechange", function (event, ui) {
@@ -56,6 +60,13 @@
             filterProducts();
         });
 
+        // Xử lý sự kiện khi người dùng bấm vào đoạn click
+        $(".click-filter").on("click", function (e) {
+            e.preventDefault();
+            selectedClick = $(this).data("click");
+            filterProducts();
+        });
+
         function filterProducts() {
             $.ajax({
                 url: '@Url.Action("FilterByPriceAndTag", "Home")',
@@ -63,7 +74,8 @@
                 data: {
                     minPrice: minPrice,
                     maxPrice: maxPrice,
-                    tag: selectedTag
+                    tag: selectedTag,
+                    click: selectedClick
                 },
                 success: function (data) {
                     $('#product-list').html(data);
@@ -76,6 +88,7 @@
     });
 
 </script>
+
 
 
 
@@ -113,7 +126,56 @@
                 <!-- Start Sidebar Area -->
                 <div class="siderbar-section" data-aos="fade-up" data-aos-delay="0">
 
+                    <div class="sidebar-single-widget">
+                        <h6 class="sidebar-title">DANH MỤC</h6>
+                        <div class="sidebar-content">
+                            <ul class="sidebar-menu">
+                                <li>
+                                    <ul class="sidebar-menu-collapse">
+                                        <!-- Start Single Menu Collapse List -->
+                                        <li class="sidebar-menu-collapse-list">
+                                            <div class="accordion">
+                                                <a href="#" class="accordion-title collapsed" data-bs-toggle="collapse" data-bs-target="#men-fashion" aria-expanded="false">Hãng <i class="ion-ios-arrow-right"></i></a>
+                                                <div id="men-fashion" class="collapse" style="">
+                                                    <ul class="accordion-category-list">
+                                                        <li><a href="#" data-click="H" class="click-filter">Tất cả</a></li>
+                                                        <li>
+                                                            <a href="#" data-click="1" class="click-filter">
+                                                                Rom&nd
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" data-click="2" class="click-filter">
+                                                                Merzy
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" data-click="3" class="click-filter">
+                                                                Toofaced
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" data-click="4" class="click-filter">
+                                                                Lemonade
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" data-click="3" class="click-filter">
+                                                                Maybeline
+                                                            </a>
+                                                        </li>
+                                                        <!-- Các đoạn click khác -->
 
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </li> <!-- End Single Menu Collapse List -->
+                                    </ul>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
                     <div class="sidebar-single-widget">
                         <h6 class="sidebar-title">LỌC THEO GIÁ</h6>
                         <div class="sidebar-content">
@@ -140,7 +202,7 @@
                                 <a href="#" data-tag="TINT" class="tag-filter">TINT</a>
                                 <a href="#" data-tag="MERZY" class="tag-filter">MERZY</a>
                                 <a href="#" data-tag="LEMONADE" class="tag-filter">LEMONADE</a>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -149,23 +211,23 @@
 
                     @* <!-- Start Single Sidebar Widget -->
                     <div class="sidebar-single-widget" for="ctloai-filter">
-                        <h6 class="sidebar-title">TRANG ĐIỂM</h6>
-                        <div class="sidebar-content">
-                            <form class="filter-type-select" id="ctloai-filter-hang">
-                                <label class="checkbox-default">
-                                    <input type="checkbox" name="selectedCtLoais" value="all">
-                                    <span>Tất cả</span>
-                                </label>
-                                <a href="#" class="mega-menu-item-title">Trang điểm mặt</a>
-                                @await Component.InvokeAsync("CTLoaiMenu", new { maLoai = "L2", viewName = "CheckBoxCTLoai" })
-                                <a href="#" class="mega-menu-item-title">Trang điểm mắt</a>
-                                @await Component.InvokeAsync("CTLoaiMenu", new { maLoai = "L1", viewName = "CheckBoxCTLoai"  })
-                                <a href="#" class="mega-menu-item-title">Trang điểm môi</a>
-                                @await Component.InvokeAsync("CTLoaiMenu", new { maLoai = "L3", viewName = "CheckBoxCTLoai"  })
-                                <a href="#" class="mega-menu-item-title">Khác</a>
-                                @await Component.InvokeAsync("CTLoaiMenu", new { maLoai = "L4", viewName = "CheckBoxCTLoai"  })
-                            </form>
-                        </div>
+                    <h6 class="sidebar-title">TRANG ĐIỂM</h6>
+                    <div class="sidebar-content">
+                    <form class="filter-type-select" id="ctloai-filter-hang">
+                    <label class="checkbox-default">
+                    <input type="checkbox" name="selectedCtLoais" value="all">
+                    <span>Tất cả</span>
+                    </label>
+                    <a href="#" class="mega-menu-item-title">Trang điểm mặt</a>
+                    @await Component.InvokeAsync("CTLoaiMenu", new { maLoai = "L2", viewName = "CheckBoxCTLoai" })
+                    <a href="#" class="mega-menu-item-title">Trang điểm mắt</a>
+                    @await Component.InvokeAsync("CTLoaiMenu", new { maLoai = "L1", viewName = "CheckBoxCTLoai"  })
+                    <a href="#" class="mega-menu-item-title">Trang điểm môi</a>
+                    @await Component.InvokeAsync("CTLoaiMenu", new { maLoai = "L3", viewName = "CheckBoxCTLoai"  })
+                    <a href="#" class="mega-menu-item-title">Khác</a>
+                    @await Component.InvokeAsync("CTLoaiMenu", new { maLoai = "L4", viewName = "CheckBoxCTLoai"  })
+                    </form>
+                    </div>
                     </div> <!-- End Single Sidebar Widget --> *@
 
                 </div> <!-- End Sidebar Area -->
@@ -248,28 +310,48 @@
                             </div>
                             <!-- End Product Grid View -->
 
-                            <div class="page-pagination text-center aos-init aos-animate" data-aos="fade-up" data-aos-delay="0">
+                            <div id="pagination" class="page-pagination text-center aos-init aos-animate" data-aos="fade-up" data-aos-delay="0">
                                 <ul>
                                     @if (Model.HasPreviousPage)
                                     {
-                                        <li><a href="@Url.Action("DanhMucSanPham", new { mahang = ViewBag.Mahang, page = Model.PageNumber - 1 })"><i class="ion-ios-skipback"></i></a></li>
+                                        <li><a href="@Url.Action("DanhMucSanPham", new { mahang = ViewBag.Mahang, page = 1 })">&lt;&lt; Đầu</a></li>
+                                        <li><a href="@Url.Action("DanhMucSanPham", new { mahang = ViewBag.Mahang, page = Model.PageNumber - 1 })">&lt; Trước</a></li>
                                     }
 
-                                    @for (int i = 1; i <= Model.PageCount; i++)
+                                    <li><a href="@Url.Action("DanhMucSanPham", new { mahang = ViewBag.Mahang, page = 1 })">1</a></li>
+
+                                    @if (Model.PageNumber > 3)
                                     {
-                                        <li><a class="@(i == Model.PageNumber ? "active" : "")" href="@Url.Action("DanhMucSanPham", new { mahang = ViewBag.Mahang, page = i })">@i</a></li>
+                                        <li><span>...</span></li>
+                                    }
+
+                                    @for (int i = Model.PageNumber - 1; i <= Model.PageNumber + 1; i++)
+                                    {
+                                        if (i > 1 && i < Model.PageCount)
+                                        {
+                                            <li><a class="@(i == Model.PageNumber ? "active" : "")" href="@Url.Action("DanhMucSanPham", new { mahang = ViewBag.Mahang, page = i })">@i</a></li>
+                                        }
+                                    }
+
+                                    @if (Model.PageNumber < Model.PageCount - 2)
+                                    {
+                                        <li><span>...</span></li>
+                                    }
+
+                                    @if (Model.PageCount > 1)
+                                    {
+                                        <li><a class="@(Model.PageCount == Model.PageNumber ? "active" : "")" href="@Url.Action("DanhMucSanPham", new { mahang = ViewBag.Mahang, page = Model.PageCount })">@Model.PageCount</a></li>
                                     }
 
                                     @if (Model.HasNextPage)
                                     {
-                                        <li><a href="@Url.Action("DanhMucSanPham", new { mahang = ViewBag.Mahang, page = Model.PageNumber + 1 })"><i class="ion-ios-skipforward"></i></a></li>
+                                        <li><a href="@Url.Action("DanhMucSanPham", new { mahang = ViewBag.Mahang, page = Model.PageNumber + 1 })">Tiếp theo &gt;</a></li>
+                                        <li><a href="@Url.Action("DanhMucSanPham", new { mahang = ViewBag.Mahang, page = Model.PageCount })">Cuối &gt;&gt;</a></li>
                                     }
                                 </ul>
 
                                 <div class="so-trang">
-                                
                                     <span>Sản phẩm: @Model.FirstItemOnPage - @Model.LastItemOnPage / @Model.TotalItemCount</span>
-                                    
                                 </div>
                             </div>
                         </div>
