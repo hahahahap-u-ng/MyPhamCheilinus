@@ -97,7 +97,7 @@ namespace MyPhamCpuheilinus.Controllers
             var donHang = new DonHang
             {
                 MaDonHang = GenerateUniqueOrderCode(),
-            
+                NgayDatHang = DateTime.Now,
                 TongTien = gioHang.ComputeTotalValues(),
                 TrangThaiDonHang = 1,
                 MaKhachHang = khachhang.MaKhachHang,
@@ -119,7 +119,7 @@ namespace MyPhamCpuheilinus.Controllers
                 db.ChiTietDonHangs.Add(chiTietDonHang);
                 RemoveFromGioHang(line.SanPham.MaSanPham);
             }
-            
+
             db.SaveChanges();
 
             foreach (var line in gioHang.Lines)
@@ -127,13 +127,13 @@ namespace MyPhamCpuheilinus.Controllers
                 ;
                 RemoveFromGioHang(line.SanPham.MaSanPham);
             }
-            ;
+     ;
 
             gioHang.Clear();
 
 
             return View("Success");
         }
-        
+
     }
 }
