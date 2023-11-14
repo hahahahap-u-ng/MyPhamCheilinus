@@ -41,13 +41,17 @@
                                 </div>
                                 <div class="col-lg-3">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="Tìm kiếm theo tên người dùng" id="searchName" value="@ViewBag.CurrentSearch" />
+                                        <input type="text" class="form-control" placeholder="Tìm kiếm theo tên khách hàng" id="searchName" value="@ViewBag.CurrentSearch" />
                                     </div>
                                 </div>
-
-                                <div class="col-lg-3">
+                                <div class="col-lg-1">
+                                    <div an class="input-group">
+                                        <input type="number" class="form-control" placeholder="Từ giá" id="minPriceInput" value="@ViewBag.CurrentMinPrice" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-1">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="Tìm kiếm theo mô tả" id="searchMoTa" value="@ViewBag.CurrentMoTa" />
+                                        <input type="number" class="form-control" placeholder="Đến giá" id="maxPriceInput" value="@ViewBag.CurrentMaxPrice" />
                                     </div>
                                 </div>
                                 <div class="col-lg-1">
@@ -66,7 +70,7 @@
                                 <tr class="text-center">
                                     <th>ID</th>
                                     <th>Khách hàng</th>
-                                    <th>Đơn hàng</th>
+
                                     <th>Ngày đặt</th>
                                     <th>Tổng tiền</th>
                                     <th>Trạng thái</th>
@@ -80,10 +84,9 @@
                                     foreach (var item in Model)
                                     {
                                         <tr>
-                                            <td class="text-center">@item.MaKhachHang</td>
+                                           <td class="text-center">@item.MaDonHang</td>
 
                                             <td>@item.MaKhachHangNavigation.TenKhachHang</td>
-                                            <td class="text-center">@item.MaDonHang</td>
 
                                             <td class="text-center">@item.NgayDatHang</td>
                                             <td class="text-center">@item.TongTien.Value.ToString("#,##0") VNĐ</td>
@@ -105,18 +108,20 @@
                                                     <span class="badge bg-danger" style="background-color: #c82333">Đã hủy</span>
                                                 }
                                             </td>
-
-                                            <td class="text-right" @* rowspan="@item.ChiTietDonHangs.Count "*@>
+<td class="text-right" @*rowspan="@item.ChiTietDonHangs.Count"*@>
                                                 @if (item.TrangThaiDonHang == 1)
                                                 {
                                                     <button class="btn btn-danger btn-tone m-r-5 border-0" style="color: #fff; background-color: #c82333; border-color: #c82333; box-shadow: none;" onclick="updateStatus('@item.MaDonHang', 4)">Hủy đơn hàng</button>
 
                                                     <button class="btn btn-success btn-tone m-r-5 border-0" style="color: #fff; background-color: #007bff; border-color: #007bff; box-shadow: none;" onclick="updateStatus('@item.MaDonHang', 2)">Đang giao hàng</button>
                                                 }
+
                                             </td>
                                             <td>
                                                 <a class="btn btn-secondary btn-tone m-r-5" asp-action="Details" asp-route-id="@item.MaDonHang" asp-route-page="@ViewBag.CurrentPage">Xem đơn hàng</a>
+
                                             </td>
+                                                 
                                         </tr>
                                     }
                                 }
@@ -233,3 +238,54 @@
             });
     }
 </script>
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            // Xử lý sự kiện khi nút Tìm kiếm được nhấn
+            $('#searchButton').click(function () {
+                var searchValue = $('#searchName').val();
+                var MaID = $('#searchId').val();
+                var minPrice = $('#minPriceInput').val();
+                var maxPrice = $('#maxPriceInput').val();
+
+                $.ajax({
+                    url: '/Admin/DonHangs/Filtter',
+                    datatype: 'json',
+                    type: 'GET',
+                    data: {
+                        MaID: MaID,
+                        search: search,
+                        minPrice: minPrice,
+                        maxPrice: maxPrice
+                    },
+                    async: true,
+                    success: function (results) {
+                        if (results.status == 'success') {
+                            window.location.href = results.redirectUrl;
+                        }
+                    },
+                    error: function (xhr) {
+                        alert('error');
+                    }
+                });
+            });
+
+            // Hiển thị ảnh
+            $('.image-link').click(function () {
+                var imageUrl = $(this).data('image-url');
+                if (imageUrl) {
+                    var imageElement = $('<img>').attr('src', imageUrl).attr('alt', 'Hình ảnh sản phẩm');
+                    var modal = $('<div>').addClass('image-modal').append(imageElement);
+                    modal.appendTo('body');
+
+                    modal.click(function (e) {
+                        if (e.target === this) {
+                            modal.remove(); // Đóng modal khi người dùng nhấn vào nó
+                        }
+                    });
+                }
+            });
+            // Nhập số tiền
+        });
+    </script>
+}

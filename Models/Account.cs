@@ -25,5 +25,9 @@ public partial class Account
 
     public DateTime? CreateDate { get; set; }
 
-    public virtual Role? Role { get; set; }
+    public int? MaKhachHang { get; set; }
+
+    public virtual KhachHang? MaKhachHangNavigation { get; set; }
+
+    public virtual Role? RoleNavigation { get; set; }
 }

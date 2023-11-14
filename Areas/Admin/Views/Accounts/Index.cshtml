@@ -70,10 +70,12 @@
                             <tbody>
                                 @if (Model != null)
                                 {
+                                    var i = 1;
                                     foreach (var item in Model)
                                     {
                                         <tr>
-                                            <td class="text-center">@item.AccountId</td>
+                                            <td class="text-center">@i</td>
+                                           
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     @*<img class="img-fluid rounded" src =*@
@@ -83,7 +85,7 @@
                                             <td>@item.AccountEmail</td>
                                             <td>@item.Phone</td>
                                             <td>@item.LastLogin</td>
-                                            <td>@item.Role.Description</td>
+                                            <td>@item.RoleNavigation.Description</td>
                                             <td>
                                                 @if (item.Active)
                                                 {
@@ -108,6 +110,7 @@
                                                 <a class="btn btn-danger btn-tone m-r-5" asp-action="Delete" asp-route-id="@item.AccountId">Xóa</a>
                                             </td>
                                         </tr>
+                                        i++;
                                     }
                                 }
                              </tbody>

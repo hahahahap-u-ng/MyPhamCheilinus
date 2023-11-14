@@ -10,7 +10,7 @@ namespace MyPhamCheilinus.ModelViews
     public class RegisterVM
     {
         [Key]
-        public int MaKhachHang { get; set; }
+        public int AccountId { get; set; }
         [Display(Name = "Họ Và Tên")]
         [Required(ErrorMessage = "Vui lòng nhập Họ Tên")]
         public string TenKhachHang { get; set; }

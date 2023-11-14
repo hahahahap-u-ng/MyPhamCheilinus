@@ -84,7 +84,7 @@ namespace MyPhamCpuheilinus.Controllers
         {
             var khachhang = new KhachHang
             {
-                MaKhachHang = GenerateUniqueCustomerCode(),
+                //MaKhachHang = GenerateUniqueCustomerCode(),
                 TenKhachHang = hoTen,
                 DiaChi = diaChi,
                 SoDienThoai = soDienThoai,

@@ -11,7 +11,7 @@ public partial class DonHang
 
     public int? TrangThaiDonHang { get; set; }
 
-    public string? MaKhachHang { get; set; }
+    public int? MaKhachHang { get; set; }
 
     public bool? ThanhToan { get; set; }
 

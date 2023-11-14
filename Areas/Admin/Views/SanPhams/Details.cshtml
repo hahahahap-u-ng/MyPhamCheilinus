@@ -131,8 +131,8 @@
                     <tr>
                         <td>
 
-                            <form asp-action="Details" asp-for="MaDanhMuc" asp-route-page="@ViewBag.CurrentPage" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">
-                                <a asp-action="Edit" class="btn btn-success" asp-route-id="@Model.MaSanPham" asp-route-page="@ViewBag.CurrentPage" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">Sửa thông tin</a> |
+                            <form asp-action="Details" asp-for="MaDanhMuc" asp-route-MaID="@ViewBag.CurrentMaID"  asp-route-page="@ViewBag.CurrentPage" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">
+                                <a asp-action="Edit" class="btn btn-success" asp-route-MaID="@ViewBag.CurrentMaID" asp-route-id="@Model.MaSanPham" asp-route-page="@ViewBag.CurrentPage" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">Sửa thông tin</a> |
                                 <input type="submit" class="btn btn-secondary" id="backToList" value="Trở lại" />
                             </form>
                         </td>

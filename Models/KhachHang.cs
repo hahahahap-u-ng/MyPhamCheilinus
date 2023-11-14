@@ -5,7 +5,7 @@ namespace MyPhamCheilinus.Models;
 
 public partial class KhachHang
 {
-    public string MaKhachHang { get; set; } = null!;
+    public int MaKhachHang { get; set; }
 
     public string? TenKhachHang { get; set; }
 
@@ -35,7 +35,11 @@ public partial class KhachHang
 
     public bool Active { get; set; }
 
+
     public string? Address { get; set; }
+
+    public virtual ICollection<Account> Accounts { get; set; } = new List<Account>();
+
 
     public virtual ICollection<DonHang> DonHangs { get; set; } = new List<DonHang>();
 

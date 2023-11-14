@@ -125,12 +125,12 @@
                         </td>
                     </tr>*@
                         <td class="row">
-                            <form asp-action="Delete" asp-for="MaDanhMuc" asp-route-page="@ViewBag.CurrentPage" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">
+                    <form asp-action="Delete" asp-for="MaDanhMuc" asp-route-page="@ViewBag.CurrentPage" asp-route-MaID="@ViewBag.CurrentMaID"  asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">
 
                                 <input type="submit" value="Xóa sản phẩm" class="btn btn-danger" /> |
                             </form>
                             <div>
-                                <form asp-action="Details" asp-for="MaDanhMuc" asp-route-page="@ViewBag.CurrentPage" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">
+                        <form asp-action="Details" asp-for="MaDanhMuc" asp-route-page="@ViewBag.CurrentPage" asp-route-MaID="@ViewBag.CurrentMaID"  asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">
                                     <input type="submit" class="btn btn-secondary" value="Trở lại" />
                                 </form>
                             </div>
