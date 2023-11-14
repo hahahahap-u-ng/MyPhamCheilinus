@@ -10,10 +10,6 @@
     ViewData["Title"] = "Danh sách đơn hàng - Trang " + CurrentPage;
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
-<h1>@ViewBag.Currentid</h1>
-<h1>@ViewBag.Currentid1</h1>
-<h1>@ViewBag.Currentid2</h1>
-<h1>@ViewBag.Currentid3</h1>
 <section class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -37,7 +33,7 @@
                 <div class="card">
                     <div class="row card-body">
                         <div class="col-lg-12">
-                            @*<div class="d-md-flex">
+                            <div class="d-md-flex">
                                 <div>
                                     <div class="input-group">
                                         <input type="text" class="form-control" placeholder="Tìm theo ID" id="searchId" value="@ViewBag.CurrentMaID" />
@@ -59,7 +55,7 @@
                                         <button class="btn btn-outline-secondary" type="button" id="searchButton">Tìm kiếm</button>
                                     </div>
                                 </div>
-                            </div>*@
+                            </div>
                         </div>
                     </div>
 
@@ -69,6 +65,7 @@
                             <thead>
                                 <tr class="text-center">
                                     <th>ID</th>
+                                    <th>Khách hàng</th>
                                     <th>Đơn hàng</th>
                                     <th>Ngày đặt</th>
                                     <th>Tổng tiền</th>
@@ -83,8 +80,11 @@
                                     foreach (var item in Model)
                                     {
                                         <tr>
+                                            <td class="text-center">@item.MaKhachHang</td>
+
+                                            <td>@item.MaKhachHangNavigation.TenKhachHang</td>
                                             <td class="text-center">@item.MaDonHang</td>
-                                            <td class="text-center">@item.MaKhachHangNavigation.TenKhachHang</td>
+
                                             <td class="text-center">@item.NgayDatHang</td>
                                             <td class="text-center">@item.TongTien.Value.ToString("#,##0") VNĐ</td>
                                             <td>
@@ -106,25 +106,18 @@
                                                 }
                                             </td>
 
-                                            <td class="text-right" rowspan="@item.ChiTietDonHangs.Count">
+                                            <td class="text-right" @* rowspan="@item.ChiTietDonHangs.Count "*@>
                                                 @if (item.TrangThaiDonHang == 1)
                                                 {
                                                     <button class="btn btn-danger btn-tone m-r-5 border-0" style="color: #fff; background-color: #c82333; border-color: #c82333; box-shadow: none;" onclick="updateStatus('@item.MaDonHang', 4)">Hủy đơn hàng</button>
 
                                                     <button class="btn btn-success btn-tone m-r-5 border-0" style="color: #fff; background-color: #007bff; border-color: #007bff; box-shadow: none;" onclick="updateStatus('@item.MaDonHang', 2)">Đang giao hàng</button>
                                                 }
-
+                                            </td>
+                                            <td>
                                                 <a class="btn btn-secondary btn-tone m-r-5" asp-action="Details" asp-route-id="@item.MaDonHang" asp-route-page="@ViewBag.CurrentPage">Xem đơn hàng</a>
-
                                             </td>
                                         </tr>
-                                    <td class="text-right">
-
-                                            @*<a class="btn btn-success btn-tone m-r-5" asp-action="ChangeStatus" asp-route-id="@item.MaDonHang" asp-route-id1="@item.MaSanPham">Cập nhật trạng thái</a>
-                                <a class="btn btn-success btn-tone m-r-5" asp-action="Edit" asp-route-id="@item.MaDonHang" asp-route-id1="@item.MaSanPham" >Sửa</a>
-                                <a class="btn btn-danger btn-tone m-r-5" asp-action="Delete" asp-route-id="@item.MaDonHang" asp-route-page="@ViewBag.CurrentPage" >Xóa</a>*@
-                                    </td>
-
                                     }
                                 }
                             </tbody>

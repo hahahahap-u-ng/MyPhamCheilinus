@@ -190,6 +190,10 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             {
                 ModelState.AddModelError("MoTa", "Xin hãy điền mô tả sản phẩm.");
             }
+            if (sanPham.Mau == null)
+            {
+                ModelState.AddModelError("MoTa", "Xin hãy điền màu  sản phẩm.");
+            }
             if (ModelState.IsValid)
             {
                 if (_context.SanPhams.Any(x => x.MaSanPham == sanPham.MaSanPham))

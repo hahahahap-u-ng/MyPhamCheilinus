@@ -89,7 +89,8 @@
                                         {
                                             <tr>
                                                 <td> @line.SanPham.TenSanPham <strong> × @line.SoLuong</strong></td>
-                                                <td> @(line.SoLuong * line.SanPham.Gia * (100 - line.SanPham.KhuyenMai) / 100)</td>
+
+                                                <td> @string.Format("{0:#,##0} VNĐ",(line.SoLuong * line.SanPham.Gia * (100 - line.SanPham.KhuyenMai) / 100))</td>
                                             </tr>
                                         }
                                     }
@@ -97,15 +98,15 @@
                                 <tfoot>
                                     <tr>
                                         <th>Tổng giỏ hàng</th>
-                                        <td>$@Model.ComputeTotalValues()</td>
+                                        <td>@string.Format("{0:#,##0} VNĐ",Model.ComputeTotalValues())</td>
                                     </tr>
                                     <tr>
                                         <th>Shipping</th>
-                                        <td><strong>$10000</strong></td>
+                                        <td><strong>10.000 VNĐ</strong></td>
                                     </tr>
                                     <tr class="order_total">
                                         <th>Thanh toán</th>
-                                        <td><strong>$@(Model.ComputeTotalValues() + 10000)</strong></td>
+                                        <td><strong>@string.Format("{0:#,##0} VNĐ",Model.ComputeTotalValues()+10000)</strong></td>
                                     </tr>
                                 </tfoot>
                             </table>

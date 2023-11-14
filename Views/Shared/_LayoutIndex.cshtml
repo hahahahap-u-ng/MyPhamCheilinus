@@ -78,9 +78,9 @@
                         </div>
                         <div class="header-top-right">
                             <div class="header-top-user-link header-top-user-link-color--white header-top-user-link-hover-color--green">
-                                <a href="wishlist.html">Wishlist</a>
-                                <a href="cart.html">Cart</a>
-                                <a href="checkout.html">Checkout</a>
+                                <a href="/DonHang/DonHang">Đơn hàng</a>
+                                <a href="/GioHang/ViewGioHang">Giỏ hàng</a>
+                                
                                  <a href="~/Admin">Admin</a>
                                 @if (User.Identity.IsAuthenticated)
                                 {
@@ -106,7 +106,7 @@
                             <!-- Start Header Logo -->
                             <div class="header-logo">
                                 <div class="logo">
-                                    <a href="index.html"><img src="/images/logo/chelinus.jpg" alt=""></a>
+                                    <a href="/"><img src="/images/logo/chelinus.jpg" alt=""></a>
                                 </div>
                             </div>
                             <!-- End Header Logo -->
@@ -117,7 +117,7 @@
                                         <li class="has-dropdown">
                                             <a class="active main-menu-link" href="/Home/DanhMucSanPham">
                                                 Tất cả
-                                                <i class="fa fa-angle-down"></i>
+                                                
                                             </a>
                                             <!-- Sub Menu -->
 
@@ -203,7 +203,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/GioHang/ViewGioHang" class="offcanvas-toggle">
+                                    <a href="/GioHang/ViewGioHang" >
                                         @await Component.InvokeAsync("GioHangWidget")
                                     </a>
                                     

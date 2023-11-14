@@ -11,15 +11,13 @@ public partial class KhachHang
 
     public string? DiaChi { get; set; }
 
+    public string? Email { get; set; }
+
     public string? SoDienThoai { get; set; }
 
     public DateTime? NgaySinh { get; set; }
 
     public string? Avatar { get; set; }
-
-    public string? Address { get; set; }
-
-    public string? Email { get; set; }
 
     public int? DisTrict { get; set; }
 
@@ -37,5 +35,9 @@ public partial class KhachHang
 
     public bool Active { get; set; }
 
+    public string? Address { get; set; }
+
     public virtual ICollection<DonHang> DonHangs { get; set; } = new List<DonHang>();
+
+    public virtual DiaChi? Location { get; set; }
 }
