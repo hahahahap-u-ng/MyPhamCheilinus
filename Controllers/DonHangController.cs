@@ -29,7 +29,7 @@ namespace MyPhamCpuheilinus.Controllers
 
             return View(donHangList);
 
-            ;
+            
         }
         [HttpPost]
         public IActionResult UpdateStatus(string donHangId, int trangThaiDonHang)
