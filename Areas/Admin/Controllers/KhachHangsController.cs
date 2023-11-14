@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +13,7 @@ using PagedList.Core;
 namespace MyPhamCheilinus.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin,Employee")]
     public class KhachHangsController : Controller
     {
         private readonly _2023MyPhamContext _context;
@@ -26,15 +29,15 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             var pageNumber = page == null || page <= 0 ? 1 : page.Value;
             var pageSize = 20;
             var lsCustomers = _context.KhachHangs.AsNoTracking()
-                .OrderByDescending(x => x.MaKhachHang);
+                .OrderByDescending(x => x.MaKhachHang).ToList();
 
-            PagedList<KhachHang> models = new PagedList<KhachHang> (lsCustomers, pageSize, pageNumber);
+            PagedList<KhachHang> models = new PagedList<KhachHang> (lsCustomers.AsQueryable(), pageSize, pageNumber);
             ViewBag.CurrentPage = pageNumber;
             return View(models);
         }
 
         // GET: Admin/KhachHangs/Details/5
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(int id)
         {
             if (id == null || _context.KhachHangs == null)
             {
@@ -74,7 +77,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         }
 
         // GET: Admin/KhachHangs/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(int id)
         {
             if (id == null || _context.KhachHangs == null)
             {
@@ -94,7 +97,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("MaKhachHang,TenKhachHang,DiaChi,SoDienThoai")] KhachHang khachHang)
+        public async Task<IActionResult> Edit(int id, [Bind("MaKhachHang,TenKhachHang,DiaChi,SoDienThoai")] KhachHang khachHang)
         {
             if (id != khachHang.MaKhachHang)
             {
@@ -125,7 +128,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         }
 
         // GET: Admin/KhachHangs/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(int id)
         {
             if (id == null || _context.KhachHangs == null)
             {
@@ -145,7 +148,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         // POST: Admin/KhachHangs/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.KhachHangs == null)
             {
@@ -161,7 +164,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool KhachHangExists(string id)
+        private bool KhachHangExists(int id)
         {
           return (_context.KhachHangs?.Any(e => e.MaKhachHang == id)).GetValueOrDefault();
         }

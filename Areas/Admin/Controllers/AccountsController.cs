@@ -1,22 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using MyPhamCheilinus.Areas.Admin.Models;
+using MyPhamCheilinus.Extension;
+using MyPhamCheilinus.Helpper;
 using MyPhamCheilinus.Models;
 
 namespace MyPhamCheilinus.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin,Employee")]
     public class AccountsController : Controller
     {
         private readonly _2023MyPhamContext _context;
+        public INotyfService _notifyService { get; }
 
-        public AccountsController(_2023MyPhamContext context)
-        {   
+        public AccountsController(_2023MyPhamContext context, INotyfService notifyService)
+        {
             _context = context;
+            _notifyService = notifyService;
         }
 
         // GET: Admin/Accounts
@@ -31,7 +43,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             ViewData["lsTrangThai"] = lsTrangThai;
 
 
-            var _2023MyPhamContext = _context.Accounts.Include(a => a.Role);
+            var _2023MyPhamContext = _context.Accounts.Include(a => a.RoleNavigation);
             return View(await _2023MyPhamContext.ToListAsync());
         }
 
@@ -44,7 +56,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             }
 
             var account = await _context.Accounts
-                .Include(a => a.Role)
+                .Include(a => a.RoleNavigation)
                 .FirstOrDefaultAsync(m => m.AccountId == id);
             if (account == null)
             {
@@ -57,7 +69,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         // GET: Admin/Accounts/Create
         public IActionResult Create()
         {
-            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "Description");
+            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "RoleName");
             return View();
         }
 
@@ -70,12 +82,50 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                string salt = Utilities.GetRandomKey();
+                account.Sail = salt;
+                //Tạo ngẫu nhiên mật khẩu
+                account.AccountPassword = (account.Phone + salt.Trim()).ToMD5();
+                account.CreateDate = DateTime.Now;
+
                 _context.Add(account);
                 await _context.SaveChangesAsync();
+                _notifyService.Success("Tạo mới tài khoản quản trị thành công");
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "Description", account.RoleId);
+            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "RoleName", account.RoleId);
             return View(account);
+        }
+        //ChangePassword
+        public IActionResult ChangePassword()
+        {
+            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "RoleName");
+            return View();
+        }
+        [HttpPost]
+        public IActionResult ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var taikhoan = _context.Accounts.AsNoTracking().SingleOrDefault(x => x.AccountEmail == model.Email);
+                if (taikhoan == null) return RedirectToAction("Login", "Accounts");
+
+                var pass = (model.PasswordNow.Trim() + taikhoan.Sail.Trim()).ToMD5();
+                if (pass == taikhoan.AccountPassword)
+                {
+                    string passnew = (model.Password.Trim() + taikhoan.Sail.Trim()).ToMD5();
+                    taikhoan.AccountPassword = passnew;
+                    taikhoan.LastLogin = DateTime.Now;
+                    _context.Update(taikhoan);
+                    _context.SaveChanges();
+                    _notifyService.Success("Thay đổi mật khẩu thành công");
+                    RedirectToAction("Login", "Accounts", new {Area = "Admin"});
+                }
+            }
+
+
+            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "RoleName");
+            return View();
         }
 
         // GET: Admin/Accounts/Edit/5
@@ -91,7 +141,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleId", account.RoleId);
+            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "RoleName", account.RoleId);
             return View(account);
         }
 
@@ -113,6 +163,39 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                 {
                     _context.Update(account);
                     await _context.SaveChangesAsync();
+
+                    // Kiểm tra xem tài khoản đang được chỉnh sửa có phải là tài khoản hiện tại không
+                    if (id == int.Parse(HttpContext.User.FindFirst("AccountId")?.Value))
+                    {
+                        // Đăng xuất
+                        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+                        // Thêm lại các claim mới tương ứng với quyền truy cập mới của tài khoản
+                        var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, account.FullName),
+        new Claim("AccountId", account.AccountId.ToString())
+    };
+
+                        if (account.RoleId == GetRoleIdForAdmin())
+                        {
+                            claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+                        }
+                        if (account.RoleId == GetRoleIdForCustomer())
+                        {
+                            claims.Add(new Claim(ClaimTypes.Role, "Customer"));
+                        }
+                        if (account.RoleId == GetRoleIdForEmployee())
+                        {
+                            claims.Add(new Claim(ClaimTypes.Role, "Employee"));
+                        }
+
+                        // Đăng nhập lại
+                        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        var principal = new ClaimsPrincipal(identity);
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+                    }
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -127,11 +210,30 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleId", account.RoleId);
+            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "RoleName", account.RoleId);
             return View(account);
         }
 
+        private int GetRoleIdForCustomer()
+        {
+            // Thực hiện logic để lấy RoleId tương ứng với vai trò 'Customer' từ cơ sở dữ liệu
+            // Ví dụ:
+            return _context.Roles.Where(r => r.RoleName == "Customer").Select(r => r.RoleId).FirstOrDefault();
+        }
+        private int GetRoleIdForAdmin()
+        {
+            // Thực hiện logic để lấy RoleId tương ứng với vai trò 'Customer' từ cơ sở dữ liệu
+            // Ví dụ:
+            return _context.Roles.Where(r => r.RoleName == "Admin").Select(r => r.RoleId).FirstOrDefault();
+        }
+        private int GetRoleIdForEmployee()
+        {
+            // Thực hiện logic để lấy RoleId tương ứng với vai trò 'Customer' từ cơ sở dữ liệu
+            // Ví dụ:
+            return _context.Roles.Where(r => r.RoleName == "Employee").Select(r => r.RoleId).FirstOrDefault();
+        }
         // GET: Admin/Accounts/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Accounts == null)
@@ -140,7 +242,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             }
 
             var account = await _context.Accounts
-                .Include(a => a.Role)
+                .Include(a => a.RoleNavigation)
                 .FirstOrDefaultAsync(m => m.AccountId == id);
             if (account == null)
             {
@@ -173,5 +275,6 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         {
           return (_context.Accounts?.Any(e => e.AccountId == id)).GetValueOrDefault();
         }
+
     }
 }

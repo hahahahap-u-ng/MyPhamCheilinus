@@ -6,12 +6,11 @@ using MyPhamCheilinus.Repository;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-
 
 var connectionString = builder.Configuration.GetConnectionString("_2023MyPhamContext");
 builder.Services.AddDbContext<_2023MyPhamContext>(options => options.UseSqlServer(connectionString));
@@ -28,6 +27,11 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true; // Đảm bảo rằng Cookie này cần thiết
 });
 builder.Services.AddScoped<ICTLoaiRepository, CTLoaiRepository>();
+
+
+
+
+// Thêm dịch vụ Identity
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(p =>
     {
@@ -35,12 +39,15 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         p.AccessDeniedPath = "/";
     });
 
+
+
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.IsEssential = true;
 });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -48,6 +55,7 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
 app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -56,17 +64,17 @@ app.UseSession();
 app.UseRouting();
 app.UseSession();
 app.UseAuthorization();
+
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllerRoute(
-      name: "areas",
-      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+        name: "areas",
+        pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
     );
     app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
 });
-
 
 app.MapControllerRoute(
     name: "sanphamtheodanhmuc",
@@ -79,6 +87,3 @@ app.MapControllerRoute(
     defaults: new { controller = "Home", action = "Filter" });
 
 app.Run();
-
-
-

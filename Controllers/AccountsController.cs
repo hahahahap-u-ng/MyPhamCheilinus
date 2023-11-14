@@ -28,7 +28,7 @@ namespace MyPhamCheilinus.Controllers
         {
             try
             {
-                var khachhang = _context.KhachHangs.AsNoTracking().SingleOrDefault(x => x.SoDienThoai.ToLower() == SoDienThoai.ToLower());
+                var khachhang = _context.Accounts.AsNoTracking().SingleOrDefault(x => x.Phone.ToLower() == SoDienThoai.ToLower());
                 if (khachhang != null)
                     return Json(data: "Số điện thoại : " + SoDienThoai + " Đã được sử dụng");
 
@@ -45,7 +45,7 @@ namespace MyPhamCheilinus.Controllers
         {
             try
             {
-                var khachhang = _context.KhachHangs.AsNoTracking().SingleOrDefault(x => x.Email.ToLower() == Email.ToLower());
+                var khachhang = _context.Accounts.AsNoTracking().SingleOrDefault(x => x.AccountEmail.ToLower() == Email.ToLower());
                 if (khachhang != null)
                     return Json(data: "Email : " + Email + " Đã được sử dụng");
 
@@ -59,10 +59,10 @@ namespace MyPhamCheilinus.Controllers
         [Route("tai-khoan-cua-toi.html", Name = "Dashboard")]
         public IActionResult Dashboard()
         {
-            var taikhoanID = HttpContext.Session.GetString("MaKhachHang");
+            var taikhoanID = HttpContext.Session.GetString("AccountId");
             if (taikhoanID != null)
             {
-                var khachhang = _context.KhachHangs.AsNoTracking().SingleOrDefault(x => x.MaKhachHang == taikhoanID);
+                var khachhang = _context.Accounts.AsNoTracking().SingleOrDefault(x => x.AccountId == Convert.ToInt32(taikhoanID));
                 if (khachhang != null)
                 {
                     return View();
@@ -70,7 +70,24 @@ namespace MyPhamCheilinus.Controllers
             }
             return RedirectToAction("Login");
         }
-
+        private int GetRoleIdForCustomer()
+        {
+            // Thực hiện logic để lấy RoleId tương ứng với vai trò 'Customer' từ cơ sở dữ liệu
+            // Ví dụ:
+            return _context.Roles.Where(r => r.RoleName == "Customer").Select(r => r.RoleId).FirstOrDefault();
+        }
+        private int GetRoleIdForAdmin()
+        {
+            // Thực hiện logic để lấy RoleId tương ứng với vai trò 'Customer' từ cơ sở dữ liệu
+            // Ví dụ:
+            return _context.Roles.Where(r => r.RoleName == "Admin").Select(r => r.RoleId).FirstOrDefault();
+        }
+        private int GetRoleIdForEmployee()
+        {
+            // Thực hiện logic để lấy RoleId tương ứng với vai trò 'Customer' từ cơ sở dữ liệu
+            // Ví dụ:
+            return _context.Roles.Where(r => r.RoleName == "Employee").Select(r => r.RoleId).FirstOrDefault();
+        }
         [HttpGet]
         [AllowAnonymous]
         [Route("dang-ky.html", Name = "Dangky")]
@@ -88,27 +105,29 @@ namespace MyPhamCheilinus.Controllers
                 if (ModelState.IsValid)
                 {
                     string salt = Utilities.GetRandomKey();
-                    KhachHang khachhang = new KhachHang
+                    Account khachhang = new Account
                     {
-                        TenKhachHang = taikhoan.TenKhachHang,
-                        SoDienThoai = taikhoan.SoDienThoai.Trim().ToLower(),
-                        Email = taikhoan.Email.Trim().ToLower(),
-                        Password = (taikhoan.Password + salt.Trim()).ToMD5(),
+                        FullName = taikhoan.TenKhachHang,
+                        Phone = taikhoan.SoDienThoai.Trim().ToLower(),
+                        AccountEmail = taikhoan.Email.Trim().ToLower(),
+                        AccountPassword = (taikhoan.Password + salt.Trim()).ToMD5(),
                         Active = true,
-                        Salt = salt,
+                        Sail = salt,
+                        RoleId = GetRoleIdForCustomer(),
                         CreateDate = DateTime.Now
+                        
                     };
                     try
                     {
                         _context.Add(khachhang);
                         await _context.SaveChangesAsync();
-                        HttpContext.Session.SetString("MaKhachHang", khachhang.MaKhachHang.ToString());
-                        var taikhoanID = HttpContext.Session.GetString("MaKhachHang");
+                        HttpContext.Session.SetString("AccountId", khachhang.AccountId.ToString());
+                        var taikhoanID = HttpContext.Session.GetString("AccountId");
 
                         var claims = new List<Claim>
                         {
-                            new Claim(ClaimTypes.Name, khachhang.TenKhachHang),
-                            new Claim("MaKhachHang", khachhang.MaKhachHang.ToString())
+                            new Claim(ClaimTypes.Name, khachhang.FullName),
+                            new Claim("AccountId", khachhang.AccountId.ToString())
                         };
                         ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "login");
                         ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
@@ -134,7 +153,7 @@ namespace MyPhamCheilinus.Controllers
         [Route("dang-nhap.html", Name = "Dangnhap")]
         public IActionResult Login(string? returnUrl = null)
         {
-            var taikhoanID = HttpContext.Session.GetString("MaKhachHang");
+            var taikhoanID = HttpContext.Session.GetString("AccountId");
             if (taikhoanID != null)
             {
                 return RedirectToAction("Dashboard", "Accounts");
@@ -154,11 +173,11 @@ namespace MyPhamCheilinus.Controllers
                     bool isEmail = Utilities.IsValidEmail(customer.UserName);
                     if (!isEmail) return View(customer);
 
-                    var khachhang = _context.KhachHangs.AsNoTracking().SingleOrDefault(x => x.Email.Trim() == customer.UserName);
+                    var khachhang = _context.Accounts.AsNoTracking().SingleOrDefault(x => x.AccountEmail.Trim() == customer.UserName);
                     if (khachhang == null) return RedirectToAction("DangKyTaiKhoan");
 
-                    string pass = (customer.Password + khachhang.Salt.Trim()).ToMD5();
-                    if (khachhang.Password != pass)
+                    string pass = (customer.Password + khachhang.Sail.Trim()).ToMD5();
+                    if (khachhang.AccountPassword != pass)
                     {
                         _notifyService.Success("Thông tin đăng nhập chưa chính xác.");
                         return View(customer);
@@ -168,20 +187,33 @@ namespace MyPhamCheilinus.Controllers
                         return RedirectToAction("ThongBao", "Accounts");
                     }
 
-                    HttpContext.Session.SetString("MaKhachHang", khachhang.MaKhachHang.ToString());
+                    HttpContext.Session.SetString("AccountId", khachhang.AccountId.ToString());
 
-                    var taikhoanID = HttpContext.Session.GetString("MaKhachHang");
+                    var taikhoanID = HttpContext.Session.GetString("AccountId");
 
                     var claims = new List<Claim>
                     {
-                        new Claim(ClaimTypes.Name, khachhang.TenKhachHang),
-                        new Claim("MaKhachHang", khachhang.MaKhachHang.ToString())
-                    };
+                        new Claim(ClaimTypes.Name, khachhang.FullName),
+                        new Claim("AccountId", khachhang.AccountId.ToString()),
+           
 
+                    };
+                    if (khachhang.RoleId == GetRoleIdForAdmin())
+                    {
+                        claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+                    }
+                    if (khachhang.RoleId == GetRoleIdForCustomer())
+                    {
+                        claims.Add(new Claim(ClaimTypes.Role, "Customer"));
+                    }
+                    if (khachhang.RoleId == GetRoleIdForEmployee())
+                    {
+                        claims.Add(new Claim(ClaimTypes.Role, "Employee"));
+                    }
                     ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "login");
                     ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
                     await HttpContext.SignInAsync(claimsPrincipal);
-                    _notifyService.Success("Đăng nhập thành công!");
+                    //_notifyService.Success("Đăng nhập thành công!");
                     return RedirectToAction("Dashboard", "Accounts");
                 }
             }
@@ -196,7 +228,7 @@ namespace MyPhamCheilinus.Controllers
         public IActionResult Logout()
         {
             HttpContext.SignOutAsync();
-            HttpContext.Session.Remove("MaKhachHang");
+            HttpContext.Session.Remove("AccountId");
             return RedirectToAction("Index", "Home");
         }
     }

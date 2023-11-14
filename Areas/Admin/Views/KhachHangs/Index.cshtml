@@ -11,7 +11,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Danh sách tài khoản quản trị</h1>
+                <h1>Danh sách khách hàng</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -42,7 +42,7 @@
                                         <option value="" disabled selected>Chọn trạng thái</option>
                                     </select>
                                 </div>
-                                <div class="col-lg-12 text-right">
+                                <div class="col-lg-5 text-right">
                                     <button class="btn btn-primary">
                                         <i class="anticon anticon-plus-cỉrcle m-r-5"></i>
                                         <span>Add</span>
@@ -61,6 +61,7 @@
                                     <th>Họ và tên</th>
                                     <th>Số điện thoại</th>
                                     <th>Địa chỉ</th>
+                                    <th>Địa chỉ</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -75,7 +76,7 @@
                                                 <p>@item.SoDienThoai</p>
                                             </td>
                                             <td>@item.DiaChi</td>
-                                            
+
                                             <td>
                                                 <a class="btn btn-primary btn-tone m-r-5" asp-action="Details" asp-route-id="@item.MaKhachHang">Chi tiết</a>
                                                 <a class="btn btn-success btn-tone m-r-5" asp-action="Edit" asp-route-id="@item.MaKhachHang">Sửa</a>
@@ -88,7 +89,7 @@
                         </table>
                         <div aria-label="Page navigation example">
                             <ul class="pagination">
-                                <pager class="pager-container" list ="@Model" asp-area="Admin" asp-controller="KhachHangs" asp-action="Index" />
+                                <pager class="pager-container" list="@Model" asp-area="Admin" asp-controller="KhachHangs" asp-action="Index" />
                             </ul>
                         </div>
                     </div>
