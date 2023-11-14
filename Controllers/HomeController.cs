@@ -7,7 +7,7 @@ using static MyPhamCheilinus.Controllers.HomeController;
 
 namespace MyPhamCheilinus.Controllers
 {
-
+  
 
     public class HomeController : Controller
     {

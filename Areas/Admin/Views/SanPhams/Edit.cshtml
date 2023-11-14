@@ -9,7 +9,7 @@
     ViewData["Title"] = "Chỉnh sửa thông tin sản phẩm: " + Model.TenSanPham;
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
-<form asp-controller="SanPhams" asp-action="Edit" asp-route-id="@Model.MaSanPham" asp-route-page="@ViewBag.CurrentPage" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice"  method="post" enctype="multipart/form-data">
+<form asp-controller="SanPhams" asp-action="Edit" asp-route-id="@Model.MaSanPham" asp-route-MaID="@ViewBag.CurrentMaID"  asp-route-page="@ViewBag.CurrentPage" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice" method="post" enctype="multipart/form-data">
     <div asp-validation-summary="All" class="text-danger"></div>
     <input type="hidden" asp-for="MaSanPham" />
     <input type="hidden" asp-for="Anh" />
@@ -105,7 +105,7 @@
                             <span>Lưu thay đổi</span>
                         </button>
                         <button class="btn btn-secondary">
-                            <a asp-area="Admin" asp-controller="SanPhams" asp-action="Index" asp-route-page="@ViewBag.CurrentPage" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" style="color: white" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">Trở lại</a>
+                            <a asp-area="Admin" asp-controller="SanPhams" asp-action="Index" asp-route-MaID="@ViewBag.CurrentMaID" asp-route-page="@ViewBag.CurrentPage" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" style="color: white" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">Trở lại</a>
                         </button>
                     </td>
                     @*<div class="row">

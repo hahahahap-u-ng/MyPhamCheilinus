@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using AspNetCoreHero.ToastNotification.Notyf;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using MyPhamCheilinus.Models;
 using PagedList.Core;
 
 namespace MyPhamCheilinus.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin,Employee")]
     public class DonHangsController : Controller
     {
         private readonly _2023MyPhamContext _context;
@@ -26,7 +30,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
 
         // GET: Admin/DonHangs
    
-        public IActionResult Index(int? page, string? MaKH ="")
+        public IActionResult Index(int? page, string? MaID = null, string search = "", double? minPrice = null, double? maxPrice = null)
         {
             var pageNumber = page == null || page <= 0 ? 1 : page.Value;
             var pageSize = 10;
@@ -34,19 +38,44 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             IQueryable<DonHang> query = _context.DonHangs
                 .AsNoTracking().Include(dh => dh.ChiTietDonHangs).ThenInclude(c => c.MaSanPhamNavigation)
                 .Include(x => x.MaKhachHangNavigation);
+            if (!string.IsNullOrEmpty(MaID))
+            {
+                query = query.Where(x => x.MaDonHang == MaID);
+            }
+          
 
-           
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(x => x.MaKhachHangNavigation.TenKhachHang.Contains(search));
+            }
+
+            if (minPrice != null)
+            {
+                query = query.Where(x => x.TongTien >= minPrice);
+            }
+
+            if (maxPrice != null)
+            {
+                query = query.Where(x => x.TongTien <= maxPrice);
+            }
+
+
 
             var lsDonHangs = query.OrderByDescending(x => x.NgayDatHang);
 
             PagedList<DonHang> models = new PagedList<DonHang>(lsDonHangs, pageNumber, pageSize);
 
+            ViewBag.CurrentMaID = MaID;
             ViewBag.CurrentPage = pageNumber;
+            ViewBag.CurrentSearch = search;
+            ViewBag.CurrentMinPrice = minPrice;
+            ViewBag.CurrentMaxPrice = maxPrice;
 
             //ViewData["KhachHang"] = new SelectList(_context.DanhMucSanPhams, "MaKhachHang", "TenKhachHang", MaKH);
 
             return View(models);
         }
+
         public IActionResult ChiTietDonHang()
         {
             var donHangList = _context.DonHangs
@@ -73,8 +102,41 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             return Ok();
         }
 
+        public IActionResult Filtter( string search, double? minPrice, double? maxPrice, string? MaID)
+        {
+            var url = "/Admin/SanPhams?";
+            if (MaID != null)
+            {
+                url += $"MaID={MaID}&";
+            }
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                url += $"search={search}&";
+            }
+
+            if (minPrice != null)
+            {
+                url += $"minPrice={minPrice}&";
+            }
+
+            if (maxPrice != null)
+            {
+                url += $"maxPrice={maxPrice}&";
+            }
+
+            // Loại bỏ dấu '&' cuối cùng nếu có
+            if (url.EndsWith("&"))
+            {
+                url = url.Substring(0, url.Length - 1);
+            }
+
+            return Json(new { status = "success", redirectUrl = url });
+        }
+
+
         // GET: Admin/DonHangs/Details/5
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(string id, int? page, string? MaID, string? search, double? minPrice, double? maxPrice)
         {
             if (id == null || _context.DonHangs == null)
             {
@@ -128,7 +190,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         }
 
         // GET: Admin/DonHangs/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(string id, int? page, string? MaID, string? search, double? minPrice, double? maxPrice)
         {
             if (id == null || _context.DonHangs == null)
             {
@@ -149,7 +211,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("MaDonHang,TongTien,TrangThaiDonHang,MaKhachHang,ThanhToan,VanChuyen,PhiVanChuyen,NgayDatHang")] DonHang donHang)
+        public async Task<IActionResult> Edit(string id, int? page, string? MaID, string? search, double? minPrice, double? maxPrice, [Bind("MaDonHang,TongTien,TrangThaiDonHang,MaKhachHang,ThanhToan,VanChuyen,PhiVanChuyen,NgayDatHang")] DonHang donHang)
         {
             if (id != donHang.MaDonHang)
             {
@@ -174,14 +236,14 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", new { page = page, MaID = MaID, search = search, minPrice = minPrice, maxPrice = maxPrice });
             }
             ViewData["MaKhachHang"] = new SelectList(_context.KhachHangs, "MaKhachHang", "MaKhachHang", donHang.MaKhachHang);
             return View(donHang);
         }
 
         // GET: Admin/DonHangs/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(string id, int? page, string? MaID, string? search, double? minPrice, double? maxPrice)
         {
             if (id == null || _context.DonHangs == null)
             {
@@ -202,7 +264,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         // POST: Admin/DonHangs/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(string id, int? page, string? MaID, string? search, double? minPrice, double? maxPrice)
         {
             if (_context.DonHangs == null)
             {
@@ -215,7 +277,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", new { page = page, MaID = MaID, search = search, minPrice = minPrice, maxPrice = maxPrice });
         }
 
         private bool DonHangExists(string id)

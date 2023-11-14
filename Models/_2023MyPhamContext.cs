@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using MyPhamCheilinus.ModelViews;
 
 namespace MyPhamCheilinus.Models;
 
@@ -68,7 +67,11 @@ public partial class _2023MyPhamContext : DbContext
                 .HasMaxLength(6)
                 .IsFixedLength();
 
-            entity.HasOne(d => d.Role).WithMany(p => p.Accounts)
+            entity.HasOne(d => d.MaKhachHangNavigation).WithMany(p => p.Accounts)
+                .HasForeignKey(d => d.MaKhachHang)
+                .HasConstraintName("FK_Account_KhachHang");
+
+            entity.HasOne(d => d.RoleNavigation).WithMany(p => p.Accounts)
                 .HasForeignKey(d => d.RoleId)
                 .HasConstraintName("FK_Account_Role");
         });
@@ -194,7 +197,6 @@ public partial class _2023MyPhamContext : DbContext
             entity.Property(e => e.MaDonHang)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.MaKhachHang).HasMaxLength(250);
             entity.Property(e => e.NgayDatHang).HasColumnType("datetime");
 
             entity.HasOne(d => d.MaKhachHangNavigation).WithMany(p => p.DonHangs)
@@ -240,7 +242,6 @@ public partial class _2023MyPhamContext : DbContext
 
             entity.ToTable("KhachHang");
 
-            entity.Property(e => e.MaKhachHang).HasMaxLength(250);
             entity.Property(e => e.Address).HasMaxLength(250);
             entity.Property(e => e.Avatar).HasMaxLength(250);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
@@ -347,6 +348,4 @@ public partial class _2023MyPhamContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-
-    public DbSet<MyPhamCheilinus.ModelViews.RegisterVM>? RegisterVM { get; set; }
 }

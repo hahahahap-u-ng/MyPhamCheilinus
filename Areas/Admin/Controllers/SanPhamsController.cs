@@ -9,10 +9,13 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyPhamCheilinus.Models;
 using PagedList.Core;
+using System.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyPhamCheilinus.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin,Employee")]
     public class SanPhamsController : Controller
     {
         private readonly _2023MyPhamContext _context;
@@ -25,7 +28,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         }
 
         // GET: Admin/SanPhams
-        public IActionResult Index(int? page, string MaDM = "", string search = "", double? minPrice = null, double? maxPrice = null)
+        public IActionResult Index(int? page, string MaDM = "", string? MaID = "", string search = "", double? minPrice = null, double? maxPrice = null)
         {
             var pageNumber = page == null || page <= 0 ? 1 : page.Value;
             var pageSize = 10;
@@ -38,6 +41,11 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             {
                 query = query.Where(x => x.MaDanhMuc == MaDM);
             }
+            if (!string.IsNullOrEmpty(MaID))
+            {
+                query = query.Where(x => x.MaSanPham.Contains(MaID));
+            }
+
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -60,6 +68,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             ViewBag.CurrentMaDM = MaDM;
             ViewBag.CurrentPage = pageNumber;
             ViewBag.CurrentSearch = search;
+            ViewBag.CurrentMaID = MaID;
             ViewBag.CurrentMinPrice = minPrice;
             ViewBag.CurrentMaxPrice = maxPrice;  // Thiếu dấu "." ở đây.
             ViewData["DanhMuc"] = new SelectList(_context.DanhMucSanPhams, "MaDanhMuc", "TenDanhMuc", MaDM);
@@ -69,10 +78,13 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
 
 
 
-        public IActionResult Filtter(string MaDM, string search, double? minPrice, double? maxPrice)
+        public IActionResult Filtter(string MaDM, string search, double? minPrice, double? maxPrice, string? MaID)
         {
             var url = "/Admin/SanPhams?";
-
+            if (MaID != null)
+            {
+                url += $"MaID={MaID}&";
+            }
             if (!string.IsNullOrEmpty(MaDM))
             {
                 url += $"MaDM={MaDM}&";
@@ -107,7 +119,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
 
 
         // GET: Admin/SanPhams/Details/5
-        public async Task<IActionResult> Details(string id, int? page, string? search, string? MaDM, double? minPrice, double? maxPrice)
+        public async Task<IActionResult> Details(string id, int? page, string? MaID, string? search, string? MaDM, double? minPrice, double? maxPrice)
         {
             if (id == null || _context.SanPhams == null)
             {
@@ -126,12 +138,13 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             ViewBag.CurrentMaDM = MaDM;
             ViewBag.CurrentMinPrice = minPrice;
             ViewBag.CurrentMaxPrice = maxPrice;
+            ViewBag.CurrentMaID = MaID;
             return View(sanPham);
         }
         [HttpPost, ActionName("Details")]
         [ValidateAntiForgeryToken]
 
-        public async Task<IActionResult> DetailsConfirmed(string id, int? page, string? search, string? MaDM, double? minPrice, double? maxPrice)
+        public async Task<IActionResult> DetailsConfirmed(string id, int? page, string? MaID, string? search, string? MaDM, double? minPrice, double? maxPrice)
         {
             if (_context.SanPhams == null)
             {
@@ -139,12 +152,12 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             }
             // Sau khi xóa thành công, bạn có thể chuyển hướng trở lại trang chứa sản phẩm vừa xóa bằng cách truyền tham số `page`.
             // Nếu `page` không có giá trị, bạn có thể mặc định nó về một trang cụ thể (ví dụ: 1).
-            return RedirectToAction("Index", new { page = page, MaDM = MaDM, search = search, minPrice = minPrice, maxPrice = maxPrice });
+            return RedirectToAction("Index", new { page = page, MaDM = MaDM, MaID = MaID, search = search, minPrice = minPrice, maxPrice = maxPrice });
 
         }
 
         // GET: Admin/SanPhams/Create
-        public IActionResult Create(int? page, string? search, string? MaDM, double? minPrice, double? maxPrice)
+        public IActionResult Create(int? page, string? search, string? MaDM, string? MaID, double? minPrice, double? maxPrice)
         {
             ViewData["DanhMuc"] = new SelectList(_context.DanhMucSanPhams, "MaDanhMuc", "TenDanhMuc");
             ViewBag.CurrentPage = page;
@@ -152,6 +165,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             ViewBag.CurrentMaDM = MaDM;
             ViewBag.CurrentMinPrice = minPrice;
             ViewBag.CurrentMaxPrice = maxPrice;
+            ViewBag.CurrentMaID = MaID;
             return View();
         }
 
@@ -220,7 +234,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         }
 
         // GET: Admin/SanPhams/Edit/5
-        public async Task<IActionResult> Edit(string id, int? page, string? search, string? MaDM, double? minPrice, double? maxPrice)
+        public async Task<IActionResult> Edit(string id, int? page, string? MaID, string? search, string? MaDM, double? minPrice, double? maxPrice)
         {
             if (id == null || _context.SanPhams == null)
             {
@@ -239,6 +253,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             ViewBag.CurrentMaDM = MaDM;
             ViewBag.CurrentMinPrice = minPrice;
             ViewBag.CurrentMaxPrice = maxPrice;
+            ViewBag.CurrentMaID = MaID;
 
             return View(sanPham);
         }
@@ -248,7 +263,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, int? page, string? search, string? MaDM, double? minPrice, double? maxPrice, [Bind("MaSanPham,TenSanPham,Mau,Anh,Gia,KhuyenMai,Slkho,NgaySx,LuotMua,MaDanhMuc,HomeFlag,BestSellers,MoTa,Active")] SanPham sanPham, IFormFile? fAnh)
+        public async Task<IActionResult> Edit(string id, int? page, string? MaID, string? search, string? MaDM, double? minPrice, double? maxPrice, [Bind("MaSanPham,TenSanPham,Mau,Anh,Gia,KhuyenMai,Slkho,NgaySx,LuotMua,MaDanhMuc,HomeFlag,BestSellers,MoTa,Active")] SanPham sanPham, IFormFile? fAnh)
         {
             if (id != sanPham.MaSanPham)
             {
@@ -291,7 +306,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index", new { page = page, MaDM = MaDM, search = search, minPrice = minPrice, maxPrice = maxPrice });
+                return RedirectToAction("Index", new { page = page, MaDM = MaDM, MaID = MaID, search = search, minPrice = minPrice, maxPrice = maxPrice });
             }
 
             ViewData["DanhMuc"] = new SelectList(_context.DanhMucSanPhams, "MaDanhMuc", "MaDanhMuc", sanPham.MaDanhMuc);
@@ -300,7 +315,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
 
 
         // GET: Admin/SanPhams/Delete/5
-       public async Task<IActionResult> Delete(string id, int? page, string? search, string? MaDM, double? minPrice, double? maxPrice)
+       public async Task<IActionResult> Delete(string id, int? page, string? MaID, string? search, string? MaDM, double? minPrice, double? maxPrice)
 {
     if (id == null || _context.SanPhams == null)
     {
@@ -320,6 +335,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             ViewBag.CurrentMaDM = MaDM; // Lưu trạng thái trang hiện tại
             ViewBag.CurrentMinPrice = minPrice;
             ViewBag.CurrentMaxPrice = maxPrice;
+            ViewBag.CurrentMaID = MaID;
 
             return View(sanPham);
 }
@@ -329,7 +345,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
 
-        public async Task<IActionResult> DeleteConfirmed(string id, int? page, string? search, string? MaDM, double? minPrice, double? maxPrice)
+        public async Task<IActionResult> DeleteConfirmed(string id, string? MaID, int? page, string? search, string? MaDM, double? minPrice, double? maxPrice)
         {
             if (_context.SanPhams == null)
             {
@@ -346,7 +362,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
 
             // Sau khi xóa thành công, bạn có thể chuyển hướng trở lại trang chứa sản phẩm vừa xóa bằng cách truyền tham số `page`.
             // Nếu `page` không có giá trị, bạn có thể mặc định nó về một trang cụ thể (ví dụ: 1).
-            return RedirectToAction("Index", new { page = page, MaDM = MaDM, search = search, minPrice = minPrice, maxPrice = maxPrice });
+            return RedirectToAction("Index", new { page = page, MaDM = MaDM, MaID = MaID, search = search, minPrice = minPrice, maxPrice = maxPrice });
 
         }
 
