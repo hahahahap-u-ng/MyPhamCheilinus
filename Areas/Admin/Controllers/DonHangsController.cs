@@ -38,11 +38,11 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             IQueryable<DonHang> query = _context.DonHangs
                 .AsNoTracking().Include(dh => dh.ChiTietDonHangs).ThenInclude(c => c.MaSanPhamNavigation)
                 .Include(x => x.MaKhachHangNavigation);
+         
             if (!string.IsNullOrEmpty(MaID))
             {
-                query = query.Where(x => x.MaDonHang == MaID);
+                query = query.Where(x => x.MaDonHang.Contains(MaID));
             }
-          
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -61,9 +61,9 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
 
 
 
-            var lsDonHangs = query.OrderByDescending(x => x.NgayDatHang);
+            var lsDonHangs = query.OrderByDescending(x => x.NgayDatHang).ToList();
 
-            PagedList<DonHang> models = new PagedList<DonHang>(lsDonHangs, pageNumber, pageSize);
+            PagedList<DonHang> models = new PagedList<DonHang>(lsDonHangs.AsQueryable(), pageNumber, pageSize);
 
             ViewBag.CurrentMaID = MaID;
             ViewBag.CurrentPage = pageNumber;
@@ -104,7 +104,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
 
         public IActionResult Filtter( string search, double? minPrice, double? maxPrice, string? MaID)
         {
-            var url = "/Admin/SanPhams?";
+            var url = "/Admin/DonHangs?";
             if (MaID != null)
             {
                 url += $"MaID={MaID}&";
@@ -161,10 +161,28 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                 .AsNoTracking().Where(x => x.MaDonHang == donHangs.MaDonHang)
                 .OrderBy(x => x.MaDonHang).ToList();
             ViewBag.ChiTiet = donhang;
+            ViewBag.CurrentPage = page;
+            ViewBag.CurrentSearch = search;
+            ViewBag.CurrentMinPrice = minPrice;
+            ViewBag.CurrentMaxPrice = maxPrice;
+            ViewBag.CurrentMaID = MaID;
             //string fulladdress = $"{chitietdonhang.Ma}"
             return View(donHangs);
         }
+        [HttpPost, ActionName("Details")]
+        [ValidateAntiForgeryToken]
 
+        public async Task<IActionResult> DetailsConfirmed(string id, int? page, string? MaID, string? search, double? minPrice, double? maxPrice)
+        {
+            if (_context.DonHangs == null)
+            {
+                return Problem("Entity set '_2023MyPhamContext.DonHangs' is null.");
+            }
+            // Sau khi xóa thành công, bạn có thể chuyển hướng trở lại trang chứa sản phẩm vừa xóa bằng cách truyền tham số `page`.
+            // Nếu `page` không có giá trị, bạn có thể mặc định nó về một trang cụ thể (ví dụ: 1).
+            return RedirectToAction("Index", new { page = page, MaID = MaID, search = search, minPrice = minPrice, maxPrice = maxPrice });
+
+        }
         // GET: Admin/DonHangs/Create
         public IActionResult Create()
         {
@@ -186,6 +204,126 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["MaKhachHang"] = new SelectList(_context.KhachHangs, "MaKhachHang", "MaKhachHang", donHang.MaKhachHang);
+            return View(donHang);
+        }
+        public async Task<IActionResult> ChangeStatus(string id, int? page, string? MaID, string? search, double? minPrice, double? maxPrice)
+        {
+            if (id == null || _context.DonHangs == null)
+            {
+                return NotFound();
+            }
+
+            var donHang = await _context.DonHangs
+                 .AsNoTracking()
+                .Include(dh => dh.ChiTietDonHangs)
+                .ThenInclude(c => c.MaSanPhamNavigation)
+                .Include(x => x.MaKhachHangNavigation)
+                 .FirstOrDefaultAsync(m => m.MaDonHang == id);
+
+            if (donHang == null)
+            {
+                return NotFound();
+            }
+
+            List<SelectListItem> trangThaiList = new List<SelectListItem>
+    {
+        new SelectListItem { Text = "Chờ xác nhận", Value = "1" },
+        new SelectListItem { Text = "Đang vận chuyển", Value = "2" },
+        new SelectListItem { Text = "Đã giao hàng", Value = "3" },
+        new SelectListItem { Text = "Hủy đơn hàng", Value = "4" }
+        // Thêm các trạng thái khác nếu cần
+    };
+
+            ViewData["TrangThai"] = new SelectList(trangThaiList, "Value", "Text", donHang.TrangThaiDonHang.ToString());
+            ViewData["MaDonHang"] = new SelectList(_context.DonHangs, "MaDonHang", "MaDonHang", donHang.MaDonHang);
+   
+            ViewBag.Currentid = id;
+            ViewBag.CurrentPage = page;
+            ViewBag.CurrentSearch = search;
+            ViewBag.CurrentMinPrice = minPrice;
+            ViewBag.CurrentMaxPrice = maxPrice;
+            ViewBag.CurrentMaID = MaID;
+
+            return View( donHang);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+
+        public async Task<IActionResult> ChangeStatus(string id, int? page, string? MaID, string? search, double? minPrice, double? maxPrice, [Bind("MaDonHang,TongTien,TrangThaiDonHang,MaKhachHang,ThanhToan,VanChuyen,PhiVanChuyen,NgayDatHang")] DonHang donHang)
+        {
+            if (id != donHang.MaDonHang)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // Lấy chi tiết đơn hàng và include MaDonHangNavigation và MaSanPhamNavigation
+                    var ctDonHang = await _context.DonHangs
+                        .Include(dh => dh.ChiTietDonHangs)
+                        .ThenInclude(c => c.MaSanPhamNavigation)
+                        .Include(x => x.MaKhachHangNavigation)
+                        .FirstOrDefaultAsync(m => m.MaDonHang == id);
+
+                    if (ctDonHang != null)
+                    {
+                        // Sử dụng int.TryParse để chuyển đổi chuỗi thành số nguyên
+                        if (int.TryParse(Request.Form["txtMaDM"], out int trangThai))
+                        {
+                            // Cập nhật trạng thái đơn hàng
+                            ctDonHang.TrangThaiDonHang = trangThai;
+                        }
+
+                        _context.Update(ctDonHang);
+                        await _context.SaveChangesAsync();
+                        _notifyService.Success("Cập nhật trạng thái thành công");
+                    }
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!DonHangExists(donHang.MaDonHang))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Index", new { page = page, MaID = MaID, search = search, minPrice = minPrice, maxPrice = maxPrice });
+            }
+
+            // Trong trường hợp có lỗi, bạn có thể in các lỗi ModelState để kiểm tra
+            foreach (var modelState in ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    Console.WriteLine($"Error: {error.ErrorMessage}");
+                }
+            }
+
+            // Nếu có lỗi, hiển thị trang cập nhật với thông báo lỗi
+            List<SelectListItem> trangThaiList = new List<SelectListItem>
+    {
+         new SelectListItem { Text = "Chờ xác nhận", Value = "1" },
+        new SelectListItem { Text = "Đang vận chuyển", Value = "2" },
+        new SelectListItem { Text = "Đã giao hàng", Value = "3" },
+        new SelectListItem { Text = "Hủy đơn hàng", Value = "4" }
+        // Thêm các trạng thái khác nếu cần
+    };
+
+            ViewData["TrangThai"] = new SelectList(trangThaiList, "Value", "Text", ModelState["MaDonHangNavigation.TrangThaiDonHang"].AttemptedValue);
+            ViewData["MaDonHang"] = new SelectList(_context.DonHangs, "MaDonHang", "MaDonHang", donHang.MaDonHang);
+            ViewBag.Currentid = id;
+            ViewBag.CurrentPage = page;
+            ViewBag.CurrentSearch = search;
+            ViewBag.CurrentMinPrice = minPrice;
+            ViewBag.CurrentMaxPrice = maxPrice;
+            ViewBag.CurrentMaID = MaID;
+
             return View(donHang);
         }
 

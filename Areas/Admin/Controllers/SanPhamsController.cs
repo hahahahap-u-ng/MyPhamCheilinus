@@ -319,7 +319,8 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
 
 
         // GET: Admin/SanPhams/Delete/5
-       public async Task<IActionResult> Delete(string id, int? page, string? MaID, string? search, string? MaDM, double? minPrice, double? maxPrice)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(string id, int? page, string? MaID, string? search, string? MaDM, double? minPrice, double? maxPrice)
 {
     if (id == null || _context.SanPhams == null)
     {

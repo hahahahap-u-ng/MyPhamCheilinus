@@ -70,12 +70,11 @@
                                 <tr class="text-center">
                                     <th>ID</th>
                                     <th>Khách hàng</th>
-
                                     <th>Ngày đặt</th>
                                     <th>Tổng tiền</th>
                                     <th>Trạng thái</th>
-                                    <th></th>
-
+                          
+                                    <th>Chức năng</th>
                                 </tr>
                             </thead>
                             <tbody id="records_table">
@@ -108,95 +107,92 @@
                                                     <span class="badge bg-danger" style="background-color: #c82333">Đã hủy</span>
                                                 }
                                             </td>
-<td class="text-right" @*rowspan="@item.ChiTietDonHangs.Count"*@>
-                                                @if (item.TrangThaiDonHang == 1)
-                                                {
-                                                    <button class="btn btn-danger btn-tone m-r-5 border-0" style="color: #fff; background-color: #c82333; border-color: #c82333; box-shadow: none;" onclick="updateStatus('@item.MaDonHang', 4)">Hủy đơn hàng</button>
-
-                                                    <button class="btn btn-success btn-tone m-r-5 border-0" style="color: #fff; background-color: #007bff; border-color: #007bff; box-shadow: none;" onclick="updateStatus('@item.MaDonHang', 2)">Đang giao hàng</button>
-                                                }
-
-                                            </td>
-                                            <td>
-                                                <a class="btn btn-secondary btn-tone m-r-5" asp-action="Details" asp-route-id="@item.MaDonHang" asp-route-page="@ViewBag.CurrentPage">Xem đơn hàng</a>
-
-                                            </td>
-                                                 
+                                             <td class="text-right">
+                                                <a class="btn btn-info btn-tone m-r-5" asp-action="ChangeStatus" asp-route-id="@item.MaDonHang" asp-route-MaID="@ViewBag.CurrentMaID" asp-route-page="@ViewBag.CurrentPage" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">Cập nhật trạng thái</a>
+                                                <a class="btn btn-secondary btn-tone m-r-5" asp-action="Details" asp-route-id="@item.MaDonHang" asp-route-MaID="@ViewBag.CurrentMaID" asp-route-page="@ViewBag.CurrentPage" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">Xem đơn hàng</a>
+                                             </td>
                                         </tr>
                                     }
                                 }
                             </tbody>
                         </table>
                         <div aria-label="Page navigation example">
-                            <ul class="pagination">
-                                <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
-                                    <a class="page-link" asp-action="Index" asp-route-page="1" asp-route-MaID="@ViewBag.Current" aMaIDsp-route-Search="@ViewBag.CurrentSearch" asp-route-MoTa="@ViewBag.CurrentMoTa">Đầu</a>
-                                </li>
-                                <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
-                                    <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageNumber - 1)" asp-route-MaID="@ViewBag.Current" aMaIDsp-route-Search="@ViewBag.CurrentSearch" asp-route-MoTa="@ViewBag.CurrentMoTa">Trước</a>
-                                </li>
-                                @if (Model.PageCount <= 3)
-                                {
-                                    for (int page = 1; page <= Model.PageCount; page++)
-                                    {
-                                        <li class="page-item @(page == Model.PageNumber ? "active" : "")">
-                                            <a class="page-link" asp-action="Index" asp-route-page="@(page)" asp-route-MaID="@ViewBag.Current" aMaIDsp-route-Search="@ViewBag.CurrentSearch" asp-route-MoTa="@ViewBag.CurrentMoTa">@(page)</a>
-                                        </li>
-                                    }
-                                }
-                                else
-                                {
-                                    var startPage = Math.Max(1, Model.PageNumber - 1);
-                                    var endPage = Math.Min(Model.PageCount, startPage + 2);
+                            <div class="card-body">
+                                <!-- Mã bảng hiện tại của bạn ở đây -->
 
-                                    if (startPage == 2)
-                                    {
-                                        <li class="page-item">
-                                            <a class="page-link" asp-action="Index" asp-route-page="1" asp-route-MaID="@ViewBag.Current" aMaIDsp-route-Search="@ViewBag.CurrentSearch" asp-route-MoTa="@ViewBag.CurrentMoTa">1</a>
+                                <div aria-label="Page navigation example" class="d-flex justify-content-center">
+                                    <ul class="pagination">
+                                        <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                                            <a class="page-link" asp-action="Index" asp-route-page="1" asp-route-MaID="@ViewBag.Current" aMaIDsp-route-Search="@ViewBag.CurrentSearch" asp-route-MoTa="@ViewBag.CurrentMoTa">Đầu</a>
                                         </li>
-                                    }
-                                    else if (startPage > 2)
-                                    {
-                                        <li class="page-item">
-                                            <a class="page-link" asp-action="Index" asp-route-page="1" asp-route-MaID="@ViewBag.Current" aMaIDsp-route-Search="@ViewBag.CurrentSearch" asp-route-MoTa="@ViewBag.CurrentMoTa" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">1</a>
+                                        <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                                            <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageNumber - 1)" asp-route-MaID="@ViewBag.Current" aMaIDsp-route-Search="@ViewBag.CurrentSearch" asp-route-MoTa="@ViewBag.CurrentMoTa">Trước</a>
                                         </li>
-                                        <li class="page-item disabled">
-                                            <span class="page-link">...</span>
-                                        </li>
-                                    }
+                                        @if (Model.PageCount <= 3)
+                                        {
+                                            for (int page = 1; page <= Model.PageCount; page++)
+                                            {
+                                                <li class="page-item @(page == Model.PageNumber ? "active" : "")">
+                                                    <a class="page-link" asp-action="Index" asp-route-page="@(page)" asp-route-MaID="@ViewBag.Current" aMaIDsp-route-Search="@ViewBag.CurrentSearch" asp-route-MoTa="@ViewBag.CurrentMoTa">@(page)</a>
+                                                </li>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var startPage = Math.Max(1, Model.PageNumber - 1);
+                                            var endPage = Math.Min(Model.PageCount, startPage + 2);
 
-                                    for (int page = startPage; page <= endPage; page++)
-                                    {
-                                        <li class="page-item @(page == Model.PageNumber ? "active" : "")">
-                                            <a class="page-link" asp-action="Index" asp-route-page="@(page)" asp-route-MaID="@ViewBag.Current" aMaIDsp-route-Search="@ViewBag.CurrentSearch" asp-route-MoTa="@ViewBag.CurrentMoTa">@(page)</a>
-                                        </li>
-                                    }
+                                            if (startPage == 2)
+                                            {
+                                                <li class="page-item">
+                                                    <a class="page-link" asp-action="Index" asp-route-page="1" asp-route-MaID="@ViewBag.Current" aMaIDsp-route-Search="@ViewBag.CurrentSearch" asp-route-MoTa="@ViewBag.CurrentMoTa">1</a>
+                                                </li>
+                                            }
+                                            else if (startPage > 2)
+                                            {
+                                                <li class="page-item">
+                                                    <a class="page-link" asp-action="Index" asp-route-page="1" asp-route-MaID="@ViewBag.Current" aMaIDsp-route-Search="@ViewBag.CurrentSearch" asp-route-MoTa="@ViewBag.CurrentMoTa" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">1</a>
+                                                </li>
+                                                <li class="page-item disabled">
+                                                    <span class="page-link">...</span>
+                                                </li>
+                                            }
 
-                                    if (endPage == Model.PageCount - 1)
-                                    {
+                                            for (int page = startPage; page <= endPage; page++)
+                                            {
+                                                <li class="page-item @(page == Model.PageNumber ? "active" : "")">
+                                                    <a class="page-link" asp-action="Index" asp-route-page="@(page)" asp-route-MaID="@ViewBag.Current" aMaIDsp-route-Search="@ViewBag.CurrentSearch" asp-route-MoTa="@ViewBag.CurrentMoTa">@(page)</a>
+                                                </li>
+                                            }
 
-                                        <li class="page-item">
-                                            <a class="page-link" asp-action="Index" asp-route-page="@Model.PageCount" asp-route-MaID="@ViewBag.Current" aMaIDsp-route-Search="@ViewBag.CurrentSearch" asp-route-MoTa="@ViewBag.CurrentMoTa">@Model.PageCount</a>
-                                        </li>
-                                    }
-                                    else if (endPage < Model.PageCount - 1)
-                                    {
-                                        <li class="page-item disabled">
-                                            <span class="page-link">...</span>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" asp-action="Index" asp-route-page="@Model.PageCount" asp-route-MaID="@ViewBag.Current" aMaIDsp-route-Search="@ViewBag.CurrentSearch" asp-route-MoTa="@ViewBag.CurrentMoTa">@Model.PageCount</a>
-                                        </li>
-                                    }
-                                }
+                                            if (endPage == Model.PageCount - 1)
+                                            {
 
-                                <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
-                                    <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageNumber + 1)" asp-route-MaID="@ViewBag.Current" aMaIDsp-route-Search="@ViewBag.CurrentSearch" asp-route-MoTa="@ViewBag.CurrentMoTa">Tiếp</a>
-                                </li>
-                                <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
-                                    <a class="page-link" asp-action="Index" asp-route-page="@Model.PageCount" asp-route-MaID="@ViewBag.Current" aMaIDsp-route-Search="@ViewBag.CurrentSearch" asp-route-MoTa="@ViewBag.CurrentMoTa">Cuối</a>
-                                </li>
-                            </ul>
+                                                <li class="page-item">
+                                                    <a class="page-link" asp-action="Index" asp-route-page="@Model.PageCount" asp-route-MaID="@ViewBag.Current" aMaIDsp-route-Search="@ViewBag.CurrentSearch" asp-route-MoTa="@ViewBag.CurrentMoTa">@Model.PageCount</a>
+                                                </li>
+                                            }
+                                            else if (endPage < Model.PageCount - 1)
+                                            {
+                                                <li class="page-item disabled">
+                                                    <span class="page-link">...</span>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a class="page-link" asp-action="Index" asp-route-page="@Model.PageCount" asp-route-MaID="@ViewBag.Current" aMaIDsp-route-Search="@ViewBag.CurrentSearch" asp-route-MoTa="@ViewBag.CurrentMoTa">@Model.PageCount</a>
+                                                </li>
+                                            }
+                                        }
+
+                                        <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                                            <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageNumber + 1)" asp-route-MaID="@ViewBag.Current" aMaIDsp-route-Search="@ViewBag.CurrentSearch" asp-route-MoTa="@ViewBag.CurrentMoTa">Tiếp</a>
+                                        </li>
+                                        <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                                            <a class="page-link" asp-action="Index" asp-route-page="@Model.PageCount" asp-route-MaID="@ViewBag.Current" aMaIDsp-route-Search="@ViewBag.CurrentSearch" asp-route-MoTa="@ViewBag.CurrentMoTa">Cuối</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                       
                         </div>
                     </div>
                 </div>
@@ -243,7 +239,7 @@
         $(document).ready(function () {
             // Xử lý sự kiện khi nút Tìm kiếm được nhấn
             $('#searchButton').click(function () {
-                var searchValue = $('#searchName').val();
+                var search = $('#searchName').val();
                 var MaID = $('#searchId').val();
                 var minPrice = $('#minPriceInput').val();
                 var maxPrice = $('#maxPriceInput').val();
@@ -253,8 +249,9 @@
                     datatype: 'json',
                     type: 'GET',
                     data: {
-                        MaID: MaID,
+                       
                         search: search,
+                        MaID: MaID,
                         minPrice: minPrice,
                         maxPrice: maxPrice
                     },

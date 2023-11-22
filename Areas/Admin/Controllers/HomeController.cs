@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MyPhamCheilinus.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin,Employee")]
+    //[Authorize(Roles = "Admin,Employee")]
     public class HomeController : Controller
     {
       
