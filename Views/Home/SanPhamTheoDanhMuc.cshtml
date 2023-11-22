@@ -142,7 +142,7 @@
                                                data-product-price="@item.Gia"
                                                data-product-khuyenmai="@item.KhuyenMai"
                                                data-product-masanpham="@item.MaSanPham">
-                                        <span style="background-color: #@item.Mau;"></span>
+                                        <span style="background-color: @item.Mau;"></span>
                                     </label>
                                 }
                             </div>
@@ -177,14 +177,31 @@
 
                                     });
                                 });
+                                // Lắng nghe sự kiện khi nhấn nút "GIỎ HÀNG"
                                 document.addEventListener('DOMContentLoaded', function () {
                                     var addToCartButton = document.querySelector('#addToCartButton');
                                     addToCartButton.addEventListener('click', function (event) {
                                         event.preventDefault();
+                                        // Lấy màu sản phẩm đã chọn
                                         var selectedColor = document.querySelector('.color-select:checked');
                                         if (selectedColor) {
+                                            // Lấy mã sản phẩm
                                             var masanpham = selectedColor.getAttribute('data-product-masanpham');
-                                            window.location.href = '/GioHang/AddGioHang/?MaSanPham=' + masanpham;
+
+                                            // Gửi yêu cầu AJAX để thêm sản phẩm vào giỏ hàng
+                                            $.ajax({
+                                                url: '/GioHang/AddGioHang',
+                                                type: 'POST',
+                                                data: { MaSanPham: masanpham },
+                                                success: function (data) {
+                                                    // Xử lý kết quả thành công (nếu cần)
+                                                    alert('Sản phẩm đã được thêm vào giỏ hàng');
+                                                },
+                                                error: function (xhr, status, error) {
+                                                    // Xử lý lỗi (nếu cần)
+                                                    alert('Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng');
+                                                }
+                                            });
                                         }
                                     });
                                 });

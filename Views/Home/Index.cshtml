@@ -237,7 +237,7 @@
                                 <div class="product-default-single-item product-color--green swiper-slide">
                                     <div class="image-box">
                                         <a  asp-controller="Home" asp-action="SanPhamTheoDanhMuc" asp-route-maDanhMuc="@item.MaDanhMuc" class="image-link">
-                                            <img src="@item.HinhAnh" alt="@item.TenDanhMuc">
+                                            <img src="/images/DanhMucSanPham/@item.HinhAnh" alt="@item.TenDanhMuc">
                                         </a>
                                         <div class="action-link">
                                             <div class="action-link-left">
@@ -273,9 +273,7 @@
                                             </ul>
                                         </div>
                                         <div class="content-right">
-                                            <span class="price">
-                                                @item.Gia
-                                            </span>
+                                            <span class="price">@string.Format("{0:#,##0} VNĐ", item.Gia)</span>
                                         </div>
                                     </div>
                                 </div>
@@ -490,7 +488,7 @@
                                     <div class="product-listview-single-item product-color--green swiper-slide">
                                         <div class="image-box">
                                             <a asp-controller="Home" asp-action="SanPhamTheoDanhMuc" asp-route-maDanhMuc="@item.MaDanhMuc" class="image-link">
-                                                <img src="@item.HinhAnh" alt="">
+                                                <img src="/images/DanhMucSanPham/@item.HinhAnh" alt="@item.TenDanhMuc">
                                             </a>
                                         </div>
                                         <div class="content">
@@ -509,11 +507,7 @@
                                                     <li class="empty"><i class="ion-android-star"></i></li>
                                                 }
                                             </ul>
-                                            <span class="price">
-                                                
-                                                    @item.Gia
-                                                
-                                            </span>
+                                            <span class="price">@string.Format("{0:#,##0} VNĐ", item.Gia)</span>
                                         </div>
                                     </div>
                                 }

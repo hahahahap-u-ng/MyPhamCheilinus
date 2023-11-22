@@ -83,10 +83,10 @@
                                     foreach (var item in Model)
                                     {
                                         <tr>
-                                            <td class="text-center">@item.MaDonHang</td>
-                                           
-                                            <td >@item.MaKhachHangNavigation.TenKhachHang</td>
-                                            
+                                           <td class="text-center">@item.MaDonHang</td>
+
+                                            <td>@item.MaKhachHangNavigation.TenKhachHang</td>
+
                                             <td class="text-center">@item.NgayDatHang</td>
                                             <td class="text-center">@item.TongTien.Value.ToString("#,##0") VNĐ</td>
                                             <td>
@@ -107,15 +107,6 @@
                                                     <span class="badge bg-danger" style="background-color: #c82333">Đã hủy</span>
                                                 }
                                             </td>
-
-                                           @* <td class="text-right">
-                                                @if (item.TrangThaiDonHang == 1)
-                                                {
-                                                    <button class="btn btn-danger btn-tone m-r-5 border-0" style="color: #fff; background-color: #c82333; border-color: #c82333; box-shadow: none;" onclick="updateStatus('@item.MaDonHang', 4)">Hủy đơn hàng</button>
-
-                                                    <button class="btn btn-success btn-tone m-r-5 border-0" style="color: #fff; background-color: #007bff; border-color: #007bff; box-shadow: none;" onclick="updateStatus('@item.MaDonHang', 2)">Đang giao hàng</button>
-                                                }
-                                            </td>*@
                                              <td class="text-right">
                                                 <a class="btn btn-info btn-tone m-r-5" asp-action="ChangeStatus" asp-route-id="@item.MaDonHang" asp-route-MaID="@ViewBag.CurrentMaID" asp-route-page="@ViewBag.CurrentPage" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">Cập nhật trạng thái</a>
                                                 <a class="btn btn-secondary btn-tone m-r-5" asp-action="Details" asp-route-id="@item.MaDonHang" asp-route-MaID="@ViewBag.CurrentMaID" asp-route-page="@ViewBag.CurrentPage" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">Xem đơn hàng</a>
