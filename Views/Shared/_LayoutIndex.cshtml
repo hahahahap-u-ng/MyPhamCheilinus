@@ -81,7 +81,18 @@
                                 <a href="wishlist.html">Wishlist</a>
                                 <a href="cart.html">Cart</a>
                                 <a href="checkout.html">Checkout</a>
-                                 <a href="~/Admin">Admin</a>
+                                <a href="~/Admin">Admin</a>
+                            @*    @if (User.Identity.IsAuthenticated)
+                                {
+                                    
+
+                                    // Kiểm tra quyền và chỉ hiển thị liên kết "Admin" nếu có quyền Admin
+                                    if (User.IsInRole("Admin") ||User.IsInRole("Employee"))
+                                    {
+                                        <a href="~/Admin">Admin</a>
+                                    }
+
+                                }*@
                                 @if (User.Identity.IsAuthenticated)
                                 {
                                     <a href="tai-khoan-cua-toi.html">Tài khoản của tôi</a>
