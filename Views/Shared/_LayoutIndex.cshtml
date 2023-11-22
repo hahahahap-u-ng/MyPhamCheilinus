@@ -90,15 +90,15 @@
                                         <a href="~/Admin">Admin</a>
                                     }
                                 }
-                                @if (User.Identity.IsAuthenticated)
+                               @if (User.Identity.IsAuthenticated)
                                 {
-                                    <a href="tai-khoan-cua-toi.html">Tài khoản của tôi</a>
+                                    <a href="~/tai-khoan-cua-toi.html">Tài khoản của tôi</a>
                                 }
                                 else
                                 {
-                                    <a href="dang-nhap.html">Đăng nhập</a>
+                                    <a href="~/dang-nhap.html">Đăng nhập</a>
 
-                                    <a href="dang-ky.html">Đăng ký</a>
+                                    <a href="~/dang-ky.html">Đăng ký</a>
                                 }
                             </div>
                         </div>
