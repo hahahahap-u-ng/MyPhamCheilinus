@@ -47,7 +47,7 @@ public partial class _2023MyPhamContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=HAHAHAPHUONG\\MSSQLSERVER01;Initial Catalog=2023_My_Pham;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
+        => optionsBuilder.UseSqlServer("Data Source=CAPTAINM10\\TRUNGHIEU26;Initial Catalog=2023_My_Pham;User ID=hieu;Password=1;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -197,11 +197,6 @@ public partial class _2023MyPhamContext : DbContext
             entity.Property(e => e.MaDonHang)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-
-            entity.Property(e => e.MaKhachHang)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-
             entity.Property(e => e.NgayDatHang).HasColumnType("datetime");
 
             entity.HasOne(d => d.MaKhachHangNavigation).WithMany(p => p.DonHangs)
@@ -247,14 +242,12 @@ public partial class _2023MyPhamContext : DbContext
 
             entity.ToTable("KhachHang");
 
-            entity.Property(e => e.MaKhachHang)
-                .HasMaxLength(50)
-                .IsUnicode(false);
- 
             entity.Property(e => e.Address).HasMaxLength(250);
             entity.Property(e => e.Avatar).HasMaxLength(250);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Email).HasMaxLength(50);
+            entity.Property(e => e.Email)
+                .HasMaxLength(150)
+                .IsFixedLength();
             entity.Property(e => e.LastLogin).HasColumnType("datetime");
             entity.Property(e => e.LocationId).HasColumnName("LocationID");
             entity.Property(e => e.NgaySinh).HasColumnType("datetime");
@@ -264,10 +257,6 @@ public partial class _2023MyPhamContext : DbContext
                 .IsFixedLength();
             entity.Property(e => e.SoDienThoai).HasMaxLength(50);
             entity.Property(e => e.TenKhachHang).HasMaxLength(250);
-
-            entity.HasOne(d => d.Location).WithMany(p => p.KhachHangs)
-                .HasForeignKey(d => d.LocationId)
-                .HasConstraintName("FK_KhachHang_DiaChi");
         });
 
         modelBuilder.Entity<LoHang>(entity =>
@@ -334,7 +323,7 @@ public partial class _2023MyPhamContext : DbContext
         {
             entity.HasKey(e => e.MaSanPham);
 
-            entity.ToTable("SanPham");
+            entity.ToTable("SanPham", tb => tb.HasTrigger("UpdateGiaDanhMucSanPham"));
 
             entity.Property(e => e.MaSanPham)
                 .HasMaxLength(50)

@@ -182,26 +182,33 @@
                                     var addToCartButton = document.querySelector('#addToCartButton');
                                     addToCartButton.addEventListener('click', function (event) {
                                         event.preventDefault();
-                                        // Lấy màu sản phẩm đã chọn
-                                        var selectedColor = document.querySelector('.color-select:checked');
-                                        if (selectedColor) {
-                                            // Lấy mã sản phẩm
-                                            var masanpham = selectedColor.getAttribute('data-product-masanpham');
 
-                                            // Gửi yêu cầu AJAX để thêm sản phẩm vào giỏ hàng
-                                            $.ajax({
-                                                url: '/GioHang/AddGioHang',
-                                                type: 'POST',
-                                                data: { MaSanPham: masanpham },
-                                                success: function (data) {
-                                                    // Xử lý kết quả thành công (nếu cần)
-                                                    alert('Sản phẩm đã được thêm vào giỏ hàng');
-                                                },
-                                                error: function (xhr, status, error) {
-                                                    // Xử lý lỗi (nếu cần)
-                                                    alert('Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng');
-                                                }
-                                            });
+                                        // Kiểm tra xem người dùng có được xác thực hay không
+                                        var isAuthenticated = @User.Identity.IsAuthenticated.ToString().ToLower();
+
+                                        if (!isAuthenticated) {
+                                            // Chuyển hướng đến trang đăng nhập
+                                            window.location.href = '/dang-nhap.html'; // Cập nhật URL theo cần thiết
+                                        } else {
+                                            // Tiếp tục với việc thêm sản phẩm vào giỏ hàng
+
+                                            // Phần mã còn lại của bạn...
+                                            var selectedColor = document.querySelector('.color-select:checked');
+                                            if (selectedColor) {
+                                                var masanpham = selectedColor.getAttribute('data-product-masanpham');
+                                                $.ajax({
+                                                    url: '/GioHang/AddGioHang',
+                                                    type: 'POST',
+                                                    data: { MaSanPham: masanpham },
+                                                    success: function (data) {
+                                                        alert('Sản phẩm đã được thêm vào giỏ hàng');
+                                                        location.reload();
+                                                    },
+                                                    error: function (xhr, status, error) {
+                                                        alert('Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng');
+                                                    }
+                                                });
+                                            }
                                         }
                                     });
                                 });
@@ -239,6 +246,7 @@
                             @* <div class="product-add-to-cart-btn">
                                 <a href="/GioHang/AddGioHang/?MaSanPham=SP0001" data-bs-toggle="modal" data-bs-target="#modalAddcart">+ THÊM VÀO GIỎ HÀNG</a>
                             </div> *@
+                            
                             <<div class="product-add-to-cart-btn">
                                 <a href="#" id="addToCartButton">GIỎ HÀNG</a>
                             </div>
@@ -557,7 +565,7 @@
                                     <div class="product-default-single-item product-color--golden swiper-slide">
                                         <div class="image-box">
                                             <a asp-controller="Home" asp-action="SanPhamTheoDanhMuc" asp-route-maDanhMuc="@item.MaDanhMuc" class="image-link">
-                                                <img src="@item.HinhAnh" alt="@item.TenDanhMuc">
+                                                <img src="/images/DanhMucSanPham/@item.HinhAnh" alt="@item.TenDanhMuc">
                                                 
                                             </a>
                                             <div class="action-link">

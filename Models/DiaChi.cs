@@ -20,6 +20,4 @@ public partial class DiaChi
     public int? ParentCode { get; set; }
 
     public int? Levels { get; set; }
-
-    public virtual ICollection<KhachHang> KhachHangs { get; set; } = new List<KhachHang>();
 }

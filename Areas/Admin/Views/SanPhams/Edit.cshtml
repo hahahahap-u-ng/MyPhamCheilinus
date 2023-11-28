@@ -63,7 +63,7 @@
                     </div>*@
                     <div class="form-group">
                         <label for="inputDescription"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Mô tả sản phẩm</font></font></label>
-                        <textarea id="inputDescription" class="form-control" asp-for="MoTa" rows="4" style="height: 119px;"></textarea>
+                        <textarea id="txtDetail" class="form-control" asp-for="MoTa" rows="4" style="height: 119px;"></textarea>
                     </div>
                      <div class="row">
                         <div class="form-group col-md-6">
@@ -89,7 +89,8 @@
                     </div>
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label class="font-weight-semibold" for="productAnh">Ảnh đại diện</label>
+                            <label class="font-weight-semibold" for="productAnh">Ảnh hiện tại:</label>
+                            <td>  <img src="@Url.Content("~/images/sanPhams/" + Model.Anh)" alt="Ảnh sản phẩm" class="img-thumbnail" style="max-width: 200px; max-height: 100px;" /></td>
                             <input type="file" name="fAnh" class="form-control-file" asp-for="Anh">
                             <span asp-validation-for="Anh" class="text-danger"></span>
                         </div>
@@ -184,3 +185,15 @@
     </div>
 </form>
 </div>
+@section Scripts {
+    <script>
+        // Đảm bảo rằng trang đã tải hoàn toàn trước khi thực thi mã JavaScript
+        $(document).ready(function () {
+            CKEDITOR.replace('txtDetail', {
+                customConfig: '/Content/ckeditor/config.js',
+                extraAllowedContent: 'span',
+            });
+        });
+
+    </script>
+}

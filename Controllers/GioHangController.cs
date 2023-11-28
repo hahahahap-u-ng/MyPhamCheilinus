@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MyPhamCheilinus.Controllers;
 using MyPhamCheilinus.Infrastructure;
 using MyPhamCheilinus.Models;
+using System.Data;
 
 
 namespace MyPhamCpuheilinus.Controllers
@@ -19,6 +21,7 @@ namespace MyPhamCpuheilinus.Controllers
         {
             _logger = logger;
         }
+        [Authorize(Roles = "Admin,Employee,Customer")]
         public IActionResult AddGioHang(string maSanPham)
         {
             SanPham? sanpham = db.SanPhams.FirstOrDefault(p => p.MaSanPham == maSanPham);

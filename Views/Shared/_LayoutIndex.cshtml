@@ -92,13 +92,13 @@
                                 }
                                 @if (User.Identity.IsAuthenticated)
                                 {
-                                    <a href="tai-khoan-cua-toi.html">Tài khoản của tôi</a>
+                                    <a href="~/tai-khoan-cua-toi.html">Tài khoản của tôi</a>
                                 }
                                 else
                                 {
-                                    <a href="dang-nhap.html">Đăng nhập</a>
+                                    <a href="~/dang-nhap.html">Đăng nhập</a>
 
-                                    <a href="dang-ky.html">Đăng ký</a>
+                                    <a href="~/dang-ky.html">Đăng ký</a>
                                 }
                             </div>
                         </div>
@@ -204,12 +204,7 @@
                             <!-- End Header Main Menu Start -->
                             <!-- Start Header Action Link -->
                             <ul class="header-action-link action-color--black action-hover-color--green">
-                                <li>
-                                    <a href="#offcanvas-wishlish" class="offcanvas-toggle">
-                                        <i class="icon-heart"></i>
-                                        <span class="item-count">3</span>
-                                    </a>
-                                </li>
+                                
                                 <li>
                                     <a href="/GioHang/ViewGioHang" >
                                         @await Component.InvokeAsync("GioHangWidget")
@@ -323,7 +318,7 @@
                                     <ul class="mobile-sub-menu">
                                         <li><a href="cart.html">Cart</a></li>
                                         <li><a href="empty-cart.html">Empty Cart</a></li>
-                                        <li><a href="wishlist.html">Wishlist</a></li>
+                                        
                                         <li><a href="compare.html">Compare</a></li>
                                         <li><a href="checkout.html">Checkout</a></li>
                                         <li><a href="login.html">Login</a></li>
@@ -413,7 +408,7 @@
                 </ul>
 
                 <ul class="user-link">
-                    <li><a href="wishlist.html">Wishlist</a></li>
+                    
                     <li><a href="cart.html">Cart</a></li>
                     <li><a href="checkout.html">Checkout</a></li>
                 </ul>
@@ -450,7 +445,7 @@
             </ul>
 
             <ul class="user-link">
-                <li><a href="wishlist.html">Wishlist</a></li>
+                
                 <li><a href="cart.html">Cart</a></li>
                 <li><a href="checkout.html">Checkout</a></li>
             </ul>
@@ -584,7 +579,9 @@
                                 <h5 class="title">MY ACCOUNT</h5>
                                 <ul class="footer-nav">
                                     <li><a href="my-account.html">My account</a></li>
-                                    <li><a href="wishlist.html">Wishlist</a></li>
+                                   
+
+
                                     <li><a href="privacy-policy.html">Privacy Policy</a></li>
                                     <li><a href="faq.html">Frequently Questions</a></li>
                                     <li><a href="#">Order History</a></li>

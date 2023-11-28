@@ -31,7 +31,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             var lsCustomers = _context.KhachHangs.AsNoTracking()
                 .OrderByDescending(x => x.MaKhachHang).ToList();
 
-            PagedList<KhachHang> models = new PagedList<KhachHang> (lsCustomers.AsQueryable(), pageSize, pageNumber);
+            PagedList<KhachHang> models = new PagedList<KhachHang> (lsCustomers.AsQueryable(), pageNumber, pageSize);
             ViewBag.CurrentPage = pageNumber;
             return View(models);
         }

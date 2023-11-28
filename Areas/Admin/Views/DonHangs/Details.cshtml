@@ -74,10 +74,11 @@
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
                                     <thead>
-                                        <tr>
+                                        <tr class="text-center">
                                             <th>STT</th>
                                             <th>Sản phẩm</th>
                                             <th>Số lượng</th>
+                                            <th>Ảnh</th>
                                             <th>Đơn giá</th>
                                             <th>Tổng tiền</th>
                                         </tr>
@@ -89,11 +90,16 @@
                                             @foreach (var item in @Model.ChiTietDonHangs)
                                             {
                                                 <tr>
-                                                    <th>@i</th>
+                                                    <td class="text-center">@i</td>
                                                     <td>@item.MaSanPhamNavigation.TenSanPham</td>
-                                                    <td>@item.SoLuong</td>
-                                                    <td>@item.GiaBan.Value.ToString("#,##0") VNĐ</td>
-                                                    <td>@((item.GiaBan.Value * (double)item.SoLuong).ToString("#,##0")) VNĐ</td>
+                                                    
+                                                    <td class="text-center" style="width: 15%;">
+                                                        <img src="@Url.Content("~/images/sanPhams/" + item.MaSanPhamNavigation.Anh)" alt="Ảnh sản phẩm" class="img-thumbnail" style="max-width: 200px; max-height: 100px;" />
+                                                    </td>
+                                           
+                                                    <td class="text-center">@item.SoLuong</td>
+                                                    <td class="text-center">@item.GiaBan.Value.ToString("#,##0") VNĐ</td>
+                                                    <td class="text-center">@((item.GiaBan.Value * (double)item.SoLuong).ToString("#,##0")) VNĐ</td>
                                                 </tr>
                                                 i++;
                                             }

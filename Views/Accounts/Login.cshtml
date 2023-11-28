@@ -22,15 +22,18 @@
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
                     <div class="login_submit">
-                        <button class="btn btn-md btn-black-default-hover mb-4" type="submit">Đăng nhập</button>
                         <label class="checkbox-default mb-4" for="offer">
                             <input type="checkbox" id="offer">
-                            <span>Remember me</span>
+                            <span>Ghi nhớ mật khẩu</span>
                         </label>
+                        <button class="btn btn-md btn-black-default-hover mb-4" type="submit">Đăng nhập</button>
+                    </div>
+                    <div>
+                        <a>Quên mật khẩu?</a>
                     </div>
                 </form>
                 <div>
-                    <a asp-controller="Home" asp-action="Index">Back to List</a>
+                    <a asp-controller="Home" asp-action="Index">Trở lại</a>
                 </div>
             </div>
         </div>

@@ -4,7 +4,12 @@
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
-
+<style>
+    table thead th {
+        background-color: #e6e6e6; /* Màu nền của đầu mục */
+        color: #000; /* Màu chữ của đầu mục */
+    }
+</style>
 <section class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -65,6 +70,7 @@
                                     <th>Lần đăng nhập cuối</th>
                                     <th>Quyền truy cập</th>
                                     <th>Trạng thái</th>
+                                    <th>Chức năng</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -83,9 +89,9 @@
                                                 </div>
                                             </td>
                                             <td>@item.AccountEmail</td>
-                                            <td>@item.Phone</td>
-                                            <td>@item.LastLogin</td>
-                                            <td>@item.RoleNavigation.Description</td>
+                                            <td class="text-center">@item.Phone</td>
+                                            <td class="text-center">@item.LastLogin</td>
+                                            <td class="text-center">@item.RoleNavigation.Description</td>
                                             <td>
                                                 @if (item.Active)
                                                 {
