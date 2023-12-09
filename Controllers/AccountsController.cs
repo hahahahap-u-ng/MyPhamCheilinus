@@ -1,4 +1,5 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using MyPhamCheilinus.ModelViews;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -53,6 +54,7 @@ namespace MyPhamCheilinus.Controllers
             }
             catch
             {
+
                 return Json(data: true);
             }
         }
@@ -223,6 +225,47 @@ namespace MyPhamCheilinus.Controllers
             }
             return View(customer);
         }
+        [HttpPost]
+        public IActionResult ChangePassword(ChangePasswordViewModel model)
+        {
+            try
+            {
+                var taikhoanID = HttpContext.Session.GetString("AccountId");
+                if (taikhoanID == null)
+                {
+                    return RedirectToAction("Login", "Accounts");
+                }
+                if (ModelState.IsValid)
+                {
+                    var taikhoan = _context.Accounts.Find(Convert.ToInt32(taikhoanID));
+                    if (taikhoan == null) return RedirectToAction("Login", "Accounts");
+                    var pass = (model.PasswordNow.Trim() + taikhoan.Sail.Trim()).ToMD5();
+                    if (pass == taikhoan.AccountPassword)
+                    {
+                        string passnew = (model.Password.Trim() + taikhoan.Sail.Trim()).ToMD5();
+                        taikhoan.AccountPassword = passnew;
+                        _context.Update(taikhoan);
+                        _context.SaveChanges();
+                        _notifyService.Success("Thay đổi mật khẩu thành công!");
+                        return RedirectToAction("Dashboard", "Accounts");
+                    }
+                    else
+                    {
+                        _notifyService.Error("Sai mật khẩu");
+                        return RedirectToAction("Dashboard", "Accounts");
+                    }
+                }
+            }
+            catch
+            {
+                _notifyService.Success("Thay đổi không mật khẩu thành công");
+                return RedirectToAction("Dashboard", "Accounts");
+            }
+            _notifyService.Error("Mật khẩu mới không giống nhau");
+            return RedirectToAction("Dashboard", "Accounts");
+
+        }
+
         [HttpGet]
         [Route("dang-xuat.html", Name = "Logout")]
         public IActionResult Logout()

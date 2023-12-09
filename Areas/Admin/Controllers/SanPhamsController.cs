@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace MyPhamCheilinus.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin,Employee")]
+    [Authorize(Roles = "Admin, Employee")]
     public class SanPhamsController : Controller
     {
         private readonly _2023MyPhamContext _context;

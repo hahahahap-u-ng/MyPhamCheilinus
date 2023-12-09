@@ -17,7 +17,7 @@ builder.Services.AddDbContext<_2023MyPhamContext>(options => options.UseSqlServe
 builder.Services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.All }));
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 builder.Services.AddNotyf(config => { config.DurationInSeconds = 3; config.IsDismissable = true; config.Position = NotyfPosition.TopRight; });
-builder.Services.AddDbContext<_2023MyPhamContext>(x => x.UseSqlServer(connectionString));
+
 builder.Services.AddScoped<ILoaiRepository, LoaiRepository>();
 builder.Services.AddScoped<IHangRepository, HangRepository>();
 builder.Services.AddSession(options =>
@@ -42,11 +42,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 
 builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
-    options.Cookie.IsEssential = true;
-});
+
 
 var app = builder.Build();
 
@@ -62,7 +58,7 @@ app.UseAuthorization();
 app.UseSession();
 
 app.UseRouting();
-app.UseSession();
+
 app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
