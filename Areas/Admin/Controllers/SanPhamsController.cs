@@ -174,7 +174,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int? page, [Bind("MaSanPham,TenSanPham,Mau,Anh,Gia,KhuyenMai,Slkho,NgaySx,LuotMua,MaDanhMuc,HomeFlag,BestSellers,MoTa,Active")] SanPham sanPham, IFormFile? fAnh)
+        public async Task<IActionResult> Create(int? page, [Bind("MaSanPham,TenSanPham,Mau,Anh,Gia,KhuyenMai,Slkho,GiaNhap,NgaySx,LuotMua,MaDanhMuc,HomeFlag,BestSellers,MoTa,Active")] SanPham sanPham, IFormFile? fAnh)
 
         {
             if (string.IsNullOrEmpty(sanPham.MaSanPham))
@@ -195,6 +195,10 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             if (sanPham.Slkho == null)
             {
                 ModelState.AddModelError("Slkho", "Xin hãy nhập số lượng tồn kho.");
+            }
+            if (sanPham.GiaNhap == null)
+            {
+                ModelState.AddModelError("Slkho", "Xin hãy điền giá nhập của sản phẩm.");
             }
             if (sanPham.MaDanhMuc == null)
             {
@@ -267,7 +271,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, int? page, string? MaID, string? search, string? MaDM, double? minPrice, double? maxPrice, [Bind("MaSanPham,TenSanPham,Mau,Anh,Gia,KhuyenMai,Slkho,NgaySx,LuotMua,MaDanhMuc,HomeFlag,BestSellers,MoTa,Active")] SanPham sanPham, IFormFile? fAnh)
+        public async Task<IActionResult> Edit(string id, int? page, string? MaID, string? search, string? MaDM, double? minPrice, double? maxPrice, [Bind("MaSanPham,TenSanPham,Mau,Anh,Gia,KhuyenMai,Slkho,GiaNhap,NgaySx,LuotMua,MaDanhMuc,HomeFlag,BestSellers,MoTa,Active")] SanPham sanPham, IFormFile? fAnh)
         {
             if (id != sanPham.MaSanPham)
             {

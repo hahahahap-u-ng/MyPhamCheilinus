@@ -66,11 +66,15 @@
                         <textarea id="txtDetail" class="form-control" asp-for="MoTa" rows="4" style="height: 119px;"></textarea>
                     </div>
                      <div class="row">
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <label class="font-weight-semibold" for="productPrice">Giá bán</label>
                             <input type="number" class="form-control" asp-for="Gia" step="0.01">
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
+                            <label class="font-weight-semibold" for="productPrice">Giá nhập</label>
+                            <input type="number" class="form-control" asp-for="GiaNhap" step="0.01">
+                        </div>
+                        <div class="form-group col-md-4">
                             <label class="font-weight-semibold" for="productPrice">Giảm giá</label>
                             <input type="number" class="form-control" asp-for="KhuyenMai" step="0.01">
                         </div>
@@ -89,8 +93,7 @@
                     </div>
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label class="font-weight-semibold" for="productAnh">Ảnh hiện tại:</label>
-                            <td>  <img src="@Url.Content("~/images/sanPhams/" + Model.Anh)" alt="Ảnh sản phẩm" class="img-thumbnail" style="max-width: 200px; max-height: 100px;" /></td>
+                            <label class="font-weight-semibold" for="productAnh">Ảnh đại diện</label>
                             <input type="file" name="fAnh" class="form-control-file" asp-for="Anh">
                             <span asp-validation-for="Anh" class="text-danger"></span>
                         </div>
