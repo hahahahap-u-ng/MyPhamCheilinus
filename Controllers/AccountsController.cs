@@ -114,8 +114,10 @@ namespace MyPhamCheilinus.Controllers
                         AccountEmail = taikhoan.Email.Trim().ToLower(),
                         AccountPassword = (taikhoan.Password + salt.Trim()).ToMD5(),
                         Active = true,
-                        Sail = salt,
+                        Salt = salt,
                         RoleId = GetRoleIdForCustomer(),
+                        NgaySinh = taikhoan.NgaySinh,
+                        GioiTinh = taikhoan.GioiTinh,
                         CreateDate = DateTime.Now
                         
                     };
@@ -178,7 +180,7 @@ namespace MyPhamCheilinus.Controllers
                     var khachhang = _context.Accounts.AsNoTracking().SingleOrDefault(x => x.AccountEmail.Trim() == customer.UserName);
                     if (khachhang == null) return RedirectToAction("DangKyTaiKhoan");
 
-                    string pass = (customer.Password + khachhang.Sail.Trim()).ToMD5();
+                    string pass = (customer.Password + khachhang.Salt.Trim()).ToMD5();
                     if (khachhang.AccountPassword != pass)
                     {
                         _notifyService.Success("Thông tin đăng nhập chưa chính xác.");
@@ -239,10 +241,10 @@ namespace MyPhamCheilinus.Controllers
                 {
                     var taikhoan = _context.Accounts.Find(Convert.ToInt32(taikhoanID));
                     if (taikhoan == null) return RedirectToAction("Login", "Accounts");
-                    var pass = (model.PasswordNow.Trim() + taikhoan.Sail.Trim()).ToMD5();
+                    var pass = (model.PasswordNow.Trim() + taikhoan.Salt.Trim()).ToMD5();
                     if (pass == taikhoan.AccountPassword)
                     {
-                        string passnew = (model.Password.Trim() + taikhoan.Sail.Trim()).ToMD5();
+                        string passnew = (model.Password.Trim() + taikhoan.Salt.Trim()).ToMD5();
                         taikhoan.AccountPassword = passnew;
                         _context.Update(taikhoan);
                         _context.SaveChanges();

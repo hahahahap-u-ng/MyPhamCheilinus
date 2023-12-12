@@ -13,7 +13,7 @@ public partial class Account
 
     public string? AccountPassword { get; set; }
 
-    public string? Sail { get; set; }
+    public string? Salt { get; set; }
 
     public bool Active { get; set; }
 
@@ -25,9 +25,13 @@ public partial class Account
 
     public DateTime? CreateDate { get; set; }
 
-    public int? MaKhachHang { get; set; }
+    public DateTime? NgaySinh { get; set; }
 
-    public virtual KhachHang? MaKhachHangNavigation { get; set; }
+    public string? AnhDaiDien { get; set; }
 
-    public virtual Role? RoleNavigation { get; set; }
+    public string? DiaChi { get; set; }
+
+    public bool? GioiTinh { get; set; }
+
+    public virtual Role? Role { get; set; }
 }

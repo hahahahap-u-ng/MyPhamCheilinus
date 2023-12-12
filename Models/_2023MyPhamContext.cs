@@ -57,21 +57,20 @@ public partial class _2023MyPhamContext : DbContext
 
             entity.Property(e => e.AccountEmail).HasMaxLength(50);
             entity.Property(e => e.AccountPassword).HasMaxLength(50);
+            entity.Property(e => e.AnhDaiDien).HasMaxLength(250);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.DiaChi).HasMaxLength(500);
             entity.Property(e => e.FullName).HasMaxLength(50);
             entity.Property(e => e.LastLogin).HasColumnType("datetime");
+            entity.Property(e => e.NgaySinh).HasColumnType("datetime");
             entity.Property(e => e.Phone)
                 .HasMaxLength(12)
                 .IsUnicode(false);
-            entity.Property(e => e.Sail)
+            entity.Property(e => e.Salt)
                 .HasMaxLength(6)
                 .IsFixedLength();
 
-            entity.HasOne(d => d.MaKhachHangNavigation).WithMany(p => p.Accounts)
-                .HasForeignKey(d => d.MaKhachHang)
-                .HasConstraintName("FK_Account_KhachHang");
-
-            entity.HasOne(d => d.RoleNavigation).WithMany(p => p.Accounts)
+            entity.HasOne(d => d.Role).WithMany(p => p.Accounts)
                 .HasForeignKey(d => d.RoleId)
                 .HasConstraintName("FK_Account_Role");
         });
@@ -242,19 +241,7 @@ public partial class _2023MyPhamContext : DbContext
 
             entity.ToTable("KhachHang");
 
-            entity.Property(e => e.Address).HasMaxLength(250);
-            entity.Property(e => e.Avatar).HasMaxLength(250);
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Email)
-                .HasMaxLength(150)
-                .IsFixedLength();
-            entity.Property(e => e.LastLogin).HasColumnType("datetime");
-            entity.Property(e => e.LocationId).HasColumnName("LocationID");
             entity.Property(e => e.NgaySinh).HasColumnType("datetime");
-            entity.Property(e => e.Password).HasMaxLength(50);
-            entity.Property(e => e.Salt)
-                .HasMaxLength(8)
-                .IsFixedLength();
             entity.Property(e => e.SoDienThoai).HasMaxLength(50);
             entity.Property(e => e.TenKhachHang).HasMaxLength(250);
         });

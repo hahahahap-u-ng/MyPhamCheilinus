@@ -43,7 +43,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             ViewData["lsTrangThai"] = lsTrangThai;
 
 
-            var _2023MyPhamContext = _context.Accounts.Include(a => a.RoleNavigation);
+            var _2023MyPhamContext = _context.Accounts.Include(a => a.Role);
             return View(await _2023MyPhamContext.ToListAsync());
         }
 
@@ -56,7 +56,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             }
 
             var account = await _context.Accounts
-                .Include(a => a.RoleNavigation)
+                .Include(a => a.Role)
                 .FirstOrDefaultAsync(m => m.AccountId == id);
             if (account == null)
             {
@@ -83,7 +83,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 string salt = Utilities.GetRandomKey();
-                account.Sail = salt;
+                account.Salt = salt;
                 //Tạo ngẫu nhiên mật khẩu
                 account.AccountPassword = (account.Phone + salt.Trim()).ToMD5();
                 account.CreateDate = DateTime.Now;
@@ -110,10 +110,10 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                 var taikhoan = _context.Accounts.AsNoTracking().SingleOrDefault(x => x.AccountEmail == model.Email);
                 if (taikhoan == null) return RedirectToAction("Login", "Accounts");
 
-                var pass = (model.PasswordNow.Trim() + taikhoan.Sail.Trim()).ToMD5();
+                var pass = (model.PasswordNow.Trim() + taikhoan.Salt.Trim()).ToMD5();
                 if (pass == taikhoan.AccountPassword)
                 {
-                    string passnew = (model.Password.Trim() + taikhoan.Sail.Trim()).ToMD5();
+                    string passnew = (model.Password.Trim() + taikhoan.Salt.Trim()).ToMD5();
                     taikhoan.AccountPassword = passnew;
                     taikhoan.LastLogin = DateTime.Now;
                     _context.Update(taikhoan);
@@ -242,7 +242,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             }
 
             var account = await _context.Accounts
-                .Include(a => a.RoleNavigation)
+                .Include(a => a.Role)
                 .FirstOrDefaultAsync(m => m.AccountId == id);
             if (account == null)
             {

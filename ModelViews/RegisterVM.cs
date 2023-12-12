@@ -14,6 +14,13 @@ namespace MyPhamCheilinus.ModelViews
         [Display(Name = "Họ Và Tên")]
         [Required(ErrorMessage = "Vui lòng nhập Họ Tên")]
         public string TenKhachHang { get; set; }
+        [Display(Name = "Ngày sinh")]
+        [Required(ErrorMessage = "Vui lòng nhập ngày sinh")]
+        public DateTime NgaySinh { get; set; }
+        [Display(Name = "Ngày sinh")]
+        [Required(ErrorMessage = "Vui lòng chọn giới tính")]
+        public Boolean GioiTinh { get; set; }
+
         [Required(ErrorMessage = "Vui lòng nhập Email")]
         [MaxLength(150)]
         [DataType(DataType.EmailAddress)]
@@ -32,6 +39,7 @@ namespace MyPhamCheilinus.ModelViews
         [MinLength(5, ErrorMessage = "Bạn cần đặt mật khẩu tối thiểu 5 ký tự")]
         [Display(Name = "Nhập lại mật khẩu")]
         [Compare("Password", ErrorMessage = "Vui lòng nhập mật khẩu giống nhau")]
+
         public string ConfirmPassword { get; set; }
     }
 }

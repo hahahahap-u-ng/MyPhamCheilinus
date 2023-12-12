@@ -91,7 +91,6 @@ namespace MyPhamCpuheilinus.Controllers
                 TenKhachHang = hoTen,
                 DiaChi = diaChi,
                 SoDienThoai = soDienThoai,
-                Email = email
             };
             db.KhachHangs.Add(khachhang);
             db.SaveChanges();
