@@ -26,6 +26,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         {
             try
             {
+                var trangThai = "Đã giao hàng";
                 var query = from o in _context.DonHangs
                             join od in _context.ChiTietDonHangs
                             on o.MaDonHang equals od.MaDonHang
@@ -36,7 +37,8 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                                 NgayDat = o.NgayDatHang.Value.Date,
                                 SLBan = od.SoLuong,
                                 Gia = od.GiaBan,
-                                GiaGoc = p.GiaNhap
+                                GiaGoc = p.GiaNhap,
+                                TrangThai = o.TrangThaiDonHang,
                             };
                 if (!string.IsNullOrEmpty(fromDate))
                 {
@@ -44,10 +46,11 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                     query = query.Where(x => x.NgayDat >= startDate);
                 }
                 if (!string.IsNullOrEmpty(toDate))
-                {
+                {   
                     DateTime endDate = DateTime.ParseExact(toDate, "dd/MM/yyyy", null);
                     query = query.Where(x => x.NgayDat < endDate);
                 }
+                query = query.Where(x => x.TrangThai == 3);
                 var result = query.GroupBy(x => x.NgayDat)
     .Select(X => new
     {

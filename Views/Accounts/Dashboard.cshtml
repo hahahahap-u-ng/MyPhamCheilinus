@@ -1,4 +1,4 @@
-﻿@model MyPhamCheilinus.Models.KhachHang
+﻿@model MyPhamCheilinus.Models.Account
 
 @{
     ViewData["Title"] = "Dashboard";
@@ -37,10 +37,8 @@
                         <div class="tab-pane fade" id="dashboard">
                             <h4>Dashboard </h4>
                             <p>
-                                From your account dashboard. you can easily check &amp; view your <a href="#">
-                                    recent
-                                    orders
-                                </a>, manage your <a href="#">shipping and billing addresses</a> and <a href="#">Edit your password and account details.</a>
+                                Chào mừng @Model.FullName đến với <a href="/Home/Index">cửa hàng bán mỹ phẩm online</a>!
+                                   
                             </p>
                         </div>
                         <div class="tab-pane fade" id="orders">

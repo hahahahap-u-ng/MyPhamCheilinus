@@ -67,7 +67,7 @@ namespace MyPhamCheilinus.Controllers
                 var khachhang = _context.Accounts.AsNoTracking().SingleOrDefault(x => x.AccountId == Convert.ToInt32(taikhoanID));
                 if (khachhang != null)
                 {
-                    return View();
+                    return View(khachhang);
                 }
             }
             return RedirectToAction("Login");
