@@ -8,7 +8,6 @@
 
 
 <!-- Begin Main Content Area -->
-
 <!-- Main Content Area End Here -->
 <div class="card-body custom-card-body">
     <div class="account-dashboard">
@@ -38,7 +37,7 @@
                             <h4>Dashboard </h4>
                             <p>
                                 Chào mừng @Model.FullName đến với <a href="/Home/Index">cửa hàng bán mỹ phẩm online</a>!
-                                   
+
                             </p>
                         </div>
                         <div class="tab-pane fade" id="orders">
@@ -105,64 +104,68 @@
                         <div class="tab-pane" id="address">
                             @await Html.PartialAsync("_ChangePasswordPartialView",changePassword1)
                         </div>
+                        <!-- Trong tab "Account details" -->
                         <div class="tab-pane fade active show" id="account-details">
-                            <h3>Account details </h3>
-                            <div class="login">
-                                <div class="login_form_container">
-                                    <div class="account_login_form">
-                                        <form action="#">
-                                            <p>Already have an account? <a href="#">Log in instead!</a></p>
-                                            <div class="input-radio">
-                                                <span class="custom-radio"><input type="radio" value="1" name="id_gender"> Mr.</span>
-                                                <span class="custom-radio"><input type="radio" value="1" name="id_gender"> Mrs.</span>
-                                            </div> <br>
-                                            <div class="default-form-box mb-20">
-                                                <label>First Name</label>
-                                                <input type="text" name="first-name">
-                                            </div>
-                                            <div class="default-form-box mb-20">
-                                                <label>Last Name</label>
-                                                <input type="text" name="last-name">
-                                            </div>
-                                            <div class="default-form-box mb-20">
-                                                <label>Email</label>
-                                                <input type="text" name="email-name">
-                                            </div>
-                                            <div class="default-form-box mb-20">
-                                                <label>Password</label>
-                                                <input type="password" name="user-password">
-                                            </div>
-                                            <div class="default-form-box mb-20">
-                                                <label>Birthdate</label>
-                                                <input type="date" name="birthday">
-                                            </div>
-                                            <span class="example">
-                                                (E.g.: 05/31/1970)
-                                            </span>
-                                            <br>
-                                            <label class="checkbox-default" for="offer">
-                                                <input type="checkbox" id="offer">
-                                                <span>Receive offers from our partners</span>
-                                            </label>
-                                            <br>
-                                            <label class="checkbox-default checkbox-default-more-text" for="newsletter">
-                                                <input type="checkbox" id="newsletter">
-                                                <span>
-                                                    Sign up for our newsletter<br><em>
-                                                        You may unsubscribe at any
-                                                        moment. For that purpose, please find our contact info in the
-                                                        legal notice.
-                                                    </em>
-                                                </span>
-                                            </label>
-                                            <div class="save_button mt-3">
-                                                <button class="btn btn-md btn-black-default-hover" type="submit">Save</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
+                            <h3>Account details</h3>
+
+                            <div id="success-alert" class="alert alert-success alert-dismissible centered-alert" style="display:none;">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                <h5><i class="icon fas fa-check"></i> Alert!</h5>
+                                @ViewBag.SuccessMessage
                             </div>
+
+                            <div id="error-alert" class="alert alert-danger alert-dismissible centered-alert" style="display:none;">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                <h5><i class="icon fas fa-ban"></i> Alert!</h5>
+                                @ViewBag.ErrorMessage
+                            </div>
+
+                            <!-- Hiển thị form nhập và điền thông tin từ model -->
+                            <form asp-action="EditAccount" method="post" id="account-form">
+                                <div class="form-group default-form-box mb-20">
+                                    <label>Email:</label>
+                                    <input asp-for="AccountEmail" class="form-control" />
+                                </div>
+                                <div class="form-group default-form-box mb-20">
+                                    <label>Họ và tên:</label>
+                                    <input asp-for="FullName" class="form-control" />
+                                </div>
+                                <div class="form-group ">
+                                    <label>Giới tính:</label>
+                                    <div class="input-radio">
+                                        <span class="custom-radio">
+                                            <input asp-for="GioiTinh" type="radio" value="false"> Nam
+                                        </span>
+                                        <span class="custom-radio">
+                                            <input asp-for="GioiTinh" type="radio" value="true" /> Nữ
+                                        </span>
+
+                                        
+
+                                    </div>
+                                    <br>
+                                </div>
+                                <div class="form-group default-form-box mb-20">
+                                    <label>Ngày sinh:</label>
+                                    <input asp-for="NgaySinh" class="form-control " type="date"/>
+                                </div>
+                                <div class="form-group default-form-box mb-20">
+                                    <label>SĐT:</label>
+                                    <input asp-for="Phone" class="form-control" />
+                                </div>
+                                <div class="form-group default-form-box mb-20">
+                                    <label>Địa chỉ:</label>
+                                    <input asp-for="DiaChi" class="form-control" />
+                                </div>
+                                
+                                
+
+
+                                <button type="submit" class="btn btn-lg btn-golden" onclick="saveChanges()">Lưu thay đổi</button>
+                            </form>
                         </div>
+
+
                     </div>
                 </div>
             </div>
@@ -170,6 +173,14 @@
     </div>
 </div>
 <style>
+    .centered-alert {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+    }
+
     .custom-card-body {
         padding: 60px; /* Điều chỉnh kích thước padding theo mong muốn */
     }
@@ -183,3 +194,24 @@
     }
 
 </style>
+
+<script>
+    function saveChanges() {
+        // Lấy form và thực hiện submit
+        var form = document.getElementById('account-form');
+        form.submit();
+
+        // Hiển thị hoặc ẩn thông báo dựa trên kết quả lưu
+        var successAlert = document.getElementById('success-alert');
+        var errorAlert = document.getElementById('error-alert');
+
+        // Giả sử ViewBag.SuccessMessage và ViewBag.ErrorMessage được thiết lập từ phía server
+        if ("@ViewBag.SuccessMessage" !== "") {
+            successAlert.style.display = 'block';
+            errorAlert.style.display = 'none';
+        } else if ("@ViewBag.ErrorMessage" !== "") {
+            successAlert.style.display = 'none';
+            errorAlert.style.display = 'block';
+        }
+    }
+</script>

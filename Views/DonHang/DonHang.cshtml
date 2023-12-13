@@ -1,123 +1,64 @@
-﻿@model List<DonHang>
-
+﻿@model List<MyPhamCheilinus.Models.DonHang>
 @{
-    ViewData["Title"] = "Đơn hàng";
+    ViewData["Title"] = "San Pham Theo Hang";
     Layout = "~/Views/Shared/_LayoutIndex.cshtml";
-}
-<style>
-    .thumbnail-image {
-        max-width: 100px;
-        max-height: 100px;
-    }
-</style>
 
-<div class="breadcrumb-section breadcrumb-bg-color--golden">
-    <div class="breadcrumb-wrapper">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <h3 class="breadcrumb-title">Đơn hàng của tôi </h3>
-                    <div class="breadcrumb-nav breadcrumb-nav-color--black breadcrumb-nav-hover-color--golden">
-                        <nav aria-label="breadcrumb">
-                            <ul>
-                                <li><a href="index.html">Home</a></li>
-                                <li><a href="shop-grid-sidebar-left.html">Shop</a></li>
-                                <li class="active" aria-current="page">Đơn hàng</li>
-                            </ul>
-                        </nav>
+}
+@foreach (var donhang in Model)
+{
+    <p>MaDonHang: @donhang.MaDonHang, TongTien: @donhang.TongTien, TrangThaiDonHang: @donhang.TrangThaiDonHang, NgayDatHang: @donhang.NgayDatHang</p>
+}
+
+
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Responsive Hover Table</h3>
+
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 150px;">
+                        <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-default">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>Mã đơn hàng</th>
+                            <th>Thời gian đặt</th>
+                            <th>Trạng thái</th>
+                            <th>Thành tiền</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var donhang in Model)
+                        {
+                            
+                        
+                        <tr>
+                                <td>@donhang.MaDonHang</td>
+                                <td> @donhang.NgayDatHang</td>
+                                <td> @donhang.TrangThaiDonHang</td>
+                                <td>@donhang.TrangThaiDonHang</td>
+                            <td>Chi tiết</td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
         </div>
+        <!-- /.card -->
     </div>
 </div>
-
-<div class="card-body">
-
-    <table class="table table-bordered table-hover">
-        <thead>
-            <tr>
-                <th>Mã đơn hàng</th>
-                <th>Ngày đặt hàng</th>
-                <th>Trạng thái đơn hàng</th>
-                <th>Tên sản phẩm</th>
-                <th>Hình ảnh</th>
-                <th>Số lượng x Giá bán</th>
-                <th>Thành tiền</th>
-                <th>Tổng tiền</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody class="records_table">
-            @foreach (var donHang in Model)
-            {
-                var firstChiTiet = donHang.ChiTietDonHangs.FirstOrDefault();
-                <tr>
-                    <td rowspan="@donHang.ChiTietDonHangs.Count">@donHang.MaDonHang</td>
-                    <td rowspan="@donHang.ChiTietDonHangs.Count">@donHang.NgayDatHang?.ToString("dd/MM/yyyy")</td>
-
-                    <td rowspan="@donHang.ChiTietDonHangs.Count">
-                        @if (donHang.TrangThaiDonHang == 1)
-                        {
-                            <span class=" badge bg-success">Chờ xác nhận</span>
-                        }
-                        else if (donHang.TrangThaiDonHang == 2)
-                        {
-                            <span class="badge bg-warning">Đang vận chuyển</span>
-                        }
-                        else if (donHang.TrangThaiDonHang == 3)
-                        {
-                            <span class="badge bg-primary">Đã giao hàng</span>
-                        }
-                        else if (donHang.TrangThaiDonHang == 4)
-                        {
-                            <span class="badge bg-danger" style="background-color: #c82333">Đã hủy</span>
-                        }
-                    </td>
-                    <td>@firstChiTiet?.MaSanPhamNavigation.TenSanPham</td>
-
-                    <td><img src="/images/sanPhams/@firstChiTiet?.MaSanPhamNavigation.Anh" alt="@firstChiTiet?.MaSanPhamNavigation.TenSanPham" class="thumbnail-image" /></td>
-                    <td>@string.Format("{0:N0} x {1:#,##0} VNĐ", firstChiTiet?.SoLuong, firstChiTiet?.GiaBan)</td>
-                    <td>@string.Format("{0:#,##0} VNĐ", firstChiTiet?.SoLuong * firstChiTiet?.GiaBan)</td>
-                    <td rowspan="@donHang.ChiTietDonHangs.Count">@string.Format("{0:#,##0} VNĐ", donHang.TongTien)</td>
-                    <td class="text-right" rowspan="@donHang.ChiTietDonHangs.Count">
-                        @if (donHang.TrangThaiDonHang == 1)
-                        {
-                            <button class="btn btn-danger btn-tone m-r-5 border-0" style="color: #fff; background-color: #c82333; border-color: #c82333; box-shadow: none;" onclick="updateStatus('@donHang.MaDonHang', 4)">Hủy đơn hàng</button>
-                        }
-                        else if (donHang.TrangThaiDonHang == 2)
-                        {
-                            <button class="btn btn-danger btn-tone m-r-5 border-0" style="color: #fff; background-color: #c82333; border-color: #c82333; box-shadow: none;" onclick="updateStatus('@donHang.MaDonHang', 4)">Hủy đơn hàng</button>
-                            <button class="btn btn-success btn-tone m-r-5 border-0" style="color: #fff; background-color: #007bff; border-color: #007bff; box-shadow: none;" onclick="updateStatus('@donHang.MaDonHang', 3)">Đã nhận được hàng</button>
-                        }
-                    </td>
-                </tr>
-                @foreach (var chiTietDonHang in donHang.ChiTietDonHangs.Skip(1))
-                {
-                    <tr>
-                        <td>@chiTietDonHang.MaSanPhamNavigation.TenSanPham</td>
-                        <td><img src="/images/sanPhams/@chiTietDonHang.MaSanPhamNavigation.Anh" alt="@chiTietDonHang.MaSanPhamNavigation.TenSanPham" class="thumbnail-image" /></td>
-                        <td>@string.Format("{0:N0} x {1:#,##0} VNĐ", firstChiTiet?.SoLuong, firstChiTiet?.GiaBan)</td>
-                        <td>@string.Format("{0:#,##0} VNĐ", firstChiTiet?.SoLuong * firstChiTiet?.GiaBan)</td>
-                        <td></td>
-                    </tr>
-                }
-            }
-        </tbody>
-    </table>
-</div>
-
-
-
-
-
-<script>
-    function updateStatus(donHangId, trangThaiDonHang) {
-        fetch(`/DonHang/UpdateStatus?donHangId=${donHangId}&trangThaiDonHang=${trangThaiDonHang}`, { method: 'POST' })
-            .then(function (response) {
-                if (response.ok) {
-                    location.reload();
-                }
-            });
-    }
-</script>

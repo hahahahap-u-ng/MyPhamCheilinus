@@ -22,15 +22,27 @@ namespace MyPhamCpuheilinus.Controllers
 
         public IActionResult DonHang()
         {
-            var donHangList = db.DonHangs
-           .Include(dh => dh.ChiTietDonHangs)
-               .ThenInclude(ctdh => ctdh.MaSanPhamNavigation)
-           .ToList();
+            // Lấy giá trị từ Session
+            var taikhoanID = HttpContext.Session.GetString("AccountId");
 
-            return View(donHangList);
+            if (taikhoanID != null)
+            {
+                // Chuyển đổi AccountId từ string sang int
+                int accountId = Convert.ToInt32(taikhoanID);
 
-            
+                // Truy vấn danh sách đơn hàng của người dùng
+                var donhangs = db.DonHangs
+                    .Where(dh => dh.MaKhachHangNavigation.AccountId == accountId)
+                    .ToList();
+
+                // Gửi danh sách đơn hàng đến view
+                return View(donhangs);
+            }
+
+            // Nếu không có thông tin tài khoản hoặc có lỗi, chuyển hướng đến trang đăng nhập
+            return RedirectToAction("Login");
         }
+
         [HttpPost]
         public IActionResult UpdateStatus(string donHangId, int trangThaiDonHang)
         {
@@ -45,5 +57,13 @@ namespace MyPhamCpuheilinus.Controllers
 
             return Ok();
         }
+
+
+
+
+        
     }
 }
+
+
+
