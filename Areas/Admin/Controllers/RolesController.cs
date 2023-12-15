@@ -25,7 +25,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         }
 
         // GET: Admin/Roles
-        public IActionResult Index(int? page, string? search = "",  int? MaID=null, string? moTa="")
+        public IActionResult Index(int? page, string? search = "", string? moTa="")
         {
             var pageNumber = page == null || page <= 0 ? 1 : page.Value;
             var pageSize = 10;
@@ -41,30 +41,23 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                 query = query.Where(x => x.Description.Contains(moTa));
             }
 
-            if (MaID != null)
-            {
-                query = query.Where(x => x.RoleId == MaID);
-            }
+   
 
             var lsProducts = query.OrderByDescending(x => x.RoleId).ToList();
 
             PagedList<Role> models = new PagedList<Role>(lsProducts.AsQueryable(), pageNumber, pageSize);
             ViewBag.CurrentPage = pageNumber;
             ViewBag.CurrentSearch = search;
-            ViewBag.CurrentMaID = MaID;
             ViewBag.CurrentMoTa = moTa;
         
 
             return View(models);
         }
-        public IActionResult Filtter(string? search, int? MaID, string? moTa)
+        public IActionResult Filtter(string? search, string? moTa)
         {
             var url = "/Admin/Roles?";
 
-            if (MaID != null)
-            {
-                url += $"MaID={MaID}&";
-            }
+           
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -266,11 +259,9 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                 return Problem("Entity set '_2023MyPhamContext.Roles'  is null.");
             }
             var role = await _context.Roles.FindAsync(id);
-            if (role != null)
-            {
-                _context.Roles.Remove(role);
-            }
-
+            var account = await _context.Accounts.Where(p => p.AccountId == id).ToListAsync();
+            _context.RemoveRange(account);
+            _context.Roles.Remove(role);
             await _context.SaveChangesAsync();
             _notifyService.Success("Xóa quyền truy cập thành công");
             return RedirectToAction("Index", new

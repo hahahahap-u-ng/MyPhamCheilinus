@@ -198,7 +198,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             }
             if (sanPham.GiaNhap == null)
             {
-                ModelState.AddModelError("Slkho", "Xin hãy điền giá nhập của sản phẩm.");
+                ModelState.AddModelError("GiaNhap", "Xin hãy điền giá nhập của sản phẩm.");
             }
             if (sanPham.MaDanhMuc == null)
             {
@@ -210,7 +210,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             }
             if (sanPham.Mau == null)
             {
-                ModelState.AddModelError("MoTa", "Xin hãy điền màu  sản phẩm.");
+                ModelState.AddModelError("Mau", "Xin hãy điền màu  sản phẩm.");
             }
             if (ModelState.IsValid)
             {
@@ -356,24 +356,34 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
 
         public async Task<IActionResult> DeleteConfirmed(string id, string? MaID, int? page, string? search, string? MaDM, double? minPrice, double? maxPrice)
         {
-            if (_context.SanPhams == null)
+            if (_context.SanPhams == null || _context.DonHangs == null)
             {
-                return Problem("Entity set '_2023MyPhamContext.SanPhams' is null.");
+                return Problem("Entity set '_2023MyPhamContext.SanPhams' or '_2023MyPhamContext.DonHangs' is null.");
             }
 
-            var sanPham = await _context.SanPhams.FindAsync(id);
+            // Lấy thông tin sản phẩm cùng với danh sách đơn hàng liên quan
+            var sanPham = await _context.SanPhams
+                .Include(sp => sp.ChiTietDonHangs)
+                .ThenInclude(sp => sp.MaDonHangNavigation)// Nạp danh sách đơn hàng liên quan
+                .FirstOrDefaultAsync(sp => sp.MaSanPham == id);
+
             if (sanPham != null)
             {
+                // Sử dụng RemoveRange để xóa danh sách đơn hàng liên quan
+               
+                _context.ChiTietDonHangs.RemoveRange(sanPham.ChiTietDonHangs);
+
+                // Xóa sản phẩm
                 _context.SanPhams.Remove(sanPham);
+
                 await _context.SaveChangesAsync();
                 _notifyService.Success("Xóa sản phẩm thành công");
             }
 
-            // Sau khi xóa thành công, bạn có thể chuyển hướng trở lại trang chứa sản phẩm vừa xóa bằng cách truyền tham số `page`.
-            // Nếu `page` không có giá trị, bạn có thể mặc định nó về một trang cụ thể (ví dụ: 1).
+            // Chuyển hướng trở lại trang chứa sản phẩm vừa xóa
             return RedirectToAction("Index", new { page = page, MaDM = MaDM, MaID = MaID, search = search, minPrice = minPrice, maxPrice = maxPrice });
-
         }
+
 
 
         private bool SanPhamExists(string id)

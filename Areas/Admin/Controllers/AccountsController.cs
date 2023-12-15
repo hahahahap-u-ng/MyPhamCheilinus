@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web.Helpers;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -15,6 +16,9 @@ using MyPhamCheilinus.Areas.Admin.Models;
 using MyPhamCheilinus.Extension;
 using MyPhamCheilinus.Helpper;
 using MyPhamCheilinus.Models;
+using Newtonsoft.Json.Linq;
+using PagedList.Core;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace MyPhamCheilinus.Areas.Admin.Controllers
 {
@@ -32,23 +36,110 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         }
 
         // GET: Admin/Accounts
-        public async Task<IActionResult> Index()
+        //public async Task<IActionResult> Index()
+        //{
+
+        //    ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "Description");
+
+        //    List<SelectListItem> lsTrangThai = new List<SelectListItem>();
+        //    lsTrangThai.Add(new SelectListItem() { Text = "Active", Value = "1" });
+        //    lsTrangThai.Add(new SelectListItem() { Text = "Block", Value = "0" });
+        //    ViewData["lsTrangThai"] = lsTrangThai;
+
+
+        //    var _2023MyPhamContext = _context.Accounts.Include(a => a.Role);
+        //    return View(await _2023MyPhamContext.ToListAsync());
+        //}
+        public IActionResult Index(int? page, string? Ten = "", string? Email = "", string? SDT="", int? Quyen= null, Boolean? TrangThai=null)
         {
+            var pageNumber = page == null || page <= 0 ? 1 : page.Value;
+            var pageSize = 10;
 
-            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "Description");
+            IQueryable<Account> query = _context.Accounts
+                .Include(a=>a.Role)
+                .AsNoTracking();
+            if (!string.IsNullOrEmpty(Ten))
+            {
+                query = query.Where(x => x.FullName.Contains(Ten));
+            }
+            if (!string.IsNullOrEmpty(Email))
+            {
+                query = query.Where(x => x.AccountEmail.Contains(Email));
+            }
+            if (Quyen != null)
+            {
+                query = query.Where(x=>x.RoleId == Quyen);
+            }
+           
+            if (!string.IsNullOrEmpty(SDT))
+            {
+                query = query.Where(x => x.Phone.Contains(SDT));
+            }
+            if (!string.IsNullOrEmpty(SDT))
+            {
+                query = query.Where(x => x.Phone.Contains(SDT));
+            }
+            if (TrangThai != null)
+            {
+                query = query.Where(x => x.Active == TrangThai);
+            }
+            var lsProducts = query.OrderByDescending(x => x.RoleId).ToList();
 
+            PagedList<Account> models = new PagedList<Account>(lsProducts.AsQueryable(), pageNumber, pageSize);
+            ViewBag.CurrentPage = pageNumber;
+            ViewBag.CurrentTen = Ten;
+            ViewBag.CurrentEmail = Email;
+            ViewBag.CurrentSDT = SDT;
+            ViewBag.CurrentRole = Quyen;
+            ViewBag.CurrentStatus = TrangThai;
             List<SelectListItem> lsTrangThai = new List<SelectListItem>();
-            lsTrangThai.Add(new SelectListItem() { Text = "Active", Value = "1" });
-            lsTrangThai.Add(new SelectListItem() { Text = "Block", Value = "0" });
+            lsTrangThai.Add(new SelectListItem() { Text = "Active", Value = "true" });
+            lsTrangThai.Add(new SelectListItem() { Text = "Block", Value = "false" });
             ViewData["lsTrangThai"] = lsTrangThai;
+            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "Description", Quyen);
+            List<SelectListItem> lsGioiTinh = new List<SelectListItem>();
+            lsGioiTinh.Add(new SelectListItem() { Text = "Nam", Value = "true" });
+            lsGioiTinh.Add(new SelectListItem() { Text = "Nữ", Value = "false" });
+            ViewData["lsGioiTinh"] = lsGioiTinh;
+            return View(models);
+        }
 
 
-            var _2023MyPhamContext = _context.Accounts.Include(a => a.Role);
-            return View(await _2023MyPhamContext.ToListAsync());
+        public IActionResult Filtter(string? Ten, string? Email, string? SDT, int? Quyen, Boolean? TrangThai)
+        {
+            var url = "/Admin/Accounts?";
+            if (!string.IsNullOrEmpty(Ten))
+            {
+                url += $"Ten={Ten}&";
+            }
+
+            if (!string.IsNullOrEmpty(Email))
+            {
+                url += $"Email={Email}&";
+            }
+            if (!string.IsNullOrEmpty(SDT))
+            {
+                url += $"SDT={SDT}&";
+            }
+            if (Quyen != null)
+            {
+                url += $"Quyen={Quyen}&";
+            }
+            if (TrangThai != null)
+            {
+                url += $"TrangThai={TrangThai}&";
+            }
+            // Loại bỏ dấu '&' cuối cùng nếu có
+            if (url.EndsWith("&"))
+            {
+                url = url.Substring(0, url.Length - 1);
+            }
+
+            return Json(new { status = "success", redirectUrl = url });
         }
 
         // GET: Admin/Accounts/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, int? page, string? Ten, string? Email, string? SDT, int? Quyen, Boolean? TrangThai)
         {
             if (id == null || _context.Accounts == null)
             {
@@ -62,14 +153,52 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
+            ViewBag.CurrentPage = page;
+            ViewBag.CurrentTen = Ten;
+            ViewBag.CurrentEmail = Email;
+            ViewBag.CurrentSDT = SDT;
+            ViewBag.CurrentRole = Quyen;
+            ViewBag.CurrentStatus = TrangThai;
+            List<SelectListItem> lsTrangThai = new List<SelectListItem>();
+            lsTrangThai.Add(new SelectListItem() { Text = "Active", Value = "true" });
+            lsTrangThai.Add(new SelectListItem() { Text = "Block", Value = "false" });
+            ViewData["lsTrangThai"] = lsTrangThai;
+            List<SelectListItem> lsGioiTinh = new List<SelectListItem>();
+            lsGioiTinh.Add(new SelectListItem() { Text = "Nam", Value = "true" });
+            lsGioiTinh.Add(new SelectListItem() { Text = "Nữ", Value = "false" });
+            ViewData["lsGioiTinh"] = lsGioiTinh;
+            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "Description", Quyen);
             return View(account);
+        }
+        [HttpPost, ActionName("Details")]
+        [ValidateAntiForgeryToken]
+
+        public async Task<IActionResult> DetailsConfirmed(int? id, int? page, string? Ten, string? Email, string? SDT, int? Quyen, Boolean? TrangThai)
+        {
+            if (_context.Accounts == null)
+            {
+                return Problem("Entity set '_2023MyPhamContext.SanPhams' is null.");
+            }
+            // Sau khi xóa thành công, bạn có thể chuyển hướng trở lại trang chứa sản phẩm vừa xóa bằng cách truyền tham số `page`.
+            // Nếu `page` không có giá trị, bạn có thể mặc định nó về một trang cụ thể (ví dụ: 1).
+            return RedirectToAction("Index", new { page = page, Ten = Ten, Email = Email, SDT = SDT, Quyen = Quyen, TrangThai = TrangThai });
+
         }
 
         // GET: Admin/Accounts/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
-            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "RoleName");
+
+            List<SelectListItem> lsTrangThai = new List<SelectListItem>();
+            lsTrangThai.Add(new SelectListItem() { Text = "Active", Value = "true" });
+            lsTrangThai.Add(new SelectListItem() { Text = "Block", Value = "false" });
+            ViewData["lsTrangThai"] = lsTrangThai;
+            List<SelectListItem> lsGioiTinh = new List<SelectListItem>();
+            lsGioiTinh.Add(new SelectListItem() { Text = "Nam", Value = "true" });
+            lsGioiTinh.Add(new SelectListItem() { Text = "Nữ", Value = "false" });
+            ViewData["lsGioiTinh"] = lsGioiTinh;
+            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "Description");
             return View();
         }
 
@@ -78,10 +207,16 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AccountId,Phone,AccountEmail,AccountPassword,Sail,Active,FullName,RoleId,LastLogin,CreateDate")] Account account)
+        public async Task<IActionResult> Create(int page,[Bind("AccountId,Phone,AccountEmail,AccountPassword,Sail,Active,FullName,RoleId,LastLogin,CreateDate")] Account account)
         {
             if (ModelState.IsValid)
             {
+                if (_context.Accounts.Any(x => x.AccountEmail == account.AccountEmail))
+                {
+                    ModelState.AddModelError("AccountEmail", "Tại khoản đã tồn tại. Vui lòng chọn tên khác.");
+                 
+                    return View(account);
+                }
                 string salt = Utilities.GetRandomKey();
                 account.Salt = salt;
                 //Tạo ngẫu nhiên mật khẩu
@@ -93,17 +228,34 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                 _notifyService.Success("Tạo mới tài khoản quản trị thành công");
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "RoleName", account.RoleId);
+            ViewBag.CurrentPage = page;
+           
+       
             return View(account);
         }
         //ChangePassword
-        public IActionResult ChangePassword()
+        public IActionResult ChangePassword(int? id, int? page, string? Ten, string? Email, string? SDT, int? Quyen, Boolean? TrangThai)
         {
-            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "RoleName");
+            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "Description");
+            ViewBag.CurrentPage = page;
+            ViewBag.CurrentTen = Ten;
+            ViewBag.CurrentEmail = Email;
+            ViewBag.CurrentSDT = SDT;
+            ViewBag.CurrentRole = Quyen;
+            ViewBag.CurrentStatus = TrangThai;
+            List<SelectListItem> lsTrangThai = new List<SelectListItem>();
+            lsTrangThai.Add(new SelectListItem() { Text = "Active", Value = "true" });
+            lsTrangThai.Add(new SelectListItem() { Text = "Block", Value = "false" });
+            List<SelectListItem> lsGioiTinh = new List<SelectListItem>();
+            lsGioiTinh.Add(new SelectListItem() { Text = "Nam", Value = "true" });
+            lsGioiTinh.Add(new SelectListItem() { Text = "Nữ", Value = "false" });
+            ViewData["lsGioiTinh"] = lsGioiTinh;
+            ViewData["lsTrangThai"] = lsTrangThai;
+            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "Description", Quyen);
             return View();
         }
         [HttpPost]
-        public IActionResult ChangePassword(ChangePasswordViewModel model)
+        public IActionResult ChangePassword(ChangePasswordViewModel model, int? id, int? page, string? Ten, string? Email, string? SDT, int? Quyen, Boolean? TrangThai)
         {
             if (ModelState.IsValid)
             {
@@ -123,13 +275,14 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                 }
             }
 
-
-            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "RoleName");
+          
+        
             return View();
         }
 
         // GET: Admin/Accounts/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(int id, int? page, string? Ten, string? Email, string? SDT, int? Quyen, Boolean? TrangThai)
         {
             if (id == null || _context.Accounts == null)
             {
@@ -141,16 +294,30 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "RoleName", account.RoleId);
+            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "Description", account.RoleId);
+            ViewBag.CurrentPage = page;
+            ViewBag.CurrentTen = Ten;
+            ViewBag.CurrentEmail = Email;
+            ViewBag.CurrentSDT = SDT;
+            ViewBag.CurrentRole = Quyen;
+            ViewBag.CurrentStatus = TrangThai;
+            List<SelectListItem> lsTrangThai = new List<SelectListItem>();
+            lsTrangThai.Add(new SelectListItem() { Text = "Active", Value = "true" });
+            lsTrangThai.Add(new SelectListItem() { Text = "Block", Value = "false" });
+            ViewData["lsTrangThai"] = lsTrangThai;
+            List<SelectListItem> lsGioiTinh = new List<SelectListItem>();
+            lsGioiTinh.Add(new SelectListItem() { Text = "Nam", Value = "true" });
+            lsGioiTinh.Add(new SelectListItem() { Text = "Nữ", Value = "false" });
+            ViewData["lsGioiTinh"] = lsGioiTinh;
             return View(account);
         }
-
+    
         // POST: Admin/Accounts/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AccountId,Phone,AccountEmail,AccountPassword,Sail,Active,FullName,RoleId,LastLogin,CreateDate")] Account account)
+        public async Task<IActionResult> Edit(int id, int? page, string? Ten, string? Email, string? SDT, int? Quyen, Boolean? TrangThai, [Bind("AccountId,Phone,AccountEmail,AccountPassword,Salt,Active,FullName,RoleId,LastLogin,CreateDate,NgaySinh,GioiTinh")] Account account)
         {
             if (id != account.AccountId)
             {
@@ -208,9 +375,9 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", new { page = page, Ten = Ten, Email = Email, SDT = SDT, Quyen = Quyen, TrangThai = TrangThai });
             }
-            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "RoleName", account.RoleId);
+            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "Description", account.RoleId);
             return View(account);
         }
 
@@ -234,13 +401,14 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         }
         // GET: Admin/Accounts/Delete/5
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, int? page, string? Ten, string? Email, string? SDT, int? Quyen, Boolean? TrangThai)
         {
+
             if (id == null || _context.Accounts == null)
             {
                 return NotFound();
             }
-
+            var currentAccountId = int.Parse(HttpContext.User.FindFirst("AccountId")?.Value);
             var account = await _context.Accounts
                 .Include(a => a.Role)
                 .FirstOrDefaultAsync(m => m.AccountId == id);
@@ -248,14 +416,34 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
+            if (currentAccountId == account.AccountId)
+                if (currentAccountId == account.AccountId)
+                {
+                    _notifyService.Error("Không thể xóa tài khoản này!");
+                    return RedirectToAction("Index", new { page = page, Ten = Ten, Email = Email, SDT = SDT, Quyen = Quyen, TrangThai = TrangThai });
+                }
+            ViewBag.CurrentPage = page;
+            ViewBag.CurrentTen = Ten;
+            ViewBag.CurrentEmail = Email;
+            ViewBag.CurrentSDT = SDT;
+            ViewBag.CurrentRole = Quyen;
+            ViewBag.CurrentStatus = TrangThai;
+            List<SelectListItem> lsTrangThai = new List<SelectListItem>();
+            lsTrangThai.Add(new SelectListItem() { Text = "Active", Value = "true" });
+            lsTrangThai.Add(new SelectListItem() { Text = "Block", Value = "false" });
+            ViewData["lsTrangThai"] = lsTrangThai;
+            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "Description", Quyen);
+            List<SelectListItem> lsGioiTinh = new List<SelectListItem>();
+            lsGioiTinh.Add(new SelectListItem() { Text = "Nam", Value = "true" });
+            lsGioiTinh.Add(new SelectListItem() { Text = "Nữ", Value = "false" });
+            ViewData["lsGioiTinh"] = lsGioiTinh;
             return View(account);
         }
 
         // POST: Admin/Accounts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int? id, int? page, string? Ten, string? Email, string? SDT, int? Quyen, Boolean? TrangThai)
         {
             if (_context.Accounts == null)
             {
@@ -268,7 +456,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", new { page = page, Ten = Ten, Email = Email, SDT = SDT, Quyen = Quyen, TrangThai = TrangThai });
         }
 
         private bool AccountExists(int id)
