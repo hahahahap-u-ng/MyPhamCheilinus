@@ -36,6 +36,7 @@
     <link rel="stylesheet" href="/css/vendor/vendor.min.css">
     <link rel="stylesheet" href="/css/plugins/plugins.min.css">
     <link rel="stylesheet" href="/css/style.min.css">
+    @await RenderSectionAsync("Styles", required: false)
 
 @*
     <link rel="shortcut icon" type="image/x-icon" href="~/thuvien/images/favicon.ico" />*@
@@ -79,7 +80,7 @@
                         <div class="header-top-right">
                             <div class="header-top-user-link header-top-user-link-color--white header-top-user-link-hover-color--green">
 
-                                <a href="/DonHang/DonHang">Đơn hàng</a>
+                                <a href="/DonHang/Index">Đơn hàng</a>
                                 <a href="/GioHang/ViewGioHang">Giỏ hàng</a>
                                 
                                 @if (User.Identity.IsAuthenticated)
@@ -905,7 +906,27 @@
     <script src="/js/plugins/plugins.min.js"></script> 
     <!-- Main JS -->
     <script src="/js/main.js"></script>
+
+
+
+    <script src="~/adminassets/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="~/adminassets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE -->
+    <script src="~/adminassets/dist/js/adminlte.js"></script>
+
+    <!-- OPTIONAL SCRIPTS -->
+    <script src="~/adminassets/plugins/chart.js/Chart.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="~/adminassets/dist/js/demo.js"></script>
+    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+    <script src="~/adminassets/dist/js/pages/dashboard3.js"></script>
+    <script src="~/content/ckeditor/ckeditor.js"></script>
+    <script src="~/content/ckfinder/ckfinder.js"></script>
+    @await Component.InvokeAsync("Notyf")
+    @await RenderSectionAsync("Scripts", required:false)
 </body>
+
 
 
 </html>
