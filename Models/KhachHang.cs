@@ -17,7 +17,5 @@ public partial class KhachHang
 
     public int AccountId { get; set; }
 
-    public virtual Account Account { get; set; } = null!;
-
     public virtual ICollection<DonHang> DonHangs { get; set; } = new List<DonHang>();
 }

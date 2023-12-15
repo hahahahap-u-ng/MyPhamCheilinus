@@ -44,13 +44,10 @@
                         <td>Ngày sinh:</td>
                         <td>@Model.NgaySinh</td>
                     </tr>
-                    <tr>
-                        <td>Giới tính:</td>
-                        <td>@Model.GioiTinh</td>
-                    </tr>
+          
                     <tr>
                         <td>Quyền truy cập:</td>
-                        <td>@Model.Role.RoleName</td>
+                        <td>@Model.Role.Description</td>
                     </tr>
                     <tr>
                         <td>Ngày tạo:</td>
@@ -62,10 +59,7 @@
                     </tr>
                     <tr>
                         <td class="row">
-                            <form asp-action="Delete" asp-for="AccounId" asp-route-Page="@ViewBag.CurrentPage" asp-route-Ten="@ViewBag.CurrentTen" asp-route-Email="@ViewBag.CurrentEmail" asp-route-SDT="@ViewBag.CurrentSDT" asp-route-Quyen="@ViewBag.CurrentRole" asp-route-TrangThai="@ViewBag.CurrentStatus">
-
-                                <input type="submit" value="Xóa" class="btn btn-danger" /> |
-                            </form>
+                       
                             <div>
                                 <form asp-action="Details" asp-for="AccounId" asp-route-Page="@ViewBag.CurrentPage" asp-route-Ten="@ViewBag.CurrentTen" asp-route-Email="@ViewBag.CurrentEmail" asp-route-SDT="@ViewBag.CurrentSDT" asp-route-Quyen="@ViewBag.CurrentRole" asp-route-TrangThai="@ViewBag.CurrentStatus">
                                     <input type="submit" class="btn btn-secondary" value="Trở lại" />

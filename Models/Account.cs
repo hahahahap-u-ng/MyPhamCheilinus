@@ -33,7 +33,5 @@ public partial class Account
 
     public bool? GioiTinh { get; set; }
 
-    public virtual ICollection<KhachHang> KhachHangs { get; set; } = new List<KhachHang>();
-
     public virtual Role? Role { get; set; }
 }
