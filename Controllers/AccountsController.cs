@@ -72,6 +72,84 @@ namespace MyPhamCheilinus.Controllers
             }
             return RedirectToAction("Login");
         }
+
+
+
+        [HttpGet]
+        [Route("edit-account")]
+        public IActionResult EditAccount()
+        {
+            var taikhoanID = HttpContext.Session.GetString("AccountId");
+
+            if (taikhoanID != null)
+            {
+                var khachhang = _context.Accounts.AsNoTracking().SingleOrDefault(x => x.AccountId == Convert.ToInt32(taikhoanID));
+
+                if (khachhang != null)
+                {
+                    return View("Dashboard", khachhang);
+                }
+            }
+
+            // Nếu không tìm thấy tài khoản hoặc có lỗi, chuyển hướng đến trang đăng nhập
+            return RedirectToAction("Login");
+        }
+
+        [HttpPost]
+        [Route("edit-account")]
+        public IActionResult EditAccount(Account account)
+        {
+            try
+            {
+                var taikhoanID = HttpContext.Session.GetString("AccountId");
+
+                if (taikhoanID == null)
+                {
+                    return RedirectToAction("Login", "Accounts");
+                }
+
+                if (ModelState.IsValid)
+                {
+                    var existingAccount = _context.Accounts.Find(Convert.ToInt32(taikhoanID));
+
+                    if (existingAccount == null)
+                    {
+                        return RedirectToAction("Login", "Accounts");
+                    }
+
+                    // Cập nhật thông tin tài khoản từ dữ liệu nhập vào
+                    existingAccount.AccountEmail = account.AccountEmail;
+                    existingAccount.FullName = account.FullName;
+                    existingAccount.DiaChi = account.DiaChi;
+                    existingAccount.GioiTinh = account.GioiTinh;
+                    existingAccount.Phone = account.Phone;
+                    existingAccount.NgaySinh = account.NgaySinh;
+
+
+                    // Lưu thay đổi vào cơ sở dữ liệu
+                    _context.Update(existingAccount);
+                    _context.SaveChanges();
+
+                    // Truyền thông điệp thành công để hiển thị trên view
+                    ViewBag.SuccessMessage = "Cập nhật thông tin tài khoản thành công!";
+                    return RedirectToAction("Dashboard", "Accounts");
+                }
+            }
+            catch
+            {
+                // Truyền thông điệp lỗi để hiển thị trên view
+                ViewBag.ErrorMessage = "Đã xảy ra lỗi khi cập nhật thông tin tài khoản";
+            }
+
+            // Nếu có lỗi, chuyển hướng đến trang khác theo yêu cầu
+            return RedirectToAction("Dashboard", "Accounts");
+        }
+
+
+
+
+
+
         private int GetRoleIdForCustomer()
         {
             // Thực hiện logic để lấy RoleId tương ứng với vai trò 'Customer' từ cơ sở dữ liệu
