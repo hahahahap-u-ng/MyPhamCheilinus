@@ -11,6 +11,9 @@ using MyPhamCheilinus.Models;
 using PagedList.Core;
 using System.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Runtime.InteropServices;
 
 namespace MyPhamCheilinus.Areas.Admin.Controllers
 {
@@ -27,7 +30,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         }
 
         // GET: Admin/Hangs
-        public IActionResult Index(int? page, string search = "")
+        public IActionResult Index(int? page, string? TenHang = "")
         {
             var pageNumber = page == null || page <= 0 ? 1 : page.Value;
             var pageSize = 10;
@@ -35,17 +38,17 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             IQueryable<Hang> query = _context.Hangs
                 .AsNoTracking();
 
-            if (!string.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(TenHang))
             {
-                query = query.Where(x => x.TenHang.Contains(search));
+                query = query.Where(x => x.TenHang.Contains(TenHang));
             }
 
             var lsProducts = query.OrderByDescending(x => x.MaHang).ToList();
             PagedList<Hang> models = new PagedList<Hang>(lsProducts.AsQueryable(), pageNumber, pageSize);
 
 
-            ViewBag.CurrentPage = pageNumber;
-            ViewBag.CurrentSearch = search;
+           ViewBag.CurrentPage = pageNumber;
+           ViewBag.CurrentSearch = TenHang;
 
 
             return View(models);
@@ -68,13 +71,13 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             return View(hang);
         }
 
-        public IActionResult Filtter( string search)
+        public IActionResult Filtter( string? search)
         {
             var url = "/Admin/Hangs?";
 
             if (!string.IsNullOrEmpty(search))
             {
-                url += $"search={search}&";
+                url += $"TenHang={search}&";
             }
 
             // Loại bỏ dấu '&' cuối cùng nếu có
@@ -184,20 +187,48 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         {
             if (_context.Hangs == null)
             {
-                return Problem("Entity set '_2023MyPhamContext.Hangs'  is null.");
+                return Problem("Entity set '_2023MyPhamContext.Hangs' is null.");
             }
+
             var hang = await _context.Hangs.FindAsync(id);
-            if (hang != null)
+
+            if (hang == null)
             {
-                _context.Hangs.Remove(hang);
+                return NotFound();
             }
-            
+
+            // Xác nhận không có danh mục sản phẩm nào liên quan
+            var danhMuc = await _context.DanhMucSanPhams.Where(p => p.MaHang == id).ToListAsync();
+
+            // Xác nhận không có sản phẩm nào liên quan
+            var products = _context.SanPhams
+.AsEnumerable()
+.Where(ct => danhMuc.Any(p => p.MaDanhMuc == ct.MaDanhMuc))
+.ToList();
+            // Xác nhận không có chi tiết đơn hàng nào liên quan
+            var orderDetails = _context.ChiTietDonHangs
+    .AsEnumerable()
+    .Where(ct => products.Any(p => p.MaSanPham == ct.MaSanPham))
+    .ToList();
+
+            // Xóa chi tiết đơn hàng
+            _context.RemoveRange(orderDetails);
+
+            // Xóa sản phẩm
+            _context.SanPhams.RemoveRange(products);
+            _context.DanhMucSanPhams.RemoveRange(danhMuc);
+
+            // Xóa Hãng sản phẩm
+            _context.Hangs.Remove(hang);
+
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            _notifyService.Success("Xóa hãng sản phẩm thành công");
+            return RedirectToAction(nameof(System.Index));
         }
 
+
         private bool HangExists(string id)
-        {
+    {
           return (_context.Hangs?.Any(e => e.MaHang == id)).GetValueOrDefault();
         }
     }

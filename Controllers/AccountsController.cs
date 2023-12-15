@@ -136,7 +136,7 @@ namespace MyPhamCheilinus.Controllers
                         ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "login");
                         ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
                         await HttpContext.SignInAsync(claimsPrincipal);
-                        return RedirectToAction("Dashboard", "Accounts");
+                        return RedirectToAction("Index", "Home");
                     }
                     catch (Exception ex)
                     {
@@ -218,7 +218,7 @@ namespace MyPhamCheilinus.Controllers
                     ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
                     await HttpContext.SignInAsync(claimsPrincipal);
                     //_notifyService.Success("Đăng nhập thành công!");
-                    return RedirectToAction("Dashboard", "Accounts");
+                    return RedirectToAction("Index", "Home");
                 }
             }
             catch
@@ -272,8 +272,24 @@ namespace MyPhamCheilinus.Controllers
         [Route("dang-xuat.html", Name = "Logout")]
         public IActionResult Logout()
         {
+            var accountId = HttpContext.Session.GetString("AccountId");
+
+            if (!string.IsNullOrEmpty(accountId))
+            {
+                var account = _context.Accounts.Find(Convert.ToInt32(accountId));
+
+                if (account != null)
+                {
+                    // Cập nhật trường LastLogin với thời gian hiện tại
+                    account.LastLogin = DateTime.Now;
+                    _context.SaveChanges();
+                }
+            }
+
+            // Đăng xuất người dùng
             HttpContext.SignOutAsync();
             HttpContext.Session.Remove("AccountId");
+
             return RedirectToAction("Index", "Home");
         }
     }
