@@ -244,6 +244,11 @@ public partial class _2023MyPhamContext : DbContext
             entity.Property(e => e.NgaySinh).HasColumnType("datetime");
             entity.Property(e => e.SoDienThoai).HasMaxLength(50);
             entity.Property(e => e.TenKhachHang).HasMaxLength(250);
+
+            entity.HasOne(d => d.Account).WithMany(p => p.KhachHangs)
+                .HasForeignKey(d => d.AccountId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_KhachHang_Account");
         });
 
         modelBuilder.Entity<LoHang>(entity =>

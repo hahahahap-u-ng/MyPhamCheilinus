@@ -16,7 +16,7 @@ using PagedList.Core;
 namespace MyPhamCheilinus.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin,Employee")]
+    [Authorize(Roles = "Employee")]
     public class DonHangsController : Controller
     {
         private readonly _2023MyPhamContext _context;
@@ -37,7 +37,8 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
 
             IQueryable<DonHang> query = _context.DonHangs
                 .AsNoTracking().Include(dh => dh.ChiTietDonHangs).ThenInclude(c => c.MaSanPhamNavigation)
-                .Include(x => x.MaKhachHangNavigation);
+                  .Include(x => x.MaKhachHangNavigation)
+                  .Include(x => x.MaKhachHangNavigation.Account);
          
             if (!string.IsNullOrEmpty(MaID))
             {

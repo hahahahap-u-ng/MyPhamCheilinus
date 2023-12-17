@@ -22,7 +22,7 @@ namespace MyPhamCpuheilinus.Controllers
         {
             _logger = logger;
         }
-        [Authorize(Roles = "Admin,Employee,Customer")]
+        [Authorize(Roles = "Customer")]
         public IActionResult AddGioHang(string maSanPham)
         {
             SanPham? sanpham = db.SanPhams.FirstOrDefault(p => p.MaSanPham == maSanPham);
@@ -68,7 +68,7 @@ namespace MyPhamCpuheilinus.Controllers
             if (string.IsNullOrEmpty(taikhoanID))
             {
                 // Nếu chưa đăng nhập, có thể chuyển hướng người dùng đến trang đăng nhập
-                return RedirectToAction("Login");
+                return RedirectToAction("Login", "Accounts");
             }
 
             if (int.TryParse(taikhoanID, out var accountId))
@@ -89,7 +89,7 @@ namespace MyPhamCpuheilinus.Controllers
             }
 
             // Nếu có lỗi xử lý, có thể chuyển hướng người dùng đến trang lỗi hoặc trang mặc định
-            return RedirectToAction("Login");
+            return RedirectToAction("Login", "Accounts");
         }
         public IActionResult ViewGioHang()
         {

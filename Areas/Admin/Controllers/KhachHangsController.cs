@@ -13,7 +13,7 @@ using PagedList.Core;
 namespace MyPhamCheilinus.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin,Employee")]
+    [Authorize(Roles = "Employee")]
     public class KhachHangsController : Controller
     {
         private readonly _2023MyPhamContext _context;

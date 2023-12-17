@@ -15,7 +15,7 @@ using PagedList.Core;
 namespace MyPhamCheilinus.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin,Employee")]
+    [Authorize(Roles = "Employee")]
     public class DanhMucSanPhamsController : Controller
     {
         private readonly _2023MyPhamContext _context;

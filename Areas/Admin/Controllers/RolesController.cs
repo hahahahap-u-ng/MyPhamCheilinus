@@ -9,10 +9,13 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyPhamCheilinus.Models;
 using PagedList.Core;
+using System.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyPhamCheilinus.Areas.Admin.Controllers
 {
     [Area("Admin")]
+   
     public class RolesController : Controller
     {
         private readonly _2023MyPhamContext _context;
@@ -120,7 +123,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                 moTa = moTa
             });
         }
-        // GET: Admin/Roles/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create(int? id, int? MaID, string? search, int? page, string? moTa)
         {
             ViewBag.CurrentPage = page;
@@ -163,6 +166,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         }
 
         // GET: Admin/Roles/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, int? MaID, string? search, int? page, string? moTa)
         {
             if (id == null || _context.Roles == null)
@@ -226,7 +230,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             }
             return View(role);
         }
-
+        [Authorize(Roles = "Admin")]
         // GET: Admin/Roles/Delete/5
         public async Task<IActionResult> Delete(int? id, int? MaID, string? search, int? page, string? moTa)
         {

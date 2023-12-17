@@ -75,7 +75,7 @@
                     <div class="form-group col-md-6">
                         <label class="font-weight-semibold" for="productName">Cập nhật trạng Thái</label>
                         <select class="custom-select" id="txtMaDM" name="txtMaDM" asp-for="TrangThaiDonHang" style="min-width: 200px">
-                            <option selected value="">Chọn trạng thái</option>
+                            <option selected disabled value="">Chọn trạng thái</option>
                             @if (Model.TrangThaiDonHang == 1)
                             {                 
                                 <option value="2" class="enabled-option">Đang vận chuyển</option>

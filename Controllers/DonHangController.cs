@@ -114,10 +114,7 @@ namespace MyPhamCpuheilinus.Controllers
                 return View(models);
 
             }
-
-            // Trường hợp không có tài khoản đăng nhập, bạn có thể xử lý theo ý muốn,
-            // chẳng hạn, chuyển hướng đến trang đăng nhập.
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("Login", "Accounts");
         }
 
 

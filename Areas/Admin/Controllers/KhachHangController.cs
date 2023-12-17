@@ -23,13 +23,13 @@ using static System.Net.Mime.MediaTypeNames;
 namespace MyPhamCheilinus.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin,Employee")]
-    public class AccountsController : Controller
+    [Authorize(Roles = "Employee")]
+    public class KhachHangController : Controller
     {
         private readonly _2023MyPhamContext _context;
         public INotyfService _notifyService { get; }
 
-        public AccountsController(_2023MyPhamContext context, INotyfService notifyService)
+        public KhachHangController(_2023MyPhamContext context, INotyfService notifyService)
         {
             _context = context;
             _notifyService = notifyService;
@@ -50,14 +50,24 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         //    var _2023MyPhamContext = _context.Accounts.Include(a => a.Role);
         //    return View(await _2023MyPhamContext.ToListAsync());
         //}
-        public IActionResult Index(int? page, string? Ten = "", string? Email = "", string? SDT="", int? Quyen= null, Boolean? TrangThai=null)
+        public IActionResult Index(int? page, string? Ten = "", string? Email = "", string? SDT = "", int? Quyen = null, Boolean? TrangThai = null)
         {
             var pageNumber = page == null || page <= 0 ? 1 : page.Value;
             var pageSize = 10;
+            //var currentRole = HttpContext.User.FindFirst("AccountId")?.Value;
 
+
+
+            //if (currentRole == "Admin" )
+            //    {
+            //        _notifyService.Error("Bạn không đủ thẩm quyền!");
+            //        return RedirectToAction("Index", new { page = page, Ten = Ten, Email = Email, SDT = SDT, Quyen = Quyen, TrangThai = TrangThai });
+            //    }
             IQueryable<Account> query = _context.Accounts
-                .Include(a=>a.Role)
+                .Include(a => a.Role)
+                .Where(a=>a.Role.Description=="Người dùng")
                 .AsNoTracking();
+          
             if (!string.IsNullOrEmpty(Ten))
             {
                 query = query.Where(x => x.FullName.Contains(Ten));
@@ -68,9 +78,9 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             }
             if (Quyen != null)
             {
-                query = query.Where(x=>x.RoleId == Quyen);
+                query = query.Where(x => x.RoleId == Quyen);
             }
-           
+
             if (!string.IsNullOrEmpty(SDT))
             {
                 query = query.Where(x => x.Phone.Contains(SDT));
@@ -81,7 +91,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             }
             if (TrangThai != null)
             {
-                query = query.Where(x => x.Active == TrangThai);
+                query = query.Where(x => x.GioiTinh == TrangThai);
             }
             var lsProducts = query.OrderByDescending(x => x.RoleId).ToList();
 
@@ -107,7 +117,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
 
         public IActionResult Filtter(string? Ten, string? Email, string? SDT, int? Quyen, Boolean? TrangThai)
         {
-            var url = "/Admin/Accounts?";
+            var url = "/Admin/KhachHang?";
             if (!string.IsNullOrEmpty(Ten))
             {
                 url += $"Ten={Ten}&";
@@ -207,14 +217,14 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int page,[Bind("AccountId,Phone,AccountEmail,AccountPassword,Sail,Active,FullName,RoleId,LastLogin,CreateDate")] Account account)
+        public async Task<IActionResult> Create(int page, [Bind("AccountId,Phone,AccountEmail,AccountPassword,Sail,Active,FullName,RoleId,LastLogin,CreateDate")] Account account)
         {
             if (ModelState.IsValid)
             {
                 if (_context.Accounts.Any(x => x.AccountEmail == account.AccountEmail))
                 {
                     ModelState.AddModelError("AccountEmail", "Tại khoản đã tồn tại. Vui lòng chọn tên khác.");
-                 
+
                     return View(account);
                 }
                 string salt = Utilities.GetRandomKey();
@@ -229,8 +239,8 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.CurrentPage = page;
-           
-       
+
+
             return View(account);
         }
         //ChangePassword
@@ -271,12 +281,12 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                     _context.Update(taikhoan);
                     _context.SaveChanges();
                     _notifyService.Success("Thay đổi mật khẩu thành công");
-                    RedirectToAction("Login", "Accounts", new {Area = "Admin"});
+                    RedirectToAction("Login", "Accounts", new { Area = "Admin" });
                 }
             }
 
-          
-        
+
+
             return View();
         }
 
@@ -311,7 +321,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             ViewData["lsGioiTinh"] = lsGioiTinh;
             return View(account);
         }
-    
+
         // POST: Admin/Accounts/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -383,20 +393,23 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
 
         private int GetRoleIdForCustomer()
         {
-          
+            // Thực hiện logic để lấy RoleId tương ứng với vai trò 'Customer' từ cơ sở dữ liệu
+            // Ví dụ:
             return _context.Roles.Where(r => r.RoleName == "Customer").Select(r => r.RoleId).FirstOrDefault();
         }
         private int GetRoleIdForAdmin()
         {
-          
+            // Thực hiện logic để lấy RoleId tương ứng với vai trò 'Customer' từ cơ sở dữ liệu
+            // Ví dụ:
             return _context.Roles.Where(r => r.RoleName == "Admin").Select(r => r.RoleId).FirstOrDefault();
         }
         private int GetRoleIdForEmployee()
         {
-          
+            // Thực hiện logic để lấy RoleId tương ứng với vai trò 'Customer' từ cơ sở dữ liệu
+            // Ví dụ:
             return _context.Roles.Where(r => r.RoleName == "Employee").Select(r => r.RoleId).FirstOrDefault();
         }
-      
+        // GET: Admin/Accounts/Delete/5
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id, int? page, string? Ten, string? Email, string? SDT, int? Quyen, Boolean? TrangThai)
         {
@@ -413,7 +426,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-       
+            if (currentAccountId == account.AccountId)
                 if (currentAccountId == account.AccountId)
                 {
                     _notifyService.Error("Không thể xóa tài khoản này!");
@@ -451,14 +464,14 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             {
                 _context.Accounts.Remove(account);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction("Index", new { page = page, Ten = Ten, Email = Email, SDT = SDT, Quyen = Quyen, TrangThai = TrangThai });
         }
 
         private bool AccountExists(int id)
         {
-          return (_context.Accounts?.Any(e => e.AccountId == id)).GetValueOrDefault();
+            return (_context.Accounts?.Any(e => e.AccountId == id)).GetValueOrDefault();
         }
 
     }

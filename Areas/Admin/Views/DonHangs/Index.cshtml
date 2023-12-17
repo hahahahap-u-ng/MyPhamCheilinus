@@ -48,7 +48,7 @@
                                 </div>
                                 <div class="col-lg-3">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="Tìm kiếm theo tên khách hàng" id="searchName" value="@ViewBag.CurrentSearch" />
+                                        <input type="text" class="form-control" placeholder="Tìm kiếm theo tên người nhận" id="searchName" value="@ViewBag.CurrentSearch" />
                                     </div>
                                 </div>
                                 <div class="col-lg-1">
@@ -76,7 +76,8 @@
                             <thead>
                                 <tr class="text-center">
                                     <th>ID</th>
-                                    <th>Khách hàng</th>
+                                    <th>Người nhận</th>
+                                    <th>Tài khoản</th>
                                     <th>Ngày đặt</th>
                                     <th>Tổng tiền</th>
                                     <th>Trạng thái</th>
@@ -93,7 +94,7 @@
                                             <td class="align-middle text-center">@item.MaDonHang</td>
 
                                             <td class="align-middle">@item.MaKhachHangNavigation.TenKhachHang</td>
-
+                                            <td class="align-middle">@item.MaKhachHangNavigation.Account.AccountEmail</td>
                                             <td class="align-middle text-center">@item.NgayDatHang.Value.ToString("dd/MM/yyyy")</td>
                                             <td class="align-middle text-center">@item.TongTien.Value.ToString("#,##0") VNĐ</td>
                                             <td class="align-middle text-center">

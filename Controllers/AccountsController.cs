@@ -292,10 +292,23 @@ namespace MyPhamCheilinus.Controllers
                     {
                         claims.Add(new Claim(ClaimTypes.Role, "Employee"));
                     }
+                  
                     ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "login");
                     ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
                     await HttpContext.SignInAsync(claimsPrincipal);
-                    //_notifyService.Success("Đăng nhập thành công!");
+                    if (khachhang.RoleId == GetRoleIdForAdmin())
+                    {
+                        // Chuyển hướng đến trang Admin/Accounts
+                        _notifyService.Success("Đăng nhập thành công!");
+                        return RedirectToAction("Index", "Accounts", new { area = "Admin" });
+                    }
+                    if (khachhang.RoleId == GetRoleIdForEmployee())
+                    {
+                        // Chuyển hướng đến trang Admin/Accounts
+                        _notifyService.Success("Đăng nhập thành công!");
+                        return RedirectToAction("Index", "Home", new { area = "Admin" });
+                    }
+                    _notifyService.Success("Đăng nhập thành công!");
                     return RedirectToAction("Index", "Home");
                 }
             }

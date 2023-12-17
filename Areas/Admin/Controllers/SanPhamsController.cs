@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace MyPhamCheilinus.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin, Employee")]
+    [Authorize(Roles = "Employee")]
     public class SanPhamsController : Controller
     {
         private readonly _2023MyPhamContext _context;
@@ -187,6 +187,10 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                 ModelState.AddModelError("TenSanPham", "Xin hãy nhập tên của sản phẩm.");
             }
 
+            if (sanPham.Gia < 0)
+            {
+                ModelState.AddModelError("Gia", "Giá bán phải lớn hơn hoặc bằng 0");
+            }
             if (sanPham.Gia == null)
             {
                 ModelState.AddModelError("Gia", "Xin hãy nhập giá bán của sản phẩm.");
@@ -196,9 +200,17 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             {
                 ModelState.AddModelError("Slkho", "Xin hãy nhập số lượng tồn kho.");
             }
+            if (sanPham.Slkho < 0)
+            {
+                ModelState.AddModelError("Slkho", "Số lượng phải lớn hơn hoặc bằng 0");
+            }
             if (sanPham.GiaNhap == null)
             {
                 ModelState.AddModelError("GiaNhap", "Xin hãy điền giá nhập của sản phẩm.");
+            }
+            if (sanPham.GiaNhap < 0)
+            {
+                ModelState.AddModelError("GiaNhap", "Giá nhập hàng phải lớn hơn hoặc bằng 0");
             }
             if (sanPham.MaDanhMuc == null)
             {
@@ -277,7 +289,53 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+            if (string.IsNullOrEmpty(sanPham.MaSanPham))
+            {
+                ModelState.AddModelError("MaSanPham", "Mã sản phẩm là trường bắt buộc.");
+            }
 
+            if (string.IsNullOrEmpty(sanPham.TenSanPham))
+            {
+                ModelState.AddModelError("TenSanPham", "Xin hãy nhập tên của sản phẩm.");
+            }
+
+            if (sanPham.Gia < 0)
+            {
+                ModelState.AddModelError("Gia", "Giá bán phải lớn hơn hoặc bằng 0");
+            }
+            if (sanPham.Gia == null)
+            {
+                ModelState.AddModelError("Gia", "Xin hãy nhập giá bán của sản phẩm.");
+            }
+
+            if (sanPham.Slkho == null)
+            {
+                ModelState.AddModelError("Slkho", "Xin hãy nhập số lượng tồn kho.");
+            }
+            if (sanPham.Slkho < 0)
+            {
+                ModelState.AddModelError("Slkho", "Số lượng phải lớn hơn hoặc bằng 0");
+            }
+            if (sanPham.GiaNhap == null)
+            {
+                ModelState.AddModelError("GiaNhap", "Xin hãy điền giá nhập của sản phẩm.");
+            }
+            if (sanPham.GiaNhap < 0)
+            {
+                ModelState.AddModelError("GiaNhap", "Giá nhập hàng phải lớn hơn hoặc bằng 0");
+            }
+            if (sanPham.MaDanhMuc == null)
+            {
+                ModelState.AddModelError("MaDanhMuc", "Xin hãy chọn danh mục sản phẩm.");
+            }
+            if (sanPham.MoTa == null)
+            {
+                ModelState.AddModelError("MoTa", "Xin hãy điền mô tả sản phẩm.");
+            }
+            if (sanPham.Mau == null)
+            {
+                ModelState.AddModelError("Mau", "Xin hãy điền màu  sản phẩm.");
+            }
             if (ModelState.IsValid)
             {
                 try

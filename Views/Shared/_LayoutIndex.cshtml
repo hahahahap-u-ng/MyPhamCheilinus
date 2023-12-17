@@ -86,10 +86,14 @@
                                 @if (User.Identity.IsAuthenticated)
                                 {
                                     // Kiểm tra quyền và chỉ hiển thị liên kết "Admin" nếu có quyền Admin
-                                    if (User.IsInRole("Admin") ||User.IsInRole("Employee"))
+                                    if (User.IsInRole("Admin"))
                                     {
-                                        <a href="~/Admin">Admin</a>
+                                        <a href="~/Admin/Accounts">Admin</a>
                                     }
+                                    else if (User.IsInRole("Employee"))
+                                    {
+                                        <a href="~/Admin"> Admin </a>
+                                    }            
                                 }
                                @if (User.Identity.IsAuthenticated)
                                 {

@@ -4,10 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using MyPhamCheilinus.Models;
 using System.Web.WebPages;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
+using System.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyPhamCheilinus.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Employee")]
     public class ThongKeController : Controller
     {
        

@@ -18,6 +18,7 @@ using System.Runtime.InteropServices;
 namespace MyPhamCheilinus.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Employee")]
     public class HangsController : Controller
     {
         private readonly _2023MyPhamContext _context;
