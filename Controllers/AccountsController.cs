@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using MyPhamCheilinus.Extension;
 using MyPhamCheilinus.Helpper;
 using MyPhamCheilinus.Models;
-using MyPhamCheilinus.ModelViews;
 using System.Security.Claims;
 
 namespace MyPhamCheilinus.Controllers
@@ -214,6 +213,7 @@ namespace MyPhamCheilinus.Controllers
                         ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "login");
                         ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
                         await HttpContext.SignInAsync(claimsPrincipal);
+                        _notifyService.Success("Đăng ký tài khoản thành công!");
                         return RedirectToAction("Index", "Home");
                     }
                     catch (Exception ex)
@@ -261,7 +261,7 @@ namespace MyPhamCheilinus.Controllers
                     string pass = (customer.Password + khachhang.Salt.Trim()).ToMD5();
                     if (khachhang.AccountPassword != pass)
                     {
-                        _notifyService.Success("Thông tin đăng nhập chưa chính xác.");
+                        _notifyService.Error("Thông tin đăng nhập chưa chính xác.");
                         return View(customer);
                     }
                     if (khachhang.Active == false)
@@ -299,13 +299,13 @@ namespace MyPhamCheilinus.Controllers
                     if (khachhang.RoleId == GetRoleIdForAdmin())
                     {
                         // Chuyển hướng đến trang Admin/Accounts
-                        _notifyService.Success("Đăng nhập thành công!");
+                        _notifyService.Success("Đăng nhập tài khoản Admin thành công!");
                         return RedirectToAction("Index", "Accounts", new { area = "Admin" });
                     }
                     if (khachhang.RoleId == GetRoleIdForEmployee())
                     {
                         // Chuyển hướng đến trang Admin/Accounts
-                        _notifyService.Success("Đăng nhập thành công!");
+                        _notifyService.Success("Đăng nhập tài khoản nhân viên thành công!");
                         return RedirectToAction("Index", "Home", new { area = "Admin" });
                     }
                     _notifyService.Success("Đăng nhập thành công!");

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -16,16 +17,24 @@ namespace MyPhamCpuheilinus.Controllers
 
         public GioHang? GioHang { get; set; }
         _2023MyPhamContext db = new _2023MyPhamContext();
+        public INotyfService _notifyService { get; }
         private readonly ILogger<GioHangController> _logger;
 
-        public GioHangController(ILogger<GioHangController> logger)
+        public GioHangController(ILogger<GioHangController> logger, INotyfService notifyService)
         {
             _logger = logger;
+            _notifyService = notifyService;
         }
         [Authorize(Roles = "Customer")]
         public IActionResult AddGioHang(string maSanPham)
         {
             SanPham? sanpham = db.SanPhams.FirstOrDefault(p => p.MaSanPham == maSanPham);
+            if(sanpham.Slkho == 0)
+            {
+                _notifyService.Error("Sản phẩm đã hết hàng");
+                return RedirectToAction("SanPhamTheoDanhMuc");
+            }
+
             if (sanpham != null)
             {
                 GioHang = HttpContext.Session.GetJson<GioHang>("giohang") ?? new GioHang();
@@ -232,7 +241,22 @@ namespace MyPhamCpuheilinus.Controllers
 
                     db.DonHangs.Add(donHang);
                     db.SaveChanges();
+                    foreach (var line in gioHang.Lines)
+                    {
+                        // Lấy thông tin sản phẩm từ cơ sở dữ liệu
+                        var sanPham = db.SanPhams.Find(line.SanPham.MaSanPham);
 
+                        if (sanPham != null)
+                        {
+                            // Trừ số lượng đã mua từ số lượng tồn kho
+                            sanPham.Slkho -= line.SoLuong;
+                           
+
+                            // Cập nhật giá trị mới của số lượng tồn kho trong cơ sở dữ liệu
+                            db.Update(sanPham);
+                        
+                        }
+                    }
                     foreach (var line in gioHang.Lines)
                     {
                         var chiTietDonHang = new ChiTietDonHang
@@ -243,9 +267,17 @@ namespace MyPhamCpuheilinus.Controllers
                             GiaBan = line.SanPham.Gia
                         };
                         db.ChiTietDonHangs.Add(chiTietDonHang);
+                        RemoveFromGioHang(line.SanPham.MaSanPham);
                     }
+                    
 
                     db.SaveChanges();
+                    foreach (var line in gioHang.Lines)
+                    {
+                        
+                        RemoveFromGioHang(line.SanPham.MaSanPham);
+                    }
+     ;
                     gioHang.Clear();
 
                     // Có thể thêm các xử lý khác nếu cần

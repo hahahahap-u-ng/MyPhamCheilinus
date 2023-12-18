@@ -284,10 +284,10 @@ namespace MyPhamCpuheilinus.Controllers
                 {
                     // Lấy chi tiết đơn hàng và include MaDonHangNavigation và MaSanPhamNavigation
                     var ctDonHang = await db.DonHangs
-                        .Include(dh => dh.ChiTietDonHangs)
-                        .ThenInclude(c => c.MaSanPhamNavigation)
-                        .Include(x => x.MaKhachHangNavigation)
-                        .FirstOrDefaultAsync(m => m.MaDonHang == id);
+                       .Include(dh => dh.ChiTietDonHangs)
+                       .ThenInclude(c => c.MaSanPhamNavigation)
+                       .Include(x => x.MaKhachHangNavigation)
+                       .FirstOrDefaultAsync(m => m.MaDonHang == id);
 
                     if (ctDonHang != null)
                     {
@@ -296,6 +296,24 @@ namespace MyPhamCpuheilinus.Controllers
                         {
                             // Cập nhật trạng thái đơn hàng
                             ctDonHang.TrangThaiDonHang = trangThai;
+                            if (ctDonHang.TrangThaiDonHang == 4) // Giả sử 4 đại diện cho "Hủy đơn hàng"
+                            {
+                                // Lặp qua từng mục trong đơn hàng và cập nhật tồn kho
+                                foreach (var chiTietDonHang in ctDonHang.ChiTietDonHangs)
+                                {
+                                    // Lấy sản phẩm tương ứng
+                                    var sanPham = chiTietDonHang.MaSanPhamNavigation;
+
+                                    // Cập nhật số lượng sản phẩm trong kho
+                                    sanPham.Slkho += chiTietDonHang.SoLuong;
+
+                                    // Cập nhật sản phẩm trong ngữ cảnh
+                                    db.Update(sanPham);
+                                }
+
+                                // Lưu các thay đổi vào cơ sở dữ liệu
+                                await db.SaveChangesAsync();
+                            }
                         }
 
                         db.Update(ctDonHang);

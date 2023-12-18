@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using MyPhamCheilinus.Areas.Admin.Models;
+using MyPhamCheilinus.ChangPassword;
 using MyPhamCheilinus.Extension;
 using MyPhamCheilinus.Helpper;
 using MyPhamCheilinus.Models;
@@ -234,51 +234,51 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             return View(account);
         }
         //ChangePassword
-        public IActionResult ChangePassword(int? id, int? page, string? Ten, string? Email, string? SDT, int? Quyen, Boolean? TrangThai)
-        {
-            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "Description");
-            ViewBag.CurrentPage = page;
-            ViewBag.CurrentTen = Ten;
-            ViewBag.CurrentEmail = Email;
-            ViewBag.CurrentSDT = SDT;
-            ViewBag.CurrentRole = Quyen;
-            ViewBag.CurrentStatus = TrangThai;
-            List<SelectListItem> lsTrangThai = new List<SelectListItem>();
-            lsTrangThai.Add(new SelectListItem() { Text = "Active", Value = "true" });
-            lsTrangThai.Add(new SelectListItem() { Text = "Block", Value = "false" });
-            List<SelectListItem> lsGioiTinh = new List<SelectListItem>();
-            lsGioiTinh.Add(new SelectListItem() { Text = "Nam", Value = "true" });
-            lsGioiTinh.Add(new SelectListItem() { Text = "Nữ", Value = "false" });
-            ViewData["lsGioiTinh"] = lsGioiTinh;
-            ViewData["lsTrangThai"] = lsTrangThai;
-            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "Description", Quyen);
-            return View();
-        }
-        [HttpPost]
-        public IActionResult ChangePassword(ChangePasswordViewModel model, int? id, int? page, string? Ten, string? Email, string? SDT, int? Quyen, Boolean? TrangThai)
-        {
-            if (ModelState.IsValid)
-            {
-                var taikhoan = _context.Accounts.AsNoTracking().SingleOrDefault(x => x.AccountEmail == model.Email);
-                if (taikhoan == null) return RedirectToAction("Login", "Accounts");
+        //public IActionResult ChangePassword1(int? id, int? page, string? Ten, string? Email, string? SDT, int? Quyen, Boolean? TrangThai)
+        //{
+        //    ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "Description");
+        //    ViewBag.CurrentPage = page;
+        //    ViewBag.CurrentTen = Ten;
+        //    ViewBag.CurrentEmail = Email;
+        //    ViewBag.CurrentSDT = SDT;
+        //    ViewBag.CurrentRole = Quyen;
+        //    ViewBag.CurrentStatus = TrangThai;
+        //    List<SelectListItem> lsTrangThai = new List<SelectListItem>();
+        //    lsTrangThai.Add(new SelectListItem() { Text = "Active", Value = "true" });
+        //    lsTrangThai.Add(new SelectListItem() { Text = "Block", Value = "false" });
+        //    List<SelectListItem> lsGioiTinh = new List<SelectListItem>();
+        //    lsGioiTinh.Add(new SelectListItem() { Text = "Nam", Value = "true" });
+        //    lsGioiTinh.Add(new SelectListItem() { Text = "Nữ", Value = "false" });
+        //    ViewData["lsGioiTinh"] = lsGioiTinh;
+        //    ViewData["lsTrangThai"] = lsTrangThai;
+        //    ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "Description", Quyen);
+        //    return View();
+        //}
+        //[HttpPost]
+        //public IActionResult ChangePassword1(ChangePasswordViewModel1 model, int? id, int? page, string? Ten, string? Email, string? SDT, int? Quyen, Boolean? TrangThai)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var taikhoan = _context.Accounts.AsNoTracking().SingleOrDefault(x => x.AccountEmail == model.Email);
+        //        if (taikhoan == null) return RedirectToAction("Login", "Accounts");
 
-                var pass = (model.PasswordNow.Trim() + taikhoan.Salt.Trim()).ToMD5();
-                if (pass == taikhoan.AccountPassword)
-                {
-                    string passnew = (model.Password.Trim() + taikhoan.Salt.Trim()).ToMD5();
-                    taikhoan.AccountPassword = passnew;
-                    taikhoan.LastLogin = DateTime.Now;
-                    _context.Update(taikhoan);
-                    _context.SaveChanges();
-                    _notifyService.Success("Thay đổi mật khẩu thành công");
-                    RedirectToAction("Login", "Accounts", new {Area = "Admin"});
-                }
-            }
+        //        var pass = (model.PasswordNow.Trim() + taikhoan.Salt.Trim()).ToMD5();
+        //        if (pass == taikhoan.AccountPassword)
+        //        {
+        //            string passnew = (model.Password.Trim() + taikhoan.Salt.Trim()).ToMD5();
+        //            taikhoan.AccountPassword = passnew;
+        //            taikhoan.LastLogin = DateTime.Now;
+        //            _context.Update(taikhoan);
+        //            _context.SaveChanges();
+        //            _notifyService.Success("Thay đổi mật khẩu thành công");
+        //            RedirectToAction("Login", "Accounts", new {Area = "Admin"});
+        //        }
+        //    }
 
           
         
-            return View();
-        }
+        //    return View();
+        //}
 
         // GET: Admin/Accounts/Edit/5
         [Authorize(Roles = "Admin")]
@@ -460,6 +460,49 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         {
           return (_context.Accounts?.Any(e => e.AccountId == id)).GetValueOrDefault();
         }
+        public IActionResult ChangePasswor()
+        {
+            return PartialView("_ChangePassword");
+        }
+        [HttpPost]
+        public IActionResult ChangePasswor(ChangePasswordViewModel1 model)
+        {
+            try
+            {
+                var taikhoanID = HttpContext.Session.GetString("AccountId");
+                if (taikhoanID == null)
+                {
+                    return RedirectToAction("Login", "Accounts");
+                }
+                if (ModelState.IsValid)
+                {
+                    var taikhoan = _context.Accounts.Find(Convert.ToInt32(taikhoanID));
+                    if (taikhoan == null) return RedirectToAction("Login", "Accounts");
+                    var pass = (model.PasswordNow.Trim() + taikhoan.Salt.Trim()).ToMD5();
+                    if (pass == taikhoan.AccountPassword)
+                    {
+                        string passnew = (model.Password.Trim() + taikhoan.Salt.Trim()).ToMD5();
+                        taikhoan.AccountPassword = passnew;
+                        _context.Update(taikhoan);
+                        _context.SaveChanges();
+                        _notifyService.Success("Thay đổi mật khẩu thành công!");
+                        return RedirectToAction("ChangePasswor", "Accounts");
+                    }
+                    else
+                    {
+                        _notifyService.Error("Sai mật khẩu");
+                        return RedirectToAction("ChangePasswor", "Accounts");
+                    }
+                }
+            }
+            catch
+            {
+                _notifyService.Success("Thay đổi không mật khẩu thành công");
+                return RedirectToAction("ChangePasswor", "Accounts");
+            }
+            _notifyService.Error("Mật khẩu mới không giống nhau");
+            return RedirectToAction("ChangePasswor", "Accounts");
 
+        }
     }
 }

@@ -263,6 +263,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                 try
                 {
                     // Lấy chi tiết đơn hàng và include MaDonHangNavigation và MaSanPhamNavigation
+                    // Lấy chi tiết đơn hàng và include MaDonHangNavigation và MaSanPhamNavigation
                     var ctDonHang = await _context.DonHangs
                         .Include(dh => dh.ChiTietDonHangs)
                         .ThenInclude(c => c.MaSanPhamNavigation)
@@ -276,12 +277,31 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                         {
                             // Cập nhật trạng thái đơn hàng
                             ctDonHang.TrangThaiDonHang = trangThai;
+                            if (ctDonHang.TrangThaiDonHang == 4) // Giả sử 4 đại diện cho "Hủy đơn hàng"
+                            {
+                                // Lặp qua từng mục trong đơn hàng và cập nhật tồn kho
+                                foreach (var chiTietDonHang in ctDonHang.ChiTietDonHangs)
+                                {
+                                    // Lấy sản phẩm tương ứng
+                                    var sanPham = chiTietDonHang.MaSanPhamNavigation;
+
+                                    // Cập nhật số lượng sản phẩm trong kho
+                                    sanPham.Slkho += chiTietDonHang.SoLuong;
+
+                                    // Cập nhật sản phẩm trong ngữ cảnh
+                                    _context.Update(sanPham);
+                                }
+
+                                // Lưu các thay đổi vào cơ sở dữ liệu
+                                await _context.SaveChangesAsync();
+                            }
                         }
 
                         _context.Update(ctDonHang);
                         await _context.SaveChangesAsync();
                         _notifyService.Success("Cập nhật trạng thái thành công");
                     }
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
