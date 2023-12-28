@@ -60,7 +60,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                 query = query.Where(x => x.Gia <= maxPrice);
             }
 
-            var lsCategorys = query.OrderByDescending(x => x.MaDanhMuc).ToList();
+            var lsCategorys = query.OrderByDescending(x => x.Gia).ToList();
             PagedList<DanhMucSanPham> models = new PagedList<DanhMucSanPham>(lsCategorys.AsQueryable(), pageNumber, pageSize);
             ViewBag.CurrentPage = pageNumber;
             ViewBag.CurrentSearch = search;

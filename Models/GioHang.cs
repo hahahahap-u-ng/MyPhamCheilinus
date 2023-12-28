@@ -24,7 +24,7 @@
             Lines.RemoveAll(l => l.SanPham.MaSanPham == sanpham.MaSanPham);
 
         public double ComputeTotalValues() =>
-            (double)Lines.Sum(e => e.SanPham?.Gia * e.SoLuong*(1-(e.SanPham?.KhuyenMai)/100));
+            (double)Lines.Sum(e => e.SanPham?.Gia * e.SoLuong);
         public void Clear() => Lines.Clear();
     }
 
