@@ -25,8 +25,6 @@ public partial class _2023MyPhamContext : DbContext
 
     public virtual DbSet<DanhMucSanPham> DanhMucSanPhams { get; set; }
 
-    public virtual DbSet<DiaChi> DiaChis { get; set; }
-
     public virtual DbSet<DonHang> DonHangs { get; set; }
 
     public virtual DbSet<Hang> Hangs { get; set; }
@@ -171,20 +169,6 @@ public partial class _2023MyPhamContext : DbContext
             entity.HasOne(d => d.MaHangNavigation).WithMany(p => p.DanhMucSanPhams)
                 .HasForeignKey(d => d.MaHang)
                 .HasConstraintName("FK_DanhMucSanPham_Hang");
-        });
-
-        modelBuilder.Entity<DiaChi>(entity =>
-        {
-            entity.HasKey(e => e.LocationId);
-
-            entity.ToTable("DiaChi");
-
-            entity.Property(e => e.LocationId).HasColumnName("LocationID");
-            entity.Property(e => e.Name).HasMaxLength(100);
-            entity.Property(e => e.NameWithType).HasMaxLength(255);
-            entity.Property(e => e.PathWithType).HasMaxLength(255);
-            entity.Property(e => e.Slug).HasMaxLength(100);
-            entity.Property(e => e.Type).HasMaxLength(20);
         });
 
         modelBuilder.Entity<DonHang>(entity =>

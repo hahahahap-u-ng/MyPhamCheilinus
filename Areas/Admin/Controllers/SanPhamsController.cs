@@ -253,6 +253,101 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             return View(sanPham);
         }
 
+        public IActionResult Them(int? page, string? search, string? MaDM, string? MaID, double? minPrice, double? maxPrice)
+        {
+            ViewData["DanhMuc"] = new SelectList(_context.DanhMucSanPhams, "MaDanhMuc", "TenDanhMuc");
+            ViewBag.CurrentPage = page;
+            ViewBag.CurrentSearch = search;
+            ViewBag.CurrentMaDM = MaDM;
+            ViewBag.CurrentMinPrice = minPrice;
+            ViewBag.CurrentMaxPrice = maxPrice;
+            ViewBag.CurrentMaID = MaID;
+            return View();
+        }
+
+        // POST: Admin/SanPhams/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Them(int? page, [Bind("MaSanPham,TenSanPham,Mau,Anh,Gia,KhuyenMai,Slkho,GiaNhap,NgaySx,LuotMua,MaDanhMuc,HomeFlag,BestSellers,MoTa,Active")] SanPham sanPham, IFormFile? fAnh)
+
+        {
+            if (string.IsNullOrEmpty(sanPham.MaSanPham))
+            {
+                ModelState.AddModelError("MaSanPham", "Mã sản phẩm là trường bắt buộc.");
+            }
+
+            if (string.IsNullOrEmpty(sanPham.TenSanPham))
+            {
+                ModelState.AddModelError("TenSanPham", "Xin hãy nhập tên của sản phẩm.");
+            }
+
+            if (sanPham.Gia < 0)
+            {
+                ModelState.AddModelError("Gia", "Giá bán phải lớn hơn hoặc bằng 0");
+            }
+            if (sanPham.Gia == null)
+            {
+                ModelState.AddModelError("Gia", "Xin hãy nhập giá bán của sản phẩm.");
+            }
+
+            if (sanPham.Slkho == null)
+            {
+                ModelState.AddModelError("Slkho", "Xin hãy nhập số lượng tồn kho.");
+            }
+            if (sanPham.Slkho < 0)
+            {
+                ModelState.AddModelError("Slkho", "Số lượng phải lớn hơn hoặc bằng 0");
+            }
+            if (sanPham.GiaNhap == null)
+            {
+                ModelState.AddModelError("GiaNhap", "Xin hãy điền giá nhập của sản phẩm.");
+            }
+            if (sanPham.GiaNhap < 0)
+            {
+                ModelState.AddModelError("GiaNhap", "Giá nhập hàng phải lớn hơn hoặc bằng 0");
+            }
+            if (sanPham.MaDanhMuc == null)
+            {
+                ModelState.AddModelError("MaDanhMuc", "Xin hãy chọn danh mục sản phẩm.");
+            }
+            if (sanPham.MoTa == null)
+            {
+                ModelState.AddModelError("MoTa", "Xin hãy điền mô tả sản phẩm.");
+            }
+            if (sanPham.Mau == null)
+            {
+                ModelState.AddModelError("Mau", "Xin hãy điền màu  sản phẩm.");
+            }
+            if (ModelState.IsValid)
+            {
+                if (_context.SanPhams.Any(x => x.MaSanPham == sanPham.MaSanPham))
+                {
+                    ModelState.AddModelError("MaSanPham", "Mã sản phẩm đã tồn tại. Vui lòng chọn mã khác.");
+                    ViewData["DanhMuc"] = new SelectList(_context.DanhMucSanPhams, "MaDanhMuc", "TenDanhMuc", sanPham.MaDanhMuc);
+                    return View(sanPham);
+                }
+
+                sanPham.TenSanPham = Utilities.ToTitleCase(sanPham.TenSanPham);
+                if (fAnh != null)
+                {
+                    string extention = Path.GetExtension(fAnh.FileName);
+                    string image = Utilities.SEOUrl(sanPham.TenSanPham) + extention;
+                    sanPham.Anh = await Utilities.UploadFile(fAnh, @"sanPhams", image.ToLower());
+                }
+                //if (string.IsNullOrEmpty(sanPham.Anh)) sanPham.Anh = "default.jpg";
+
+                //sanPham.NgaySx = DateTime.Now;
+                sanPham.NgaySx = DateTime.Now;
+                _context.Add(sanPham);
+                await _context.SaveChangesAsync();
+                _notifyService.Success("Tạo mới sản phẩm thành công");
+                return RedirectToAction("Index", new { page = page });
+            }
+            ViewData["DanhMuc"] = new SelectList(_context.DanhMucSanPhams, "MaDanhMuc", "TenDanhMuc", sanPham.MaDanhMuc);
+            return View(sanPham);
+        }
         // GET: Admin/SanPhams/Edit/5
         public async Task<IActionResult> Edit(string id, int? page, string? MaID, string? search, string? MaDM, double? minPrice, double? maxPrice)
         {

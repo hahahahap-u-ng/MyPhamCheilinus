@@ -159,7 +159,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                 .Include(dh => dh.ChiTietDonHangs)
                 .ThenInclude(c => c.MaSanPhamNavigation)
                 .Include(x => x.MaKhachHangNavigation)
-                .AsNoTracking().Where(x => x.MaDonHang == donHangs.MaDonHang)
+                .Where(x => x.MaDonHang == donHangs.MaDonHang)
                 .OrderBy(x => x.MaDonHang).ToList();
             ViewBag.ChiTiet = donhang;
             ViewBag.CurrentPage = page;
