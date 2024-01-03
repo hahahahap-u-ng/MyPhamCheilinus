@@ -170,13 +170,9 @@
                                         // Tính toán giá khuyến mãi
                                         var discountPrice = (selectedPrice * (100 - selectedKhuyenMai)) / 100;
 
-                                        // Cập nhật giá sản phẩm và giá khuyến mãi
-                                        var priceElement = document.querySelector('.GiaSP');
+                                        // Cập nhật giá khuyến mãi
                                         var discountPriceElement = document.querySelector('.product-discount-price');
-                                        priceElement.textContent = selectedPrice;
-                                        discountPriceElement.textContent = discountPrice;
-
-
+                                        discountPriceElement.textContent = discountPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
                                     });
                                 });
                                 // Lắng nghe sự kiện khi nhấn nút "GIỎ HÀNG"
@@ -267,9 +263,9 @@
                     <div class="product-details-catagory mb-2">
                         <span class="title">@danhMuc.TenDanhMuc</span>
                         <ul>
-                            <li><a href="#">BAR STOOL</a></li>
-                            <li><a href="#">KITCHEN UTENSILS</a></li>
-                            <li><a href="#">TENNIS</a></li>
+                            <li><a href="#">ROMAND</a></li>
+                            <li><a href="#">MERZY</a></li>
+                            <li><a href="#">LEMONADE</a></li>
                         </ul>
                     </div> <!-- End  Product Details Catagories Area-->
                     <!-- Start  Product Details Social Area-->
@@ -580,7 +576,7 @@
                                                 </ul>
                                             </div>
                                             <div class="content-right">
-                                                <span class="price">$@item.Gia</span> <!-- Thay giá bằng giá danh mục nếu có -->
+                                                <span class="price">@string.Format("{0:#,##0} VNĐ",(item.Gia))</span> <!-- Thay giá bằng giá danh mục nếu có -->
                                             </div>
                                         </div>
                                     </div>
