@@ -328,8 +328,8 @@
                             <!-- Start Sort Select Option -->
                             <div class="col-md-12 text-md-right">
                                 <div class="sort-select-list d-flex align-items-center">
-                                    <label class="mr-2 ml-auto">Sort By:</label>
-                                    <form action="#">
+                                   @* <label class="mr-2 ml-auto">Sort By:</label>
+                                    @*<form action="#">
                                         <fieldset>
                                             <select name="sortOrder" id="sortOrder" onchange="location = this.value;">
                                                 <option value="@Url.Action("DanhMucSanPham", new { page = Model.PageNumber, sortOrder = "average_rating" })">Sort by average rating</option>
@@ -339,7 +339,7 @@
                                                 <option value="@Url.Action("DanhMucSanPham", new { page = Model.PageNumber, sortOrder = "name_z" })">Product Name: Z</option>
                                             </select>
                                         </fieldset>
-                                    </form>
+                                    </form>*@
                                 </div> <!-- End Sort Select Option -->
                                 <div class="mb-4"></div>
                             </div>

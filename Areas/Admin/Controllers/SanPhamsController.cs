@@ -196,14 +196,14 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                 ModelState.AddModelError("Gia", "Xin hãy nhập giá bán của sản phẩm.");
             }
 
-            if (sanPham.Slkho == null)
-            {
-                ModelState.AddModelError("Slkho", "Xin hãy nhập số lượng tồn kho.");
-            }
-            if (sanPham.Slkho < 0)
-            {
-                ModelState.AddModelError("Slkho", "Số lượng phải lớn hơn hoặc bằng 0");
-            }
+            //if (sanPham.Slkho == null)
+            //{
+            //    ModelState.AddModelError("Slkho", "Xin hãy nhập số lượng tồn kho.");
+            //}
+            //if (sanPham.Slkho < 0)
+            //{
+            //    ModelState.AddModelError("Slkho", "Số lượng phải lớn hơn hoặc bằng 0");
+            //}
             if (sanPham.GiaNhap == null)
             {
                 ModelState.AddModelError("GiaNhap", "Xin hãy điền giá nhập của sản phẩm.");
@@ -243,6 +243,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                 //if (string.IsNullOrEmpty(sanPham.Anh)) sanPham.Anh = "default.jpg";
 
                 //sanPham.NgaySx = DateTime.Now;
+                sanPham.Slkho = 0;
                 sanPham.NgaySx = DateTime.Now;
                 _context.Add(sanPham);
                 await _context.SaveChangesAsync();
@@ -476,7 +477,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
 
 
         // GET: Admin/SanPhams/Delete/5
-        [Authorize(Roles = "Admin")]
+      
         public async Task<IActionResult> Delete(string id, int? page, string? MaID, string? search, string? MaDM, double? minPrice, double? maxPrice)
 {
     if (id == null || _context.SanPhams == null)
@@ -518,6 +519,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
             var sanPham = await _context.SanPhams
                 .Include(sp => sp.ChiTietDonHangs)
                 .ThenInclude(sp => sp.MaDonHangNavigation)// Nạp danh sách đơn hàng liên quan
+                .Include(sp=>sp.ChiTietLoHangs)
                 .FirstOrDefaultAsync(sp => sp.MaSanPham == id);
 
             if (sanPham != null)
@@ -525,7 +527,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
                 // Sử dụng RemoveRange để xóa danh sách đơn hàng liên quan
                
                 _context.ChiTietDonHangs.RemoveRange(sanPham.ChiTietDonHangs);
-
+                _context.ChiTietLoHangs.RemoveRange(sanPham.ChiTietLoHangs);
                 // Xóa sản phẩm
                 _context.SanPhams.Remove(sanPham);
 

@@ -62,7 +62,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
 
 
 
-            var lsDonHangs = query.OrderByDescending(x => x.TrangThaiDonHang).ToList();
+            var lsDonHangs = query.OrderByDescending(x => x.MaDonHang).ToList();
 
             PagedList<DonHang> models = new PagedList<DonHang>(lsDonHangs.AsQueryable(), pageNumber, pageSize);
 
