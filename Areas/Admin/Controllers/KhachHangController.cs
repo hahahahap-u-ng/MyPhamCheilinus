@@ -292,7 +292,7 @@ namespace MyPhamCheilinus.Areas.Admin.Controllers
         //}
 
         // GET: Admin/Accounts/Edit/5
-        [Authorize(Roles = "Admin")]
+       
         public async Task<IActionResult> Edit(int id, int? page, string? Ten, string? Email, string? SDT, int? Quyen, Boolean? TrangThai)
         {
             if (id == null || _context.Accounts == null)

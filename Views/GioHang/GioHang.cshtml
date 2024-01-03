@@ -104,21 +104,23 @@
                                                             @line.SanPham.TenSanPham
                                                         </a>
                                                     </td>
-                                                    <td class="product-price">@string.Format("{0:#,##0} VNĐ", (line.SanPham.Gia * (100 - line.SanPham.KhuyenMai) / 100))</td>
-                                                    
+                                                    <td class="product-price">@string.Format("{0:#,##0} VNĐ", (line.SanPham.Gia *(100- line.SanPham?.KhuyenMai)/100))</td>
+
 
 
                                                     <td class="product_quantity">
-                                                        
+
                                                         <div class="quantity-controls">
                                                             <a href="/GioHang/Remove_1_FromGioHang/?maSanPham=@line.SanPham.MaSanPham" class="quantity-button">-</a>
                                                             <input min="1" max="100" value="@line.SoLuong" id="quantity-@line.SanPham.MaSanPham" class="quantity-input">
 
                                                             <a href="/GioHang/AddGioHang/?maSanPham=@line.SanPham.MaSanPham" class="quantity-button">+</a>
-                                                            
+
                                                         </div>
                                                     </td>
-                                                    <td class="product-price">@string.Format("{0:#,##0} VNĐ",(line.SoLuong * line.SanPham.Gia * (100 - line.SanPham.KhuyenMai) / 100))</td>
+
+
+                                                    <td class="product-price">@string.Format("{0:#,##0} VNĐ",(line.SoLuong * line.SanPham.Gia *(100- line.SanPham?.KhuyenMai)/100))</td>
                                                 </tr> <!-- End Cart Single Item-->
                                             }
                                         }
@@ -136,36 +138,26 @@
             </div>
         </div>
     </div> <!-- End Cart Table -->
-    <!-- Start Coupon Start -->
     <div class="coupon_area">
         <div class="container">
             <div class="row">
-                <div class="col-lg-6 col-md-6">
-                    <div class="coupon_code left" data-aos="fade-up" data-aos-delay="200">
-                        <h3>Coupon</h3>
-                        <div class="coupon_inner">
-                            <p>Enter your coupon code if you have one.</p>
-                            <input class="mb-2" placeholder="Coupon code" type="text">
-                            <button type="submit" class="btn btn-md btn-golden">Áp mã giảm giá</button>
-                        </div>
-                    </div>
-                </div>
+
                 <div class="col-lg-6 col-md-6">
                     <div class="coupon_code right" data-aos="fade-up" data-aos-delay="400">
                         <h3>Thanh toán giỏ hàng</h3>
                         <div class="coupon_inner">
                             <div class="cart_subtotal">
-                                <p>Subtotal</p>
+                                <p>Tổng tiền hàng</p>
                                 <p class="cart_amount">@string.Format("{0:#,##0} VNĐ",Model.ComputeTotalValues())</p>
                             </div>
                             <div class="cart_subtotal ">
-                                <p>Shipping</p>
-                                <p class="cart_amount"><span>Flat Rate:</span>10,000 VNĐ</p>
+                                <p>Tiền vận chuyển</p>
+                                <p class="cart_amount"><span></span>10,000 VNĐ</p>
                             </div>
-                            <a href="#">Calculate shipping</a>
+                            <a href="#">Tính toán vận chuyển</a>
 
                             <div class="cart_subtotal">
-                                <p>Total</p>
+                                <p>Tổng tiền</p>
                                 <p class="cart_amount">@string.Format("{0:#,##0} VNĐ",Model.ComputeTotalValues()+10000)</p>
                             </div>
                             <div class="checkout_btn">

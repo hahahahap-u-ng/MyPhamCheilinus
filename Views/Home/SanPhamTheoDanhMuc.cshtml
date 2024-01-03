@@ -101,14 +101,14 @@
                         <del>
                             
                                 
-                                <span class="noGiaSP">@(danhMuc.Gia+15000)</span>
-                                <span> VNĐ</span>
+                                <span class="noGiaSP">@string.Format("{0:#,##0} VNĐ",(danhMuc.Gia+15000))</span>
+                                
                             
                         </del>
                         <div class="price">
                             
-                            <span class="product-discount-price">@danhMuc.Gia</span>
-                            <span> VNĐ</span>
+                            <span class="product-discount-price">@string.Format("{0:#,##0} VNĐ",(danhMuc.Gia))</span>
+                            
                         </div>
                         
                         <p>
@@ -460,9 +460,9 @@
                                     </ul> <!-- End - Review Comment -->
                                     <div class="review-form">
                                         <div class="review-form-text-top">
-                                            <h5>ADD A REVIEW</h5>
+                                            <h5>THÊM ĐÁNH GIÁ</h5>
                                             <p>
-                                                Your email address will not be published. Required fields are marked
+                                                Địa chỉ email của bạn sẽ không được công bố. Các trường bắt buộc được đánh dấu
                                                 *
                                             </p>
                                         </div>
@@ -471,26 +471,26 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="default-form-box">
-                                                        <label for="comment-name">Your name <span>*</span></label>
+                                                        <label for="comment-name">Tên của bạn <span>*</span></label>
                                                         <input id="comment-name" type="text"
-                                                               placeholder="Enter your name" required>
+                                                               placeholder="Nhập tên của bạn" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="default-form-box">
-                                                        <label for="comment-email">Your Email <span>*</span></label>
+                                                        <label for="comment-email">Email <span>*</span></label>
                                                         <input id="comment-email" type="email"
-                                                               placeholder="Enter your email" required>
+                                                               placeholder="Nhập Email" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-12">
                                                     <div class="default-form-box">
                                                         <label for="comment-review-text">
-                                                            Your review
+                                                            Đánh giá của bạn
                                                             <span>*</span>
                                                         </label>
                                                         <textarea id="comment-review-text"
-                                                                  placeholder="Write a review" required></textarea>
+                                                                  placeholder="Viết một đánh giá" required></textarea>
                                                     </div>
                                                 </div>
                                                 <div class="col-12">

@@ -101,14 +101,14 @@
                                     foreach (var item in Model)
                                     {
                                         <tr>
-                                            <td class="text-center">@item.MaDonHang</td>
+                                            <td class="align-middle text-center">@item.MaDonHang</td>
 
                                             <td>@item.MaKhachHangNavigation.TenKhachHang</td>
                                             <td>@item.MaKhachHangNavigation.DiaChi</td>
 
-                                            <td class="text-center">@item.NgayDatHang.Value.ToString("dd/MM/2023")</td>
-                                            <td class="text-center">@item.TongTien.Value.ToString("#,##0") VNĐ</td>
-                                            <td>
+                                            <td class="align-middle text-center">@item.NgayDatHang.Value.ToString("dd/MM/yyyy")</td>
+                                            <td class="align-middle text-center">@item.TongTien.Value.ToString("#,##0") VNĐ</td>
+                                            <td class="align-middle text-center">
                                                 @if (item.TrangThaiDonHang == 1)
                                                 {
                                                     <span class=" badge bg-success">Chờ xác nhận</span>
@@ -123,13 +123,14 @@
                                                 }
                                                 else if (item.TrangThaiDonHang == 4)
                                                 {
-                                                    <span class="badge bg-danger" style="background-color: #c82333">Đã hủy</span>
+                                                    <span class="badge bg" style="background-color: #c82333">Đã hủy</span>
                                                 }
                                             </td>
                                             <td class="text-right">
-                                                <a class="badge bg-success" asp-action="ChangeStatus" asp-route-id="@item.MaDonHang" asp-route-MaID="@ViewBag.CurrentMaID" asp-route-page="@ViewBag.CurrentPage" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">Cập nhật trạng thái</a>
-                                                <a class="badge bg-primary" asp-action="Details" asp-route-id="@item.MaDonHang" asp-route-MaID="@ViewBag.CurrentMaID" asp-route-page="@ViewBag.CurrentPage" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">Xem đơn hàng</a>
+                                                <a class="btn btn-info btn-tone m-r-5" asp-action="ChangeStatus" asp-route-id="@item.MaDonHang" asp-route-MaID="@ViewBag.CurrentMaID" asp-route-page="@ViewBag.CurrentPage" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice" style="color: white">Cập nhật trạng thái</a>
+                                                <a class="btn btn-secondary btn-tone m-r-5" asp-action="Details" asp-route-id="@item.MaDonHang" asp-route-MaID="@ViewBag.CurrentMaID" asp-route-page="@ViewBag.CurrentPage" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice" style="color: white">Xem đơn hàng</a>
                                             </td>
+                                          
                                         </tr>
                                     }
                                 }
