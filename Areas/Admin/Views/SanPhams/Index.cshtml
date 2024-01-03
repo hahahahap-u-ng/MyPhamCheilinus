@@ -82,12 +82,14 @@
                                 <thead>
                                     <tr class="text-center">
                                         <th style="width: 5%;">ID</th>
-                                        <th style="width: 30%;">Tên sản phẩm</th>
+                                        <th style="width: 18%;">Tên sản phẩm</th>
                                         <th style="width: 15%;">Ảnh</th>
                                         <th style="width: 10%;">Giá</th>
                                         <th style="width: 10%;">Tồn kho</th>
-                                        <th style="width: 10%;">Trạng thái</th>
-                                        <th style="width: 20%;"></th>
+                                     
+                                        <th style="width: 5%;">Trạng thái</th>
+                                        <th style="width: 10%;">Giảm giá</th>
+                                        <th style="width: 27%;"></th>
                                     </tr>
                                 </thead>
                                 <tbody id="records_table">
@@ -97,7 +99,7 @@
                                         {
                                             <tr>
                                                 <td style="width: 5%;" class="align-middle  text-center">@item.MaSanPham</td>
-                                                <td style="width: 30%;" class="align-middle">
+                                                <td style="width: 18%;" class="align-middle">
 
                                                     @item.TenSanPham
 
@@ -105,8 +107,20 @@
                                                 <td style="width: 15%;" class="align-middle text-center">
                                                     <img src="@Url.Content("~/images/sanPhams/" + item.Anh)" alt="Ảnh sản phẩm" class="img-thumbnail" style="max-width: 200px; max-height: 100px;" />
                                                 </td>
-                                                <td style="width: 10%;" class="align-middle text-center">@item.Gia.Value.ToString("#,##0") VNĐ</td>
-                                                <td style="width: 10%;" class="align-middle text-center">@item.Slkho</td>
+                                                @if (item.Active != false)
+                                                {
+                                                    <td style="width: 10%;" class="align-middle text-center">
+                                                        @((item.Gia * ((100 - item.KhuyenMai) / 100)).Value.ToString("#,##0")) VNĐ
+                                                    </td>
+                                                }
+                                                else
+                                                {
+                                                    <td style="width: 10%;" class="align-middle text-center">
+                                                        @item.Gia.Value.ToString("#,##0") VNĐ
+                                                    </td>
+                                                }
+                                          
+                                                <td style="width: 5%;" class="align-middle text-center">@item.Slkho</td>
                                                 <td style="width: 10%;" class="align-middle text-center">
                                                     @if (item.Slkho.Value > 10)
                                                     {
@@ -127,8 +141,19 @@
                                                         </div>
                                                     }
                                                 </td>
+                                                <td style="width: 10%;" class="align-middle text-center">
+                                                    @if (item.Active == true)
+                                                    {
+                                                        <i class="fa fa-check" style="color: green;"></i>
+                                                    }
+                                                    else
+                                                    {
+                                                        <!-- Nếu Active là false, không hiển thị gì cả -->
+                                                    }
+                                                </td>
+                                               
 
-                                                <td style="width: 20%;" class="align-middle text-right">
+                                                <td style="width: 27%;" class="align-middle text-right">
                                                    
                                                     <a class="btn btn-secondary btn-tone m-r-5" asp-action="Details" asp-route-id="@item.MaSanPham" asp-route-MaID="@ViewBag.CurrentMaID" asp-route-page="@ViewBag.CurrentPage" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">Chi tiết</a>
                                                     <a class="btn btn-info btn-tone m-r-5" asp-controller="LoHangs" asp-action="NhapKho" asp-route-id="@item.MaSanPham" asp-route-Gia="@item.GiaNhap" asp-route-MaID="@ViewBag.CurrentMaID" asp-route-page="@ViewBag.CurrentPage" asp-route-Search="@ViewBag.CurrentSearch" asp-route-MaDM="@ViewBag.CurrentMaDM" asp-route-MinPrice="@ViewBag.CurrentMinPrice" asp-route-MaxPrice="@ViewBag.CurrentMaxPrice">Nhập kho</a>
