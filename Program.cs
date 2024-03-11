@@ -7,6 +7,7 @@ using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
+using MyPhamCheilinus.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,7 @@ builder.Services.AddSession(options =>
 });
 builder.Services.AddScoped<ICTLoaiRepository, CTLoaiRepository>();
 
+builder.Services.AddSingleton<IVnPayService, VnPayService>();
 
 
 

@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MyPhamCheilinus.Controllers;
 using MyPhamCheilinus.Infrastructure;
 using MyPhamCheilinus.Models;
+using MyPhamCheilinus.ModelViews;
+using MyPhamCheilinus.Services;
 using System.Data;
 using System.Net;
 
@@ -16,14 +18,17 @@ namespace MyPhamCpuheilinus.Controllers
     {
 
         public GioHang? GioHang { get; set; }
+        public KhachHang? KhachHang { get;set; }
         _2023MyPhamContext db = new _2023MyPhamContext();
         public INotyfService _notifyService { get; }
         private readonly ILogger<GioHangController> _logger;
+        private readonly IVnPayService _vnPayservice;
 
-        public GioHangController(ILogger<GioHangController> logger, INotyfService notifyService)
+        public GioHangController(ILogger<GioHangController> logger, INotyfService notifyService, IVnPayService vnPayService) 
         {
             _logger = logger;
             _notifyService = notifyService;
+            _vnPayservice = vnPayService;
         }
         [Authorize(Roles = "Customer")]
         public IActionResult AddGioHang(string maSanPham)
@@ -241,22 +246,7 @@ namespace MyPhamCpuheilinus.Controllers
 
                     db.DonHangs.Add(donHang);
                     db.SaveChanges();
-                    foreach (var line in gioHang.Lines)
-                    {
-                        // Lấy thông tin sản phẩm từ cơ sở dữ liệu
-                        var sanPham = db.SanPhams.Find(line.SanPham.MaSanPham);
-
-                        if (sanPham != null)
-                        {
-                            // Trừ số lượng đã mua từ số lượng tồn kho
-                            sanPham.Slkho -= line.SoLuong;
-                           
-
-                            // Cập nhật giá trị mới của số lượng tồn kho trong cơ sở dữ liệu
-                            db.Update(sanPham);
-                        
-                        }
-                    }
+                    
                     foreach (var line in gioHang.Lines)
                     {
                         var chiTietDonHang = new ChiTietDonHang
@@ -269,12 +259,29 @@ namespace MyPhamCpuheilinus.Controllers
                         db.ChiTietDonHangs.Add(chiTietDonHang);
                         RemoveFromGioHang(line.SanPham.MaSanPham);
                     }
-                    
+
 
                     db.SaveChanges();
                     foreach (var line in gioHang.Lines)
                     {
-                        
+                        // Lấy thông tin sản phẩm từ cơ sở dữ liệu
+                        var sanPham = db.SanPhams.Find(line.SanPham.MaSanPham);
+
+                        if (sanPham != null)
+                        {
+                            // Trừ số lượng đã mua từ số lượng tồn kho
+                            sanPham.Slkho -= line.SoLuong;
+
+
+                            // Cập nhật giá trị mới của số lượng tồn kho trong cơ sở dữ liệu
+                            db.SanPhams.Update(sanPham);
+                         
+                        }
+                    }
+                    db.SaveChanges();
+                    foreach (var line in gioHang.Lines)
+                    {
+
                         RemoveFromGioHang(line.SanPham.MaSanPham);
                     }
      ;

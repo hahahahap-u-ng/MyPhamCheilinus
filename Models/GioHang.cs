@@ -2,10 +2,10 @@
 {
     public class GioHang
     {
-        public List<GioHangLine> Lines { get; set; }= new List<GioHangLine>();
+        public List<GioHangLine> Lines { get; set; } = new List<GioHangLine>();
         public void AddItem(SanPham sanpham, int soluong)
         {
-            GioHangLine? line = Lines.Where(p=>p.SanPham.MaSanPham == sanpham.MaSanPham).FirstOrDefault();
+            GioHangLine? line = Lines.Where(p => p.SanPham.MaSanPham == sanpham.MaSanPham).FirstOrDefault();
             if (line == null)
             {
                 Lines.Add(new GioHangLine
@@ -24,7 +24,7 @@
             Lines.RemoveAll(l => l.SanPham.MaSanPham == sanpham.MaSanPham);
 
         public double ComputeTotalValues() =>
-            (double)Lines.Sum(e => e.SanPham?.Gia * e.SoLuong* (100- e.SanPham?.KhuyenMai)/100);
+            (double)Lines.Sum(e => e.SanPham?.Gia * e.SoLuong);
         public void Clear() => Lines.Clear();
     }
 
