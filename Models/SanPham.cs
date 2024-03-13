@@ -25,13 +25,13 @@ public partial class SanPham
 
     public string? MaDanhMuc { get; set; }
 
-    public bool HomeFlag { get; set; }
+    public bool? HomeFlag { get; set; }
 
-    public bool BestSellers { get; set; }
+    public bool? BestSellers { get; set; }
 
     public string? MoTa { get; set; }
 
-    public bool Active { get; set; }
+    public bool? Active { get; set; }
 
     public DateTime? NgaySua { get; set; }
 

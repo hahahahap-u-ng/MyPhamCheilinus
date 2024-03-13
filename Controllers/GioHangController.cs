@@ -18,13 +18,13 @@ namespace MyPhamCpuheilinus.Controllers
     {
 
         public GioHang? GioHang { get; set; }
-        public KhachHang? KhachHang { get;set; }
+        public KhachHang? KhachHang { get; set; }
         _2023MyPhamContext db = new _2023MyPhamContext();
         public INotyfService _notifyService { get; }
         private readonly ILogger<GioHangController> _logger;
         private readonly IVnPayService _vnPayservice;
 
-        public GioHangController(ILogger<GioHangController> logger, INotyfService notifyService, IVnPayService vnPayService) 
+        public GioHangController(ILogger<GioHangController> logger, INotyfService notifyService, IVnPayService vnPayService)
         {
             _logger = logger;
             _notifyService = notifyService;
@@ -34,7 +34,7 @@ namespace MyPhamCpuheilinus.Controllers
         public IActionResult AddGioHang(string maSanPham)
         {
             SanPham? sanpham = db.SanPhams.FirstOrDefault(p => p.MaSanPham == maSanPham);
-            if(sanpham.Slkho == 0)
+            if (sanpham.Slkho == 0)
             {
                 _notifyService.Error("Sản phẩm đã hết hàng");
                 return RedirectToAction("SanPhamTheoDanhMuc");
@@ -114,7 +114,7 @@ namespace MyPhamCpuheilinus.Controllers
         {
             Random random = new Random();
             int randomNumber = random.Next(10000, 99999); // Sinh ra số ngẫu nhiên từ 10,000 đến 99,999
-           
+
             return randomNumber;
         }
         private string GenerateUniqueOrderCode()
@@ -184,7 +184,7 @@ namespace MyPhamCpuheilinus.Controllers
 
 
 
-       
+
 
         [HttpPost]
         public IActionResult SaveAddress(string hoTen, string diaChi, string soDienThoai, string email)
@@ -221,12 +221,30 @@ namespace MyPhamCpuheilinus.Controllers
             }
         }
         [HttpPost]
-        public ActionResult ThanhToan(int selectedKhachHang)
+        public ActionResult ThanhToan(int selectedKhachHang, string payment = "COD")
         {
             try
             {
+                HttpContext.Session.SetInt32("SelectedCustomerId", selectedKhachHang);
                 // Lấy thông tin của KhachHang đã chọn
                 var selectedKhachHangObject = db.KhachHangs.Find(selectedKhachHang);
+
+                if (payment == "Thanh toán VnPay")
+                {
+                    var gioHang = HttpContext.Session.GetJson<GioHang>("giohang");
+
+                    var vnPayModel = new VnPaymentRequestModel
+                    {
+                        Amount = gioHang.ComputeTotalValues(),
+                        CreatedDate = DateTime.Now,
+                        Description = $"{selectedKhachHangObject.TenKhachHang} {selectedKhachHangObject.SoDienThoai}",
+                        FullName = selectedKhachHangObject.TenKhachHang,
+                        OrderId = GenerateUniqueOrderCode(),
+                        //CustomerId = selectedKhachHangObject.MaKhachHang.ToString()
+
+                    };
+                    return Redirect(_vnPayservice.CreatePaymentUrl(HttpContext, vnPayModel));
+                }
 
                 if (selectedKhachHangObject != null)
                 {
@@ -246,7 +264,22 @@ namespace MyPhamCpuheilinus.Controllers
 
                     db.DonHangs.Add(donHang);
                     db.SaveChanges();
-                    
+                    foreach (var line in gioHang.Lines)
+                    {
+                        // Lấy thông tin sản phẩm từ cơ sở dữ liệu
+                        var sanPham = db.SanPhams.Find(line.SanPham.MaSanPham);
+
+                        if (sanPham != null)
+                        {
+                            // Trừ số lượng đã mua từ số lượng tồn kho
+                            sanPham.Slkho -= line.SoLuong;
+
+
+                            // Cập nhật giá trị mới của số lượng tồn kho trong cơ sở dữ liệu
+                            db.Update(sanPham);
+
+                        }
+                    }
                     foreach (var line in gioHang.Lines)
                     {
                         var chiTietDonHang = new ChiTietDonHang
@@ -261,23 +294,6 @@ namespace MyPhamCpuheilinus.Controllers
                     }
 
 
-                    db.SaveChanges();
-                    foreach (var line in gioHang.Lines)
-                    {
-                        // Lấy thông tin sản phẩm từ cơ sở dữ liệu
-                        var sanPham = db.SanPhams.Find(line.SanPham.MaSanPham);
-
-                        if (sanPham != null)
-                        {
-                            // Trừ số lượng đã mua từ số lượng tồn kho
-                            sanPham.Slkho -= line.SoLuong;
-
-
-                            // Cập nhật giá trị mới của số lượng tồn kho trong cơ sở dữ liệu
-                            db.SanPhams.Update(sanPham);
-                         
-                        }
-                    }
                     db.SaveChanges();
                     foreach (var line in gioHang.Lines)
                     {
@@ -309,5 +325,112 @@ namespace MyPhamCpuheilinus.Controllers
             return RedirectToAction("CheckOut");
         }
 
+        [Authorize]
+        public IActionResult PaymentSuccess()
+        {
+            return View("Success");
+        }
+
+        [Authorize]
+        public IActionResult PaymentFail()
+        {
+            return View();
+        }
+
+        [Authorize]
+        public IActionResult PaymentCallBack()
+        {
+            try
+            {
+                var response = _vnPayservice.PaymentExecute(Request.Query);
+                if (response == null || !response.Success || response.VnPayResponseCode != "00")
+                {
+                    TempData["Message"] = $"Lỗi thanh toán VNPay: {response.VnPayResponseCode}";
+                    return RedirectToAction("PaymentFail");
+                }
+                var selectedKhachHang = HttpContext.Session.GetInt32("SelectedCustomerId");
+                if (!selectedKhachHang.HasValue)
+                {
+                    TempData["ErrorMessage"] = "Không tìm thấy thông tin Khách Hàng đã chọn.";
+                    return RedirectToAction("CheckOut");
+                }
+
+                var selectedKhachHangObject = db.KhachHangs.Find(selectedKhachHang);
+                // Lưu thông tin đơn hàng vào cơ sở dữ liệu
+
+                if (selectedKhachHangObject != null)
+                {
+                    // Thực hiện các bước thanh toán với selectedKhachHangObject
+                    var gioHang = HttpContext.Session.GetJson<GioHang>("giohang");
+                    var donHang = new DonHang
+                    {
+                        MaDonHang = response.OrderId,
+                        NgayDatHang = DateTime.Now,
+                        TongTien = response.Amount,
+                        TrangThaiDonHang = 1, // Có thể là trạng thái khác tùy thuộc vào yêu cầu của bạn
+                        MaKhachHang = selectedKhachHangObject.MaKhachHang, // Lấy từ response của VnPay hoặc từ session
+                        ThanhToan = true, // Đánh dấu là đã thanh toán
+                        VanChuyen = 1, // Giả sử vận chuyển có mã 1
+                        PhiVanChuyen = 10000 // Phí vận chuyển (nếu có)
+                    };
+
+                    db.DonHangs.Add(donHang);
+                    db.SaveChanges();
+                    foreach (var line in gioHang.Lines)
+                    {
+                        // Lấy thông tin sản phẩm từ cơ sở dữ liệu
+                        var sanPham = db.SanPhams.Find(line.SanPham.MaSanPham);
+
+                        if (sanPham != null)
+                        {
+                            // Trừ số lượng đã mua từ số lượng tồn kho
+                            sanPham.Slkho -= line.SoLuong;
+
+
+                            // Cập nhật giá trị mới của số lượng tồn kho trong cơ sở dữ liệu
+                            db.Update(sanPham);
+
+                        }
+                    }
+                    db.SaveChanges();
+                    foreach (var line in gioHang.Lines)
+                    {
+                        var chiTietDonHang = new ChiTietDonHang
+                        {
+                            MaDonHang = donHang.MaDonHang,
+                            MaSanPham = line.SanPham.MaSanPham,
+                            SoLuong = line.SoLuong,
+                            GiaBan = line.SanPham.Gia
+                        };
+                        db.ChiTietDonHangs.Add(chiTietDonHang);
+                        RemoveFromGioHang(line.SanPham.MaSanPham);
+
+                    }
+                    db.SaveChanges();
+
+
+                    foreach (var line in gioHang.Lines)
+                    {
+
+                        RemoveFromGioHang(line.SanPham.MaSanPham);
+                    }
+                    gioHang.Clear();
+
+                    TempData["Message"] = $"Thanh toán VNPay thành công!";
+                    return RedirectToAction("PaymentSuccess");
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Không tìm thấy thông tin Khách Hàng đã chọn.";
+                    return RedirectToAction("CheckOut");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi nếu có
+                TempData["Message"] = $"Đã xảy ra lỗi trong quá trình thanh toán: {ex.Message}";
+                return RedirectToAction("PaymentFail");
+            }
+        }
     }
 }
